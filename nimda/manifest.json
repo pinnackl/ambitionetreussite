@@ -1,0 +1,6 @@
+{
+  "name": "nimda",
+  "short_name": "nimda",
+  "start_url": "/",
+  "display": "standalone"
+}
