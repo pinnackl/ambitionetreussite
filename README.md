@@ -15,6 +15,7 @@ Web application of the Ambition & Réussite association.
     *  bower (https://bower.io/#install-bower)
 
 ## Server configuration
+### Apache2
 
 To properly serve the application, you need to create an Apache2 virtualhost
 
@@ -28,6 +29,13 @@ To properly serve the application, you need to create an Apache2 virtualhost
        Allow from all
    </Directory>
 </VirtualHost>
+```
+Or
+
+### Nodejs
+
+```bash
+   $ polymer server -o
 ```
 
 `Note: We could have use a custom server name, but for further needs (service-worker.js), localhost is important. So be sure to remove the already existing virtualhost that use localhost. Check your host file to be sure that localhost is bound`
