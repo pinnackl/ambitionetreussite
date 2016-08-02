@@ -1,5 +1,8 @@
-#Default htaccess
+# htaccess
 Options -MultiViews
 RewriteEngine On
+
+# Do not redirect if file or directory
 RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.html [QSA,L]
