@@ -13,7 +13,6 @@ Web application of the Ambition & Réussite association.
     *  Nodejs (https://nodejs.org/en/download/)
     *  npm
     *  bower (https://bower.io/#install-bower)
-    *  composer (https://getcomposer.org/download/)
 
 ## Server configuration
 
