@@ -1,8 +1,0 @@
-{
-    "name": "pinnackl/ambitionetreussite",
-    "description": "Web application of the Ambition & Réussite association.",
-    "require": {
-        "silex/silex": "^2.0"
-    },
-    "license": "MIT"
-}
