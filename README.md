@@ -31,7 +31,7 @@ To properly serve the application, you need to create an Apache2 virtualhost
 </VirtualHost>
 ```
 
-`Note: We could have use a custom server name, but for further needs (service-worker.js), localhost is important. So be sure to remove the already existing virtualhost using localhost`
+`Note: We could have use a custom server name, but for further needs (service-worker.js), localhost is important. So be sure to remove the already existing virtualhost that use localhost. Check your host file to be sure that localhost is bound`
 
 ## Install dependencies
 
