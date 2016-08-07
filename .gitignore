@@ -2,5 +2,6 @@ bower_components
 dist
 node_modules
 build
+config.json
 
 /vendor/
