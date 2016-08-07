@@ -1,0 +1,82 @@
+<dom-module id="ar-data">
+	<template>
+		<iron-ajax
+		 	auto
+		 	url="/config.json"
+		 	handle-as="json"
+		 	on-response="handleResponse"></iron-ajax>
+		[[name]]
+		<firebase-app id="app"
+		  app="[[app]]"
+		  name="[[name]]"
+		  api-key="[[apiKey]]"
+		  auth-domain="[[authDomain]]"
+		  database-url="[[databaseUrl]]">
+		</firebase-app>
+		<firebase-auth app-name="[[name]]" id="auth" user="{{user}}" on-error="handleError">
+		</firebase-auth>
+	</template>
+	</template>
+	<script>
+		Polymer({
+			is: 'ar-data',
+
+			properties: {
+				app: {
+				},
+				name: {
+				},
+				apiKey: {
+					observer: '_apiKeyChanged'
+				},
+				authDomain: {
+				},
+				databaseUrl: {
+				},
+				online: {
+
+				},
+				signedIn: {
+					observer: '_signedInChanged',
+					notify: true
+				},
+				user: {
+					notify: true
+				},
+			},
+
+			handleResponse: function (e) {
+				let response = e.detail.__data__.response;
+				if (response) {
+					this.name = response.name;
+					this.apiKey = response.apiKey;
+					this.apiKey = response.apiKey;
+					this.authDomain = response.authDomain;
+					this.databaseUrl = response.databaseURL;
+				} else {
+					console.error("Error loading config file");
+				}
+			},
+
+			handleError: function (e) {
+				console.log(e);
+			},
+
+			appChanged: function (e) {
+				console.log(e);
+			},
+
+			_apiKeyChanged: function (e) {
+				this.$.auth.signInWithEmailAndPassword(email, password).then(e => {
+					console.log(e);
+				}).catch(err => {
+					console.error(err);
+				});
+			},
+
+			_signedInChanged: function (e) {
+				// console.log(e);
+			}
+		});
+	</script>
+</dom-module>
