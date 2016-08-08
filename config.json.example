@@ -1,9 +1,0 @@
-# Default firebase configuration file
-# Go to the "Auth" section in your firebase console
-# And click on the "CONFIGURATION WEB" link, to get the configuration
-{
-	"apiKey": "YOUR_API_KEY",
-	"authDomain": "YOUR_AUTH_DOMAIN",
-	"databaseURL": "YOUR_DATABASE_URL",
-	"storageBucket": "YOUR_DATABASE_STORAGE_BUCKET"
-}
