@@ -2,8 +2,8 @@
 
 <dom-module id="ar-data">
 	<template>
-		<ar-firebase></ar-firebase>
-		<firebase-auth id="auth" user="{{user}}" signed-in="[[signedIn]]" on-error="handleError">
+		<ar-firebase name="[[name]]"></ar-firebase>
+		<firebase-auth id="auth" app-name="[[name]]" user="{{user}}" signed-in="[[signedIn]]" on-error="handleError">
 		</firebase-auth>
 	</template>
 	</template>
@@ -23,6 +23,19 @@
 				user: {
 					notify: true
 				}
+			},
+
+			registerUser: function (userObject) {
+				// FIXME : Create the register user method
+				// ...
+			},
+
+			login: function (userObject) {
+				var email = typeof userObject.email ? userObject.email : "";
+				var password = typeof userObject.password ? userObject.password : "";
+
+				// FIXME : Create the login user method
+				// ...
 			},
 
 			_signedInChanged: function (e) {

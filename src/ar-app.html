@@ -80,8 +80,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <!-- Drawer content -->
       <app-drawer>
-        <app-toolbar>Menu [[signedIn]]</app-toolbar>
-        <ar-data></ar-data>
+        <app-toolbar></app-toolbar>
+        <app-toolbar></app-toolbar>
+        <ar-data name="AR"></ar-data>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
           <a name="view1" href="/view1">View One</a>
           <a name="view2" href="/view2">View Two</a>
@@ -94,7 +95,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <app-header condenses reveals effects="waterfall">
           <app-toolbar>
-            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+            <template is="dom-if" if={{isMobile}}>
+              <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+            </template>
+          </app-toolbar>
+          <app-toolbar>
             <div title>My App</div>
           </app-toolbar>
         </app-header>
@@ -127,7 +132,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         signedIn: {
           observer: '_signInChanged'
-        }
+        },
+
+        isMobile: Boolean,
 
       },
 
@@ -137,6 +144,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _routePageChanged: function(page) {
         this.page = page || 'view1';
+
+        // Define if we are on mobile devise
+        // If so, add the drawer menu
+        this.isMobile = false;
       },
 
       _pageChanged: function(page) {
