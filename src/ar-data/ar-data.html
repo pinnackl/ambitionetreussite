@@ -1,11 +1,19 @@
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../ar-firebase/ar-firebase.html">
-
 <dom-module id="ar-data">
 	<template>
+
+	    <app-location route="{{route}}"></app-location>
+	    <app-route
+	        route="{{route}}"
+	        pattern="/:page"
+	        data="{{routeData}}"
+	        tail="{{subroute}}"></app-route>
+
 		<ar-firebase></ar-firebase>
 		<firebase-auth id="auth" app-name="[[name]]" user="{{user}}" signed-in="[[signedIn]]" on-error="handleError">
 		</firebase-auth>
-	</template>
 	</template>
 	<script>
 		Polymer({
@@ -22,9 +30,39 @@
 				},
 				user: {
 					notify: true
+				},
+				accessGranted: {
+					type: Boolean,
+					notify: true,
+					observer: '_accessGrantedChanged'
+				},
+		        page: {
+					type: String,
+					reflectToAttribute: true,
+					observer: '_pageChanged'
+		        },
+			},
+			observers: [
+				'_routePageChanged(routeData.page)'
+			],
+			_routePageChanged: function (page) {
+				this.page = page || 'home';
+
+				// Check if the selected page is the admin section
+				if (this.page == 'nimda') {
+					this.accessGranted = true;
+				} else {
+					this.accessGranted = false;
 				}
 			},
+			_accessGrantedChanged: function (e) {
+			},
+			_pageChanged: function(page) {
 
+			},
+			_grantAdmin: function () {
+				return true;
+			},
 			registerUser: function (userObject) {
 				// FIXME : Create the register user method
 				// ...
