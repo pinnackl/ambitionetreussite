@@ -19,13 +19,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="my-icons.html">
-
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
-
-<link rel="import" href="ar-data/ar-data.html">
 
 <dom-module id="ar-app">
 
@@ -65,7 +61,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding-left: 32px;
       }
 
+      .admin-toolbar {
+        background-color: #292929;
+      }
 
+      [hidden] {
+        display: none !important;
+      }
     </style>
 
     <app-location route="{{route}}"></app-location>
@@ -75,18 +77,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
 
+    <iron-media-query query="min-width: 640px" query-matches="{{largeScreen}}">
+    </iron-media-query>
 
-    <app-drawer-layout fullbleed>
+    <!-- FIXME : move auth -->
+    <app-drawer-layout fullbleed force-narrow>
 
       <!-- Drawer content -->
-      <app-drawer>
-        <app-toolbar></app-toolbar>
-        <app-toolbar></app-toolbar>
-        <ar-data name="AR"></ar-data>
+      <app-drawer id="appDrawer" swipe-open hidden$="[[_computeHidden(largeScreen)]]">
+          <app-toolbar></app-toolbar>
+          <app-toolbar>Menu</app-toolbar>
+
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="view1" href="/view1">View One</a>
-          <a name="view2" href="/view2">View Two</a>
-          <a name="view3" href="/view3">View Three</a>
+          <a name="nimda" href="/nimda">Nimda</a>
+          <a name="home" href="/home">Home</a>
         </iron-selector>
       </app-drawer>
 
@@ -95,9 +99,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <app-header condenses reveals effects="waterfall">
           <app-toolbar>
-            <template is="dom-if" if={{isMobile}}>
-              <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-            </template>
+            <paper-icon-button icon="menu" hidden drawer-toggle hidden$="[[_computeHidden(largeScreen)]]"></paper-icon-button>
           </app-toolbar>
           <app-toolbar>
             <div title>My App</div>
@@ -105,9 +107,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-header>
 
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
-          <my-view1 name="view1"></my-view1>
-          <my-view2 name="view2"></my-view2>
-          <my-view3 name="view3"></my-view3>
+          <ar-home name="home"></ar-home>
         </iron-pages>
 
       </app-header-layout>
@@ -134,7 +134,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           observer: '_signInChanged'
         },
 
-        isMobile: Boolean,
+        largeScreen: Boolean,
+
+        granted: {
+          type: Boolean,
+          notify: true,
+        },
 
       },
 
@@ -143,21 +148,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ],
 
       _routePageChanged: function(page) {
-        this.page = page || 'view1';
+        this.page = page || 'home';
 
-        // Define if we are on mobile devise
-        // If so, add the drawer menu
-        this.isMobile = false;
+        // Force the drawer to close
+        this.$.appDrawer.opened = false;
       },
-
       _pageChanged: function(page) {
         // load page import on demand.
         this.importHref(
-          this.resolveUrl('my-' + page + '.html'), null, null, true);
+          this.resolveUrl('ar-' + page + '/ar-' + page + '.html'), null, null, true);
       },
 
-      _signInChanged: function (e) {
-        console.log("variable");
+      _computeHidden: function (largeScreen) {
+        return largeScreen;
       }
 
     });

@@ -50,6 +50,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </script>
 
   <link rel="import" href="/src/ar-app.html">
+  <link rel="import" href="/src/ar-nimda/ar-nimda.html">
+  <link rel="import" href="/src/ar-data/ar-data.html">
 
   <style>
 
@@ -66,7 +68,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
 
-  <ar-app></ar-app>
-
+  <template is="dom-bind" id="app">
+    <!--
+      ar-data represent the primary database access
+      As we are usiung the firebase service, its aloso handle the authentication process
+    -->
+    <ar-data access-granted="{{accessGranted}}"></ar-data>
+    <!-- Conditionnal access to ar-nimmda, the admin section -->
+    <template is="dom-if" if=[[accessGranted]]>
+      <ar-nimda></ar-nimda>
+    </template>
+    <!-- Display or not the main app -->
+    <template is="dom-if" if=[[!accessGranted]]>
+      <ar-app></ar-app>
+    </template>
+  </template>
 </body>
 </html>
