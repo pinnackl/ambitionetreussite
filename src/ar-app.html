@@ -22,6 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/page-title/page-title.html">
 
 <dom-module id="ar-app">
 
@@ -80,7 +81,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <iron-media-query query="min-width: 640px" query-matches="{{largeScreen}}">
     </iron-media-query>
 
-    <!-- FIXME : move auth -->
+    <page-title base-title="A&R" title="[[page]]" direction="reversed"></page-title>
+
     <app-drawer-layout fullbleed force-narrow>
 
       <!-- Drawer content -->
@@ -148,6 +150,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ],
 
       _routePageChanged: function(page) {
+        // FIXME : Get the defaulpage from database
         this.page = page || 'home';
 
         // Force the drawer to close

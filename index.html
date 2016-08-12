@@ -14,7 +14,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-  <title>My App</title>
+  <title>A&R</title>
 
   <link rel="shortcut icon" sizes="32x32" href="/images/app-icon-32.png">
 
@@ -80,8 +80,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
     <!-- Display or not the main app -->
     <template is="dom-if" if=[[!accessGranted]]>
-      <ar-app></ar-app>
+      <ar-app id="plop"></ar-app>
     </template>
   </template>
+  <script>
+    (function (document) {
+      const app   = document.querySelector('#app');
+
+      app.addEventListener('dom-change', function() {
+        console.log('Our app is ready to rock \\m/ \\m/ !');
+      });
+      
+    })(document);
+  </script>
 </body>
 </html>
