@@ -18,7 +18,8 @@
     "polymer": "polymer/polymer#^1.4.0",
     "polymerfire": "firebase/polymerfire#^0.9.4",
     "iron-ajax": "^1.4.3",
-    "paper-menu": "PolymerElements/paper-menu#^1.2.2"
+    "paper-menu": "PolymerElements/paper-menu#^1.2.2",
+    "page-title": "^1.0.0"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
