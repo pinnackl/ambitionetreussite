@@ -20,33 +20,41 @@
 			is: 'ar-data',
 
 			properties: {
+
 				name: {
 				},
+
 				online: {
 				},
+
 				signedIn: {
 					observer: '_signedInChanged',
 					notify: true
 				},
+
 				user: {
 					notify: true
 				},
+
 				accessGranted: {
 					type: Boolean,
 					notify: true,
 					observer: '_accessGrantedChanged'
 				},
+
 		        page: {
 					type: String,
 					reflectToAttribute: true,
 					observer: '_pageChanged'
 		        },
 			},
+
 			observers: [
 				'_routePageChanged(routeData.page)'
 			],
+
 			_routePageChanged: function (page) {
-				this.page = page || 'home';
+				this.page = page;
 
 				// Check if the selected page is the admin section
 				if (this.page == 'nimda') {
@@ -55,14 +63,18 @@
 					this.accessGranted = false;
 				}
 			},
+
 			_accessGrantedChanged: function (e) {
 			},
+
 			_pageChanged: function(page) {
 
 			},
+
 			_grantAdmin: function () {
 				return true;
 			},
+
 			registerUser: function (userObject) {
 				// FIXME : Create the register user method
 				// ...
