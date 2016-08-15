@@ -74,7 +74,13 @@
         <!-- FIXME : Find a way to set up multiple conection with firebase -->
         <!-- <ar-data name="AR"></ar-data> -->
 
-        <page-title base-title="Nimda" title="[[page]]" direction="reversed"></page-title>
+        <firebase-query
+            id="query"
+            path="[[path]]"
+            data="{{data}}">
+        </firebase-query>
+
+        <page-title base-title="Nimda" title="[[_ucFirst(page)]]" direction="reversed"></page-title>
 
 
         <app-drawer-layout fullbleed>
@@ -121,6 +127,16 @@
 
             properties: {
 
+                path: {
+                    type: String,
+                    value: '/pages',
+                    observer: '_pathChanged'
+                },
+
+                data: {
+                    observer: '_dataChanged'
+                },
+
                 page: {
                     type: String,
                     reflectToAttribute: true,
@@ -138,6 +154,15 @@
             observers: [
                 '_routePageChanged(routeData.page)'
             ],
+
+            _pathChanged: function (e) {
+                console.info('The path have changed');
+            },
+
+            _dataChanged: function (e) {
+                console.info('Firebase data changed');
+                console.log(e);
+            },
 
             _getMenu: function () {
                 // FIXME : Grante access to this menu
@@ -186,7 +211,7 @@
             },
 
             _ucFirst: function (string) {
-                return string.toUpperCase();
+                return string.charAt(0).toUpperCase() + string.slice(1);
             }
 
         });

@@ -41,11 +41,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     })();
 
     // load pre-caching service worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/service-worker.js');
-      });
-    }
+    // if ('serviceWorker' in navigator) {
+    //   window.addEventListener('load', function() {
+    //     navigator.serviceWorker.register('/service-worker.js');
+    //   });
+    // }
 
   </script>
 
@@ -73,14 +73,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ar-data represent the primary database access
       As we are usiung the firebase service, its aloso handle the authentication process
     -->
-    <ar-data access-granted="{{accessGranted}}"></ar-data>
+    <ar-data access-granted="{{accessGranted}}" data="{{data}}"></ar-data>
     <!-- Conditionnal access to ar-nimmda, the admin section -->
     <template is="dom-if" if=[[accessGranted]]>
-      <ar-nimda></ar-nimda>
+      <ar-nimda data="{{data}}"></ar-nimda>
     </template>
     <!-- Display or not the main app -->
     <template is="dom-if" if=[[!accessGranted]]>
-      <ar-app id="plop"></ar-app>
+      <ar-app data="{{data}}"></ar-app>
     </template>
   </template>
   <script>
@@ -88,7 +88,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       const app   = document.querySelector('#app');
 
       app.addEventListener('dom-change', function() {
-        console.log('Our app is ready to rock \\m/ \\m/ !');
+        console.info('App ready');
       });
       
     })(document);

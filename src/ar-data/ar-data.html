@@ -1,3 +1,4 @@
+<link rel="import" href="../../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../ar-firebase/ar-firebase.html">
@@ -12,8 +13,13 @@
 	        tail="{{subroute}}"></app-route>
 
 		<ar-firebase></ar-firebase>
-		<firebase-auth id="auth" app-name="[[name]]" user="{{user}}" signed-in="[[signedIn]]" on-error="handleError">
+		<firebase-auth id="auth"
+			user="{{user}}"
+			signed-in="[[signedIn]]"
+			on-error="handleError"
+		>
 		</firebase-auth>
+
 	</template>
 	<script>
 		Polymer({
