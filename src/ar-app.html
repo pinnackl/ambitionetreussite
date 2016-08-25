@@ -25,6 +25,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 
 <link rel="import" href="ar-logo/ar-logo.html">
 
@@ -147,6 +148,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <page-title base-title="A&R" title="[[_ucFirst(page)]]" direction="reversed"></page-title>
 
+    <!--
+      ar-data represent the primary database access
+      As we are usiung the firebase service, its aloso handle the authentication process
+    -->
+    <!-- <ar-data access-granted="{{accessGranted}}" data="{{data}}" auth="{{auth}}"></ar-data> -->
+
     <app-drawer-layout fullbleed force-narrow>
 
       <!-- Drawer content -->
@@ -217,6 +224,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         largeScreen: Boolean,
 
+        auth: {
+          type: Boolean,
+          value: false,
+          notify: true,
+          observer: '_authChanged'
+        },
+
         granted: {
           type: Boolean,
           notify: true,
@@ -235,6 +249,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         '_routePageChanged(routeData.page)'
       ],
 
+      listeners: {
+        'loginUser': 'login'
+      },
+
       ready: function (e) {
         // Listen for scrolling event
         document.addEventListener('scroll', e => {
@@ -244,6 +262,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.condensed = false;
           }
         });
+      },
+
+      login: function (e) {
+        this.auth = true;
+        this.fire('plopEvent');
+      },
+
+      _authChanged: function (e) {
+        if (this.auth) {
+          // console.log('auth');
+        }
       },
 
       _routePageChanged: function(page) {
