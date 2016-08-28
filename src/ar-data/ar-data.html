@@ -3,100 +3,128 @@
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../ar-firebase/ar-firebase.html">
 <dom-module id="ar-data">
-	<template>
+    <template>
 
-	    <app-location route="{{route}}"></app-location>
-	    <app-route
-	        route="{{route}}"
-	        pattern="/:page"
-	        data="{{routeData}}"
-	        tail="{{subroute}}"></app-route>
+        <app-location route="{{route}}"></app-location>
+        <app-route
+            route="{{route}}"
+            pattern="/:page"
+            data="{{routeData}}"
+            tail="{{subroute}}"></app-route>
 
-		<!-- <ar-firebase></ar-firebase> -->
-		<!-- <firebase-auth id="auth"
-			user="{{user}}"
-			signed-in="[[signedIn]]"
-			on-error="handleError"
-		>
-		</firebase-auth> -->
+        <ar-firebase></ar-firebase>
+        <firebase-auth id="auth"
+            user="{{user}}"
+            signed-in="[[signedIn]]"
+            on-error="handleError"
+        >
+        </firebase-auth>
 
-	</template>
-	<script>
-		Polymer({
-			is: 'ar-data',
+    </template>
+    <script>
+        Polymer({
+            is: 'ar-data',
 
-			properties: {
+            properties: {
 
-				name: {
-				},
+                name: {
+                },
 
-				online: {
-				},
+                online: {
+                },
 
-				signedIn: {
-					observer: '_signedInChanged',
-					notify: true
-				},
+                auth: {
+                    type: Boolean,
+                    value: false,
+                    notify: true,
+                    observer: '_authChanged'
+                },
 
-				user: {
-					notify: true
-				},
+                signedIn: {
+                    observer: '_signedInChanged',
+                    notify: true
+                },
 
-				accessGranted: {
-					type: Boolean,
-					notify: true,
-					observer: '_accessGrantedChanged'
-				},
+                user: {
+                    notify: true
+                },
 
-		        page: {
-					type: String,
-					reflectToAttribute: true,
-					observer: '_pageChanged'
-		        },
-			},
+                accessGranted: {
+                    type: Boolean,
+                    notify: true,
+                    observer: '_accessGrantedChanged'
+                },
 
-			observers: [
-				'_routePageChanged(routeData.page)'
-			],
+                page: {
+                    type: String,
+                    reflectToAttribute: true
+                },
+            },
 
-			_routePageChanged: function (page) {
-				this.page = page;
+            observers: [
+                '_routePageChanged(routeData.page)'
+            ],
 
-				// Check if the selected page is the admin section
-				if (this.page == 'nimda') {
-					this.accessGranted = true;
-				} else {
-					this.accessGranted = false;
-				}
-			},
+            listeners: {
+                'loginUser': 'login',
+            },
 
-			_accessGrantedChanged: function (e) {
-			},
+            createUser: function (userObject) {
+                console.log("Register");
+                let email = typeof userObject.email ? userObject.email : "";
+                let password = typeof userObject.password ? userObject.password : "";
 
-			_pageChanged: function(page) {
+                let auth = this.$.auth.createUserWithEmailAndPassword(email, password);
+                
+                auth.then(e => {
+                    console.log(e);
+                }).catch(e => {
+                    console.error(e);
+                });
+            },
 
-			},
+            loginUser: function (userObject) {
+                console.info("Login");
+                let email = typeof userObject.email ? userObject.email : "";
+                let password = typeof userObject.password ? userObject.password : "";
 
-			_grantAdmin: function () {
-				return true;
-			},
+                let auth = this.$.auth.signInWithEmailAndPassword(email, password);
 
-			registerUser: function (userObject) {
-				// FIXME : Create the register user method
-				// ...
-			},
+                auth.then(e => {
+                    console.log(e);
+                }).catch(e => {
+                    console.error(e);
+                });
+            },
 
-			login: function (userObject) {
-				var email = typeof userObject.email ? userObject.email : "";
-				var password = typeof userObject.password ? userObject.password : "";
+            _routePageChanged: function (page) {
+                this.page = page;
 
-				// FIXME : Create the login user method
-				// ...
-			},
+                // Check if the selected page is the admin section
+                if (this.page == 'nimda') {
+                    this.accessGranted = true;
+                } else {
+                    this.accessGranted = false;
+                }
+            },
 
-			_signedInChanged: function (e) {
-				console.log(e);
-			}
-		});
-	</script>
+            _accessGrantedChanged: function (e) {
+            },
+
+            _authChanged: function (e) {
+                if (this.auth) {
+                    console.log('auth');
+                }
+            },
+
+            _grantAdmin: function () {
+                return true;
+            },
+
+            _signedInChanged: function (e) {
+                console.log(e);
+            }
+
+        });
+    </script>
 </dom-module>

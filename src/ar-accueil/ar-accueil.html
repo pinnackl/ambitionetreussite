@@ -1,48 +1,28 @@
 <dom-module id="ar-accueil">
-	<template>
-		<style>
-			:host {
-				display: block;
-			}
-		</style>
-		<h1>Home page</h1>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-		<p>plolp</p>
-	</template>
-	<script>
-		Polymer({
-			is: 'ar-accueil'
-		});
-	</script>
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <paper-button raised on-tap="loginUser">LOGIN</paper-button>
+<paper-menu-button allow-outside-scroll>
+  <paper-icon-button icon="menu" class="dropdown-trigger"></paper-icon-button>
+  <paper-menu class="dropdown-content">
+    <paper-item>Share</paper-item>
+    <paper-item>Settings</paper-item>
+    <paper-item>Help</paper-item>
+  </paper-menu>
+</paper-menu-button>
+    </template>
+    <script>
+        Polymer({
+            is: 'ar-accueil',
+
+            loginUser: function (e) {
+                this.fire('loginUser');
+            }
+
+        });
+    </script>
 </dom-module>

@@ -26,6 +26,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
 
 <link rel="import" href="ar-logo/ar-logo.html">
 
@@ -152,7 +154,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ar-data represent the primary database access
       As we are usiung the firebase service, its aloso handle the authentication process
     -->
-    <!-- <ar-data access-granted="{{accessGranted}}" data="{{data}}" auth="{{auth}}"></ar-data> -->
+    <ar-data data="{{data}}"></ar-data>
 
     <app-drawer-layout fullbleed force-narrow>
 
@@ -169,16 +171,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <!-- Main content -->
       <app-header-layout>
+
+        <!-- Main header -->
         <app-header condenses reveals fixed="[[_computeHidden(largeScreen)]]" effects="parallax-background">
+          <!-- Upper toolbar -->
           <app-toolbar>
-            <paper-icon-button icon="menu" hidden drawer-toggle hidden$="[[_computeHidden(largeScreen)]]"></paper-icon-button>
+            <paper-icon-button icon="menu"
+              drawer-toggle
+              hidden$="[[_computeHidden(largeScreen)]]">
+            </paper-icon-button>
             <div class="logo" title>
               <ar-logo center$="[[!_computeHidden(largeScreen)]]" condensed$="[[_computeCondensed(largeScreen, condensed)]]">
                 <span class="title">AMBITION <span class="titleAnd">&amp;</span> RÉUSSITE</span>
               </ar-logo>
             </div>
-            <paper-icon-button class="profileBtn" condensed$="[[_computeCondensed(largeScreen, condensed)]]" icon="account-circle"></paper-icon-button>
+            
+            <paper-menu-button allow-outside-scroll horizontal-align="right">
+              <paper-icon-button
+                class="dropdown-trigger profileBtn"
+                condensed$="[[_computeCondensed(largeScreen, condensed)]]"
+                icon="account-circle">
+              </paper-icon-button>
+              <paper-menu class="dropdown-content">
+                <paper-item>Se connecter</paper-item>
+                <paper-item>S'inscrire</paper-item>
+              </paper-menu>
+            </paper-menu-button>
           </app-toolbar>
+          <!-- Lower toolbar -->
           <template is="dom-if" if={{_computeHidden(largeScreen)}}>
             <app-toolbar sticky>
               <paper-tabs attr-for-selected="name" selected="[[page]]" bottom-item spacer$="[[condensed]]">
@@ -195,7 +215,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
           <ar-accueil name="accueil"></ar-accueil>
-          <div name="user"></div>
+          <div name="user">User</div>
         </iron-pages>
 
       </app-header-layout>
@@ -241,6 +261,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: function () {
             return this._getMenu();
           }
+        },
+
+        data: {
+          type: Array
         }
 
       },
