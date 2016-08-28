@@ -24,7 +24,7 @@
     "iron-scroll-threshold": "PolymerElements/iron-scroll-threshold#^1.0.2",
     "paper-tabs": "^1.6.2",
     "iron-icons": "^1.1.3",
-    "tinymce": "tinymce-dist#^4.4.1"
+    "paper-button": "^1.0.13"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
