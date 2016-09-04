@@ -1,0 +1,97 @@
+<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-e.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-tool-behavior.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-tool-styles.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/bold.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/italic.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/underline.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/strike.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/clear.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/code.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/link.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/image.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/audio.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/video.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/ordered.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/unordered.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/indent.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/outdent.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/heading.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/justify.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/blockquote.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/undo.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/redo.html">
+
+<dom-module id="ar-editor">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+            wysiwyg-e {
+                height: 70vh;
+                --wysiwyg-editable: {
+                  background-color: #fff;
+                };
+                --wysiwyg-editable-img: {
+                  width: 100%;
+                };
+            }
+        </style>
+        <paper-material elevation="[[elevation]]">
+          <wysiwyg-e id="plop" value="{{value}}" autofocus>
+            <wysiwyg-tool-undo></wysiwyg-tool-undo>
+            <wysiwyg-tool-redo></wysiwyg-tool-redo>
+            <wysiwyg-tool-heading h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
+            <wysiwyg-tool-bold></wysiwyg-tool-bold>
+            <wysiwyg-tool-italic></wysiwyg-tool-italic>
+            <wysiwyg-tool-underline></wysiwyg-tool-underline>
+            <wysiwyg-tool-strike></wysiwyg-tool-strike>
+            <wysiwyg-tool-clear></wysiwyg-tool-clear>
+            <wysiwyg-tool-code></wysiwyg-tool-code>
+            <wysiwyg-tool-link></wysiwyg-tool-link>
+            <wysiwyg-tool-image></wysiwyg-tool-image>
+            <wysiwyg-tool-ordered></wysiwyg-tool-ordered>
+            <wysiwyg-tool-unordered></wysiwyg-tool-unordered>
+            <wysiwyg-tool-indent></wysiwyg-tool-indent>
+            <wysiwyg-tool-outdent></wysiwyg-tool-outdent>
+            <wysiwyg-tool-justify right center full></wysiwyg-tool-justify>
+            <wysiwyg-tool-blockquote></wysiwyg-tool-blockquote>
+          </wysiwyg-e>
+        </paper-material>
+    </template>
+    <script>
+        Polymer({
+            is: 'ar-editor',
+
+            properties: {
+              value: {
+                type: String,
+                observer: '_valueChanged',
+                value: "",
+                notify: true
+              },
+
+              elevation: {
+                type: Number,
+                value: 1
+              }
+            }, 
+
+            ready: function () {
+              console.log(this.$.plop.value);
+            },
+
+            setValue: function (value) {
+              this.value = value;
+            },
+
+            getValue: function () {
+              return this.value;
+            },
+
+            _valueChanged: function (e) {
+              
+            }
+        });
+    </script>
+</dom-module>

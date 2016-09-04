@@ -74,12 +74,6 @@
         <!-- FIXME : Find a way to set up multiple conection with firebase -->
         <!-- <ar-data name="AR"></ar-data> -->
 
-        <firebase-query
-            id="query"
-            path="[[path]]"
-            data="{{data}}">
-        </firebase-query>
-
         <page-title base-title="Nimda" title="[[_ucFirst(page)]]" direction="reversed"></page-title>
 
 
@@ -100,7 +94,7 @@
             </app-drawer>
 
             <!-- Main content -->
-            <app-header-layout has-scrolling-region>
+            <app-header-layout>
 
                 <app-header condenses reveals effects="waterfall">
                     <app-toolbar>

@@ -1,15 +1,59 @@
+<link rel="import" href="../ar-editor/ar-editor.html">
+
 <dom-module id="ad-pages">
-	<template>
-		<style>
-			:host {
-				display: block;
-			}
-		</style>
-		<h1>Manage pages</h1>
-	</template>
-	<script>
-		Polymer({
-			is: 'ad-pages'
-		});
-	</script>
+    <template>
+        <style>
+            :host {
+                display: block;
+                margin: 1em;
+            }
+
+            h1, h2 {
+                letter-spacing: 0.1em;
+            }
+
+            h1 {
+                font-weight: 600;
+                font-size: 1em;
+            }
+
+            h2 {
+                font-weight: 550;
+                font-size: .9em;
+            }
+
+            iron-pages section {
+                width: 100%;
+                height: 80vh;
+            }
+        </style>
+
+        <app-route
+            route="[[route]]"
+            pattern="/:category"
+            data="{{routeData}}"></app-route>
+
+        <h1>Gérer les pages</h1>
+        <iron-pages selected="0">
+            <section>
+                <h2>Ajouter une nouvelle page</h2>
+                <ar-editor elevation="3"></ar-editor>
+            </section>
+            <section></section>
+            <section></section>
+        </iron-pages>
+    </template>
+    <script>
+        Polymer({
+            is: 'ad-pages',
+
+            properties: {
+
+                route: {
+                    type: String
+                },
+
+            },
+        });
+    </script>
 </dom-module>
