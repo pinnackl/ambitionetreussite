@@ -16,7 +16,7 @@
         <firebase-auth id="auth"
             user="{{user}}"
             signed-in="[[signedIn]]"
-            on-error="handleError"
+            on-error="_handleError"
         >
         </firebase-auth>
 
@@ -33,19 +33,13 @@
                 online: {
                 },
 
-                auth: {
-                    type: Boolean,
-                    value: false,
-                    notify: true,
-                    observer: '_authChanged'
-                },
-
                 signedIn: {
                     observer: '_signedInChanged',
                     notify: true
                 },
 
                 user: {
+                    observer: '_userChanged',
                     notify: true
                 },
 
@@ -71,30 +65,30 @@
 
             createUser: function (userObject) {
                 console.log("Register");
-                let email = typeof userObject.email ? userObject.email : "";
-                let password = typeof userObject.password ? userObject.password : "";
+                var email = typeof userObject.email ? userObject.email : "";
+                var password = typeof userObject.password ? userObject.password : "";
 
-                let auth = this.$.auth.createUserWithEmailAndPassword(email, password);
-                
-                auth.then(e => {
-                    console.log(e);
-                }).catch(e => {
-                    console.error(e);
-                });
+                var auth = this.$.auth.createUserWithEmailAndPassword(email, password);
+
+                // auth.then(e => {
+                //     console.log(e);
+                // }).catch(e => {
+                //     console.error(e);
+                // });
             },
 
             loginUser: function (userObject) {
                 console.info("Login");
-                let email = typeof userObject.email ? userObject.email : "";
-                let password = typeof userObject.password ? userObject.password : "";
+                var email = typeof userObject.email ? userObject.email : "";
+                var password = typeof userObject.password ? userObject.password : "";
 
-                let auth = this.$.auth.signInWithEmailAndPassword(email, password);
+                var auth = this.$.auth.signInWithEmailAndPassword(email, password);
 
-                auth.then(e => {
-                    console.log(e);
-                }).catch(e => {
-                    console.error(e);
-                });
+                // auth.then(e => {
+                //     console.log(e);
+                // }).catch(e => {
+                //     console.error(e);
+                // });
             },
 
             _routePageChanged: function (page) {
@@ -111,14 +105,16 @@
             _accessGrantedChanged: function (e) {
             },
 
-            _authChanged: function (e) {
-                if (this.auth) {
-                    console.log('auth');
-                }
+            _handleError: function (e) {
+                console.error(e);
             },
 
             _grantAdmin: function () {
                 return true;
+            },
+
+            _userChanged: function (e) {
+                // console.log(e);
             },
 
             _signedInChanged: function (e) {
