@@ -1,0 +1,51 @@
+<!--
+A comment describing this element
+
+Example:
+
+    <my-elem></my-elem>
+
+Example:
+
+    <my-elem>
+      <h2>Hello my-elem</h2>
+    </my-elem>
+
+@demo demo/index.html
+-->
+
+<dom-module id="sign-in">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <paper-input label="Email" value="{{user.email}}"></paper-input>
+        <paper-input type="password" label="Mod de passe" value="{{user.password}}"></paper-input>
+    </template>
+    <script>
+        Polymer({
+            is: 'sign-in',
+
+            properties: {
+                user: {
+                    type: Object,
+                    value: function () {
+                        return {
+                            email: null,
+                            password: null
+                        }
+                    }
+                }
+            },
+
+            clear: function () {
+                const inputs = Polymer.dom(this.root).querySelectorAll('paper-input');
+                for (var i = inputs.length - 1; i >= 0; i--) {
+                    console.log(inputs[i].value = null);
+                };
+            }
+        });
+    </script>
+</dom-module>

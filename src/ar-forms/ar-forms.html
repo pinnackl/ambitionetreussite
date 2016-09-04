@@ -1,0 +1,93 @@
+<!--
+A comment describing this element
+
+Example:
+
+    <my-elem></my-elem>
+
+Example:
+
+    <my-elem>
+      <h2>Hello my-elem</h2>
+    </my-elem>
+
+@demo demo/index.html
+-->
+
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+
+<link rel="import" href="sign-in.html">
+
+<dom-module id="ar-forms">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            paper-material {
+                margin: 1em;
+            }
+        </style>
+        <paper-dialog id="formDialog">
+            <h2>[[dialogTitle]]</h2>
+            <paper-dialog-scrollable>
+                <iron-pages attr-for-selected="name" selected="[[name]]">
+                    <section name="signIn">
+                        <paper-material elevation="0">
+                            <sign-in id="signIn"></sign-in>
+                        </paper-material>
+                    </section>
+                    <section name="signUp"></section>
+                </iron-pages>
+            </paper-dialog-scrollable>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancel</paper-button>
+                <paper-button dialog-confirm on-tap="_confirm">[[dialogConfirm]]</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+    <script>
+        Polymer({
+            is: 'ar-forms',
+
+            properties: {
+                name: {
+                    type: String,
+                    observer: "_nameChanged"
+                }
+            },
+
+            openDialog: function (name) {
+                this.name = name;
+                // List dialog meta
+                if (name == 'signIn') {
+                    this.dialogTitle = "CONNECTION";
+                    this.dialogConfirm = "SE CONNECTER";
+                } else if (name == 'signIn') {
+                    this.dialogTitle = "INSCRIPTION";
+                    this.dialogConfirm = "S'INSCRIRE";
+                } else {
+                    // ...
+                }
+
+                // Then open the dialog
+                this.$.formDialog.open();
+            },
+
+            _nameChanged: function (e) {
+                // console.log("Name changed, Reset forms");
+                this.$.signIn.clear();
+            },
+
+            _confirm: function (e) {
+                if (this.$.signIn.user.email) {
+                    this.fire('ar-login-event', {user: this.$.signIn.user});
+                }
+            }
+        });
+    </script>
+</dom-module>
