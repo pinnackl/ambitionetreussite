@@ -31,16 +31,25 @@
         <app-route
             route="[[route]]"
             pattern="/:category"
-            data="{{routeData}}"></app-route>
+            data="{{routeData}}"
+            tail="{{subroute}}"></app-route>
+        <app-route
+            route="{{subroute}}"
+            pattern="/:id"
+            data="{{subrouteData}}"></app-route>
 
-        <h1>Gérer les pages</h1>
-        <iron-pages selected="0">
-            <section>
+        <h1>Gérer les pages [[page]]</h1>
+        <iron-pages selected="[[page]]" attr-for-selected="name">
+            <section name="list">
+                <h2>List des pages</h2>
+            </section>
+            <section name="add">
                 <h2>Ajouter une nouvelle page</h2>
                 <ar-editor elevation="3"></ar-editor>
             </section>
-            <section></section>
-            <section></section>
+            <section name="edit">
+                <h2>Edit page [[id]]</h2>
+            </section>
         </iron-pages>
     </template>
     <script>
@@ -50,10 +59,27 @@
             properties: {
 
                 route: {
+                    type: Object
+                },
+
+                page: {
                     type: String
                 },
 
             },
+
+            observers: [
+                '_routePageChanged(routeData.category)',
+                '_routeIdChanged(subrouteData.id)',
+            ],
+
+            _routePageChanged: function (category) {
+                this.page = category || 'list';
+            },
+
+            _routeIdChanged: function (id) {
+                this.id = id || null;
+            }
         });
     </script>
 </dom-module>
