@@ -28,7 +28,8 @@
     "paper-input": "^1.1.17",
     "paper-dialog": "^1.1.0",
     "paper-menu-button": "^1.5.1",
-    "paper-item": "^1.2.1"
+    "paper-item": "^1.2.1",
+    "paper-material": "^1.0.6"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
