@@ -71,8 +71,20 @@
                 data="{{routeData}}"
                 tail="{{subroute}}"></app-route>
 
-        <!-- FIXME : Find a way to set up multiple conection with firebase -->
-        <!-- <ar-data name="AR"></ar-data> -->
+        <!--
+          ar-data represent the primary database access
+          As we are usiung the firebase service, its aloso handle the authentication process
+        -->
+        <ar-data id="arData" data="{{data}}" user="{{user}}"></ar-data>
+
+        <firebase-document
+          path="/pages"
+          data="{{data}}">
+        </firebase-document>
+        <firebase-document
+          path="/menu"
+          data="{{menuData}}">
+        </firebase-document>
 
         <page-title base-title="Nimda" title="[[_ucFirst(page)]]" direction="reversed"></page-title>
 
@@ -105,7 +117,7 @@
 
                 <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
                     <ad-dashboard name="dashboard"></ad-dashboard>
-                    <ad-pages route="{{subroute}}" name="pages"></ad-pages>
+                    <ad-pages route="{{subroute}}" data="{{data}}" name="pages"></ad-pages>
                 </iron-pages>
 
             </app-header-layout>
@@ -129,6 +141,10 @@
 
                 data: {
                     observer: '_dataChanged'
+                },
+
+                menuData: {
+                    observer: '_menuDataChanged'
                 },
 
                 page: {
@@ -155,6 +171,11 @@
 
             _dataChanged: function (e) {
                 console.info('Firebase data changed');
+                console.log(e);
+            },
+
+            _menuDataChanged: function (e) {
+                console.info('Firebase menu data changed');
                 console.log(e);
             },
 

@@ -45,7 +45,8 @@
             </section>
             <section name="add">
                 <h2>Ajouter une nouvelle page</h2>
-                <ar-editor elevation="3"></ar-editor>
+                <!-- <ar-editor elevation="3"></ar-editor> -->
+                <paper-button raised on-tap="createPage">Edit</paper-button>
             </section>
             <section name="edit">
                 <h2>Edit page [[id]]</h2>
@@ -66,6 +67,11 @@
                     type: String
                 },
 
+                data: {
+                    type: Object,
+                    observer: '_dataChanged'
+                }
+
             },
 
             observers: [
@@ -73,12 +79,23 @@
                 '_routeIdChanged(subrouteData.id)',
             ],
 
+            createPage: function () {
+                // Example
+                // let pageId = "000-000";
+                // this.set('data.' + pageId, {pageName: 'Page1'});
+            },
+
             _routePageChanged: function (category) {
                 this.page = category || 'list';
             },
 
             _routeIdChanged: function (id) {
                 this.id = id || null;
+            },
+
+            _dataChanged: function (e) {
+                console.log("Data have change in page");
+                console.log(e);
             }
         });
     </script>
