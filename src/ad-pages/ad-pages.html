@@ -1,4 +1,5 @@
 <link rel="import" href="../ar-editor/ar-editor.html">
+<script src="../../bower_components/node-uuid/uuid.js"></script>
 
 <dom-module id="ad-pages">
     <template>
@@ -45,8 +46,8 @@
             </section>
             <section name="add">
                 <h2>Ajouter une nouvelle page</h2>
-                <!-- <ar-editor elevation="3"></ar-editor> -->
-                <paper-button raised on-tap="createPage">Edit</paper-button>
+                <ar-editor elevation="3"></ar-editor>
+                <paper-button raised on-tap="createPage">Add</paper-button>
             </section>
             <section name="edit">
                 <h2>Edit page [[id]]</h2>
@@ -80,9 +81,7 @@
             ],
 
             createPage: function () {
-                // Example
-                // let pageId = "000-000";
-                // this.set('data.' + pageId, {pageName: 'Page1'});
+                this.set('data.' + uuid.v4(), {pageName: 'Page1'});
             },
 
             _routePageChanged: function (category) {
