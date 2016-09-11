@@ -1,5 +1,7 @@
 <link rel="import" href="../ar-editor/ar-editor.html">
 <script src="../../bower_components/node-uuid/uuid.js"></script>
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 
 <dom-module id="ad-pages">
     <template>
@@ -23,9 +25,30 @@
                 font-size: .9em;
             }
 
+            a {
+                text-decoration: none;
+                color: #000;
+            }
+
             iron-pages section {
                 width: 100%;
                 height: 80vh;
+            }
+
+            vaadin-grid {
+                text-align: center;
+            }
+
+            .input-page-name paper-input {
+                display: inline-block;
+            }
+
+            .ctnBtn {
+                text-align: right;
+                padding: 1em;
+            }
+            .pageNameBtn {
+                padding-bottom: 1em;
             }
         </style>
 
@@ -42,7 +65,43 @@
         <h1>Gérer les pages [[page]]</h1>
         <iron-pages selected="[[page]]" attr-for-selected="name">
             <section name="list">
+                <firebase-query
+                    id="query"
+                    path="/pages"
+                    data="{{pageList}}">
+                </firebase-query>
                 <h2>List des pages</h2>
+                <paper-material elevation="3">
+                    <vaadin-grid id="pageListTable">
+                        <table>
+                            <colgroup>
+                                <col name="UUID"/>
+                                <col name="pageName"/>
+                                <col name="edit"/>
+                                <col name="delete"/>
+                            </colgroup>
+                            <tbody>
+                                <template is="dom-repeat" items={{pageList}} 
+                                    as=item index-as=index>
+                                    <tr>
+                                        <td>[[item.$key]]</td>
+                                        <td>[[item.pageName]]</td>
+                                        <td>
+                                            <a href$="/nimda/pages/edit/[[item.$key]]" tabindex="-1">
+                                                <paper-button class="btn-edit" raised>
+                                                    <iron-icon icon="create"></iron-icon>EDIT</paper-button>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <paper-button class="btn-delete" raised>
+                                                <iron-icon icon="delete"></iron-icon>DELETE</paper-button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </vaadin-grid>
+                </paper-material>
             </section>
             <section name="add">
                 <h2>Ajouter une nouvelle page</h2>
@@ -50,9 +109,26 @@
                 <paper-button raised on-tap="createPage">Add</paper-button>
             </section>
             <section name="edit">
-                <h2>Edit page [[id]]</h2>
+                <firebase-document
+                  path="/pages/[[id]]"
+                  data="{{document}}">
+                </firebase-document>
+                <h2>Edit page : [[document.pageName]]</h2>
+                <div class="input-page-name pageNameBtn">
+                    <paper-input
+                        id="pageNameInput"
+                        label="Page Name"
+                        placeholder="[[document.pageName]]"
+                        value="[[document.pageName]]"></paper-input>
+                    <paper-button raised on-tap="updatePage">SAVE</paper-button>
+                </div>
+                <ar-editor id="editor" elevation="3" value="[[document.content]]"></ar-editor>
+                <div class="ctnBtn">
+                    <paper-button raised on-tap="updatePage">SAVE</paper-button>
+                </div>
             </section>
         </iron-pages>
+        <paper-toast id="saveMessage" always-on-top vertical-align="top" duration="3000" text="Content loaded!"></paper-toast>
     </template>
     <script>
         Polymer({
@@ -71,6 +147,11 @@
                 data: {
                     type: Object,
                     observer: '_dataChanged'
+                },
+
+                document: {
+                    type: Object,
+                    observer: '_documentChanged'
                 }
 
             },
@@ -80,8 +161,17 @@
                 '_routeIdChanged(subrouteData.id)',
             ],
 
+            listeners: {
+                'sort-order-changed': '_sortOrderChanged'
+            },
+
             createPage: function () {
                 this.set('data.' + uuid.v4(), {pageName: 'Page1'});
+            },
+
+            updatePage: function () {
+                this.set('document', {pageName: this.$.pageNameInput.value, content: this.$.editor.getValue()});
+                this.$.saveMessage.text = "Your modifications have been saved!";
             },
 
             _routePageChanged: function (category) {
@@ -95,6 +185,10 @@
             _dataChanged: function (e) {
                 console.log("Data have change in page");
                 console.log(e);
+            },
+
+            _documentChanged: function (e) {
+                this.$.saveMessage.open();
             }
         });
     </script>
