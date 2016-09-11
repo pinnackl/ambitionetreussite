@@ -31,7 +31,9 @@
     "paper-item": "^1.2.1",
     "paper-material": "^1.0.6",
     "wysiwyg-e": "^1.0.0",
-    "node-uuid": "^1.4.7"
+    "node-uuid": "^1.4.7",
+    "vaadin-grid": "^1.1.2",
+    "paper-toast": "^1.3.0"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
