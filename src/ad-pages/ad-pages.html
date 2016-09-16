@@ -104,19 +104,33 @@
                 </paper-material>
             </section>
             <section name="add">
+                <firebase-document
+                  path="/pages"
+                  data="{{data}}">
+                </firebase-document>
                 <h2>Ajouter une nouvelle page</h2>
-                <ar-editor elevation="3"></ar-editor>
-                <paper-button raised on-tap="createPage">Add</paper-button>
+                <div class="input-page-name pageNameBtn">
+                    <paper-input
+                        id="pageNameInputAdd"
+                        label="Page Name"
+                        placeholder="Entrez un nom de page"
+                        value="[[document.pageName]]"></paper-input>
+                    <paper-button raised on-tap="createPage">ADD</paper-button>
+                </div>
+                <ar-editor id="editor" elevation="3" value="[[document.content]]"></ar-editor>
+                <div class="ctnBtn">
+                    <paper-button raised on-tap="createPage">ADD</paper-button>
+                </div>
             </section>
             <section name="edit">
                 <firebase-document
                   path="/pages/[[id]]"
                   data="{{document}}">
                 </firebase-document>
-                <h2>Edit page : [[document.pageName]]</h2>
+                <h2>Modifier une page : [[document.pageName]]</h2>
                 <div class="input-page-name pageNameBtn">
                     <paper-input
-                        id="pageNameInput"
+                        id="pageNameInputEdit"
                         label="Page Name"
                         placeholder="[[document.pageName]]"
                         value="[[document.pageName]]"></paper-input>
@@ -166,11 +180,12 @@
             },
 
             createPage: function () {
-                this.set('data.' + uuid.v4(), {pageName: 'Page1'});
+                this.set('data.' + uuid.v4(), {pageName: this.$.pageNameInputAdd.value, content: this.$.editor.getValue()});
+                this.$.saveMessage.text = "Your modifications have been saved!";
             },
 
             updatePage: function () {
-                this.set('document', {pageName: this.$.pageNameInput.value, content: this.$.editor.getValue()});
+                this.set('document', {pageName: this.$.pageNameInputEdit.value, content: this.$.editor.getValue()});
                 this.$.saveMessage.text = "Your modifications have been saved!";
             },
 

@@ -83,6 +83,11 @@
           data="{{menuData}}">
         </firebase-document>
 
+        <firebase-document
+            path="/pages"
+            data="{{pageData}}">
+        </firebase-document>
+
         <page-title base-title="Nimda" title="[[_ucFirst(page)]]" direction="reversed"></page-title>
 
 
@@ -136,8 +141,8 @@
                     observer: '_pathChanged'
                 },
 
-                data: {
-                    observer: '_dataChanged'
+                pageData: {
+                    observer: '_pageDataChanged'
                 },
 
                 menuData: {
@@ -166,7 +171,7 @@
                 console.info('The path have changed');
             },
 
-            _dataChanged: function (e) {
+            _pageDataChanged: function (e) {
                 console.info('Firebase data changed');
                 console.log(e);
             },
