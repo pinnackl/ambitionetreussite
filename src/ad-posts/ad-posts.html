@@ -3,7 +3,7 @@
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 
-<dom-module id="ad-pages">
+<dom-module id="ad-posts">
     <template>
         <style>
             :host {
@@ -39,7 +39,7 @@
                 text-align: center;
             }
 
-            .input-page-name paper-input {
+            .input-post-name paper-input {
                 display: inline-block;
             }
 
@@ -47,7 +47,7 @@
                 text-align: right;
                 padding: 1em;
             }
-            .pageNameBtn {
+            .postNameBtn {
                 padding-bottom: 1em;
             }
         </style>
@@ -62,32 +62,32 @@
             pattern="/:id"
             data="{{subrouteData}}"></app-route>
 
-        <h1>Gérer les pages [[page]]</h1>
-        <iron-pages selected="[[page]]" attr-for-selected="name">
+        <h1>Gérer les articles [[post]]</h1>
+        <iron-pages selected="[[post]]" attr-for-selected="name">
             <section name="list">
                 <firebase-query
                     id="query"
-                    path="/pages"
-                    data="{{pageList}}">
+                    path="/posts"
+                    data="{{postList}}">
                 </firebase-query>
-                <h2>Liste des pages</h2>
+                <h2>Liste des articles</h2>
                 <paper-material elevation="3">
-                    <vaadin-grid id="pageListTable">
+                    <vaadin-grid id="postListTable">
                         <table>
                             <colgroup>
                                 <col name="UUID"/>
-                                <col name="pageName"/>
+                                <col name="postName"/>
                                 <col name="edit"/>
                                 <col name="delete"/>
                             </colgroup>
                             <tbody>
-                                <template is="dom-repeat" items={{pageList}} 
+                                <template is="dom-repeat" items={{postList}} 
                                     as=item index-as=index>
                                     <tr>
                                         <td>[[item.$key]]</td>
-                                        <td>[[item.pageName]]</td>
+                                        <td>[[item.postName]]</td>
                                         <td>
-                                            <a href$="/nimda/pages/edit/[[item.$key]]" tabindex="-1">
+                                            <a href$="/nimda/posts/edit/[[item.$key]]" tabindex="-1">
                                                 <paper-button class="btn-edit" raised>
                                                     <iron-icon icon="create"></iron-icon>EDIT</paper-button>
                                             </a>
@@ -105,40 +105,40 @@
             </section>
             <section name="add">
                 <firebase-document
-                  path="/pages"
+                  path="/posts"
                   data="{{data}}">
                 </firebase-document>
-                <h2>Ajouter une nouvelle page</h2>
-                <div class="input-page-name pageNameBtn">
+                <h2>Ajouter un nouvel article</h2>
+                <div class="input-post-name postNameBtn">
                     <paper-input
-                        id="pageNameInputAdd"
-                        label="Page Name"
-                        placeholder="Entrez le nom de la page"
+                        id="postNameInputAdd"
+                        label="Post Name"
+                        placeholder="Entrez le nom de l'article"
                         value=""></paper-input>
-                    <paper-button raised on-tap="createPage">ADD</paper-button>
+                    <paper-button raised on-tap="createPost">ADD</paper-button>
                 </div>
                 <ar-editor id="editor" elevation="3" value=""></ar-editor>
                 <div class="ctnBtn">
-                    <paper-button raised on-tap="createPage">ADD</paper-button>
+                    <paper-button raised on-tap="createPost">ADD</paper-button>
                 </div>
             </section>
             <section name="edit">
                 <firebase-document
-                  path="/pages/[[id]]"
+                  path="/posts/[[id]]"
                   data="{{document}}">
                 </firebase-document>
-                <h2>Modifier une page : [[document.pageName]]</h2>
-                <div class="input-page-name pageNameBtn">
+                <h2>Modifier un article : [[document.postName]]</h2>
+                <div class="input-post-name postNameBtn">
                     <paper-input
-                        id="pageNameInputEdit"
-                        label="Page Name"
-                        placeholder="[[document.pageName]]"
-                        value="[[document.pageName]]"></paper-input>
-                    <paper-button raised on-tap="updatePage">SAVE</paper-button>
+                        id="postNameInputEdit"
+                        label="Post Name"
+                        placeholder="[[document.postName]]"
+                        value="[[document.postName]]"></paper-input>
+                    <paper-button raised on-tap="updatePost">SAVE</paper-button>
                 </div>
                 <ar-editor id="editor" elevation="3" value="[[document.content]]"></ar-editor>
                 <div class="ctnBtn">
-                    <paper-button raised on-tap="updatePage">SAVE</paper-button>
+                    <paper-button raised on-tap="updatePost">SAVE</paper-button>
                 </div>
             </section>
         </iron-pages>
@@ -146,7 +146,7 @@
     </template>
     <script>
         Polymer({
-            is: 'ad-pages',
+            is: 'ad-posts',
 
             properties: {
 
@@ -154,7 +154,7 @@
                     type: Object
                 },
 
-                page: {
+                post: {
                     type: String
                 },
 
@@ -171,7 +171,7 @@
             },
 
             observers: [
-                '_routePageChanged(routeData.category)',
+                '_routePostChanged(routeData.category)',
                 '_routeIdChanged(subrouteData.id)',
             ],
 
@@ -179,18 +179,18 @@
                 'sort-order-changed': '_sortOrderChanged'
             },
 
-            createPage: function () {
-                this.set('data.' + uuid.v4(), {pageName: this.$.pageNameInputAdd.value, content: this.$.editor.getValue()});
+            createPost: function () {
+                this.set('data.' + uuid.v4(), {postName: this.$.postNameInputAdd.value, content: this.$.editor.getValue()});
                 this.$.saveMessage.text = "Your modifications have been saved!";
             },
 
-            updatePage: function () {
-                this.set('document', {pageName: this.$.pageNameInputEdit.value, content: this.$.editor.getValue()});
+            updatePost: function () {
+                this.set('document', {postName: this.$.postNameInputEdit.value, content: this.$.editor.getValue()});
                 this.$.saveMessage.text = "Your modifications have been saved!";
             },
 
-            _routePageChanged: function (category) {
-                this.page = category || 'list';
+            _routePostChanged: function (category) {
+                this.post = category || 'list';
             },
 
             _routeIdChanged: function (id) {
@@ -198,7 +198,7 @@
             },
 
             _dataChanged: function (e) {
-                console.log("Data have change in page");
+                console.log("Data have change in post");
                 console.log(e);
             },
 
