@@ -1,4 +1,4 @@
-<link rel="import" href="../ar-editor/ar-editor.html">
+<link rel="import" href="../ar-editor/ar-editor.html" async>
 <script src="../../bower_components/node-uuid/uuid.js"></script>
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
@@ -35,6 +35,11 @@
                 height: 80vh;
             }
 
+            paper-button {
+                background: #508FCA;
+                color: #fff;
+            }
+
             vaadin-grid {
                 text-align: center;
             }
@@ -50,17 +55,25 @@
             .pageNameBtn {
                 padding-bottom: 1em;
             }
+
+            #stateMessage {
+                width: 30vw;
+            }
+
+            .validate-icon {
+                color: #4CAF50;
+            }
         </style>
 
         <app-route
             route="[[route]]"
-            pattern="/:category"
+            pattern="/:action"
             data="{{routeData}}"
             tail="{{subroute}}"></app-route>
         <app-route
             route="{{subroute}}"
             pattern="/:id"
-            data="{{subrouteData}}"></app-route>
+            data="{{surouteData}}"></app-route>
 
         <h1>Gérer les pages [[page]]</h1>
         <iron-pages selected="[[page]]" attr-for-selected="name">
@@ -87,13 +100,18 @@
                                         <td>[[item.$key]]</td>
                                         <td>[[item.pageName]]</td>
                                         <td>
-                                            <a href$="/nimda/pages/edit/[[item.$key]]" tabindex="-1">
-                                                <paper-button class="btn-edit" raised>
+                                            <a href$="/nimda/pages/edit/[[item.$key]]" tabindex="-1"
+                                                style="text-decoration:none;
+                                                    color:#fff;">
+                                                <paper-button class="btn-edit" raised
+                                                    style="background:#508FCA;">
                                                     <iron-icon icon="create"></iron-icon>EDIT</paper-button>
                                             </a>
                                         </td>
                                         <td>
-                                            <paper-button class="btn-delete" raised>
+                                            <paper-button class="btn-delete"
+                                                style="background:#ff1A1A;
+                                                    color:#ffffff;" raised>
                                                 <iron-icon icon="delete"></iron-icon>DELETE</paper-button>
                                         </td>
                                     </tr>
@@ -142,7 +160,9 @@
                 </div>
             </section>
         </iron-pages>
-        <paper-toast id="saveMessage" always-on-top vertical-align="top" duration="3000" text="Content loaded!"></paper-toast>
+        <paper-toast id="stateMessage" horizontal-align="right" always-on-top duration="3000" text="Plop is the new Plop!">
+            <iron-icon class="validate-icon" icon="check-circle"></iron-icon>
+        </paper-toast>
     </template>
     <script>
         Polymer({
@@ -166,13 +186,18 @@
                 document: {
                     type: Object,
                     observer: '_documentChanged'
-                }
+                },
+
+                isUpdate: {
+                    type: Boolean,
+                    value: false
+                },
 
             },
 
             observers: [
-                '_routePageChanged(routeData.category)',
-                '_routeIdChanged(subrouteData.id)',
+                '_routePageChanged(routeData.action)',
+                '_routeIdChanged(surouteData.id)',
             ],
 
             listeners: {
@@ -181,29 +206,34 @@
 
             createPage: function () {
                 this.set('data.' + uuid.v4(), {pageName: this.$.pageNameInputAdd.value, content: this.$.editor.getValue()});
-                this.$.saveMessage.text = "Your modifications have been saved!";
+                this.isUpdate = true;
+                this.$.stateMessage.text = "Contenu créé avec succès!";
             },
 
             updatePage: function () {
                 this.set('document', {pageName: this.$.pageNameInputEdit.value, content: this.$.editor.getValue()});
-                this.$.saveMessage.text = "Your modifications have been saved!";
+                this.isUpdate = true;
+                this.$.stateMessage.text = "Vos modifications ont été sauvegardées!";
             },
 
-            _routePageChanged: function (category) {
-                this.page = category || 'list';
+            _routePageChanged: function (action) {
+                console.log(action);
+                this.page = action || 'list';
             },
 
             _routeIdChanged: function (id) {
                 this.id = id || null;
             },
 
-            _dataChanged: function (e) {
-                console.log("Data have change in page");
-                console.log(e);
+            _dataChanged: function (data) {
+                if (data && this.isUpdate) {
+                    this.$.stateMessage.open();
+                    this.isUpdate = false;
+                }
             },
 
             _documentChanged: function (e) {
-                this.$.saveMessage.open();
+                // this.$.saveMessage.open();
             }
         });
     </script>
