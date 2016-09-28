@@ -111,7 +111,7 @@
                         value=""></paper-input>
                     <paper-button raised on-tap="createPage">VALIDER</paper-button>
                 </div>
-                <ar-editor id="editor" elevation="3" value=""></ar-editor>
+                <ar-editor id="addEditor" elevation="3" value=""></ar-editor>
                 <div class="ctnBtn">
                     <paper-button raised on-tap="createPage">VALIDER</paper-button>
                 </div>
@@ -193,7 +193,7 @@
             },
 
             createPage: function () {
-                this.set('data.' + uuid.v4(), {pageName: this.$.pageNameInputAdd.value, content: this.$.editor.getValue()});
+                this.set('data.' + uuid.v4(), {pageName: this.$.pageNameInputAdd.value, content: this.$.addEditor.getValue()});
                 this.isUpdate = true;
                 this.$.stateMessage.text = "Contenu créé avec succès!";
             },
@@ -206,6 +206,11 @@
 
             _routePageChanged: function (action) {
                 this.page = action || 'list';
+                if (this.page == 'list') {
+                    // Reset editor value
+                    this.$.pageNameInputAdd.value = null;
+                    this.$.addEditor.value = null;
+                }
             },
 
             _routeIdChanged: function (id) {
@@ -213,7 +218,6 @@
             },
 
             _pageListChanged: function (pageList) {
-                console.log(pageList);
             },
 
             _dataChanged: function (data) {
