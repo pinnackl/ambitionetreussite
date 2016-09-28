@@ -1,0 +1,118 @@
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
+
+<dom-module id="ar-grid">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            vaadin-grid {
+                text-align: center;
+            }
+
+            vaadin-grid /deep/ a {
+                text-decoration:none;
+                color:#fff;
+            }
+
+            vaadin-grid /deep/ paper-button {
+                background: #508FCA;
+            }
+        </style>
+        <paper-material elevation="3">
+            <vaadin-grid id="pageListTable">
+                <table>
+                    <colgroup>
+                        <template is="dom-repeat" items={{header}} 
+                            as=item index-as=index initial-count="1">
+                            <col name$="[[item.name]]"/>
+                        </template>
+                        <template is="dom-if" if={{edit}}>
+                            <col name="editer"/>
+                        </template>
+                        <template is="dom-if" if={{delete}}>
+                            <col name="suprimer"/>
+                        </template>
+                    </colgroup>
+                    <tbody>
+                        <template is="dom-repeat" items={{data}} 
+                            as=item index-as=index initial-count="1">
+                            <tr>
+                                <template is="dom-repeat" items={{header}} 
+                                    as=headerItem index-as=index>
+                                    <td>[[_computeValue(headerItem.key, item)]]</td>
+                                </template>
+                                <template is="dom-if" if={{edit}}>
+                                    <td>
+                                        <a href$="/[[path]]/edit/[[item.$key]]" tabindex="-1"
+                                            style="">
+                                            <paper-button class="btn-edit" raised>
+                                                <iron-icon icon="create"></iron-icon>EDITER</paper-button>
+                                        </a>
+                                    </td>
+                                </template>
+                                <template is="dom-if" if={{delete}}>
+                                    <td>
+                                        <paper-button class="btn-delete"
+                                            style="background:#ff1A1A;
+                                                color:#ffffff;" raised>
+                                            <iron-icon icon="delete"></iron-icon>SUPRIMER</paper-button>
+                                    </td>
+                                </template>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </vaadin-grid>
+    </template>
+    <script>
+        Polymer({
+            is: 'ar-grid',
+
+            properties: {
+
+                header: {
+                    type: Array,
+                    value: function () {
+                        return [{name: "Nom"}];
+                    }
+                },
+
+                edit: {
+                    type: Boolean,
+                    value: false
+                },
+
+                delete: {
+                    type: Boolean,
+                    value: false
+                },
+
+                path: {
+                    type: String,
+                    value: "#"
+                },
+
+                data: {
+                    type: Array,
+                    value: function () {
+                        return [];
+                    },
+                    observeur: '_dataChanged'
+                },
+
+            },
+
+            _dataChanged: function (e) {
+                console.log(e);
+            },
+
+            _computeValue: function (key, item) {
+                return item[key];
+            }
+
+        });
+    </script>
+</dom-module>
