@@ -37,5 +37,11 @@
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
+  },
+  "resolutions": {
+    "paper-icon-button": "1.1.2",
+    "polymer": "^1.2",
+    "paper-item": "1.2.1",
+    "paper-styles": "^1.1.4"
   }
 }
