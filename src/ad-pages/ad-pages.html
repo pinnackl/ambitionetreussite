@@ -1,8 +1,13 @@
-<link rel="import" href="../ar-editor/ar-editor.html" async>
-<script src="../../bower_components/node-uuid/uuid.js"></script>
-<!-- <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html"> -->
+<!-- bower_components -->
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+
+<!-- custom element -->
+<link rel="import" href="../imports/imports-uuid.html">
+<link rel="import" href="../imports/imports-moment.html">
+
+<link rel="import" href="../ar-editor/ar-editor.html" async>
 <link rel="import" href="../ar-grid/ar-grid.html">
+
 <dom-module id="ad-pages">
     <template>
         <style>
@@ -106,7 +111,7 @@
                 <div class="section-header">
                     <paper-input
                         id="pageNameInputAdd"
-                        label="Page Name"
+                        label="Nom de la page"
                         placeholder="Entrez le nom de la page"
                         value=""></paper-input>
                     <paper-button raised on-tap="createPage">VALIDER</paper-button>
@@ -125,7 +130,7 @@
                 <div class="section-header">
                     <paper-input
                         id="pageNameInputEdit"
-                        label="Page Name"
+                        label="Nom de la page"
                         placeholder="[[document.pageName]]"
                         value="[[document.pageName]]"></paper-input>
                     <paper-button raised on-tap="updatePage">VALIDER</paper-button>
@@ -135,8 +140,11 @@
                     <paper-button raised on-tap="updatePage">VALIDER</paper-button>
                 </div>
             </section>
+            <section name="test">
+                <test-editor></test-editor>
+            </section>
         </iron-pages>
-        <paper-toast id="stateMessage" horizontal-align="right" always-on-top duration="3000" text="">
+        <paper-toast id="stateMessage" horizontal-align="right" always-on-top duration="3000" text="" on-iron-overlay-closed="_toastClosed">
             <iron-icon class="validate-icon" icon="check-circle"></iron-icon>
         </paper-toast>
     </template>
@@ -188,18 +196,35 @@
             ready: function () {
                 this.gridHeader = [
                     {name: "Nom", key: "pageName"},
-                    {name: "Auteur", key: ""}
+                    {name: "Auteur", key: ""},
+                    {name: "Creation", key: "created"},
+                    {name: "Edition", key: "edited"},
                 ];
             },
 
             createPage: function () {
-                this.set('data.' + uuid.v4(), {pageName: this.$.pageNameInputAdd.value, content: this.$.addEditor.getValue()});
+                this.id = uuid.v4();
+                this.set('data.' + this.id, {
+                    pageName: this.$.pageNameInputAdd.value,
+                    content: this.$.addEditor.getValue(),
+                    created: Date.now()/1000,
+                    edited: Date.now()/1000,
+                    author: "",
+                    published: false
+                });
                 this.isUpdate = true;
                 this.$.stateMessage.text = "Contenu créé avec succès!";
             },
 
             updatePage: function () {
-                this.set('document', {pageName: this.$.pageNameInputEdit.value, content: this.$.editor.getValue()});
+                // console.log(moment.unix(Date.now()/1000).format('Do/MM/YYYY, hh:mm'));
+                this.set('document', {
+                    pageName: this.$.pageNameInputEdit.value,
+                    content: this.$.editor.getValue(),
+                    edited: Date.now()/1000,
+                    author: "",
+                    published: false
+                });
                 this.isUpdate = true;
                 this.$.stateMessage.text = "Vos modifications ont été sauvegardées!";
             },
@@ -228,6 +253,12 @@
             },
 
             _documentChanged: function (e) {
+            },
+
+            _toastClosed: function (e) {
+                if (this.page == "add") {
+                    window.location.href = '/nimda/pages/edit/' + this.id;
+                }
             }
         });
     </script>
