@@ -4,6 +4,10 @@
 <!-- custom element -->
 <link rel="import" href="../imports/imports-uuid.html">
 <link rel="import" href="../imports/imports-moment.html">
+<link rel="import" href="../imports/imports-speakingurl.html">
+
+<!-- <script src="../../jquery/dist/jquery.min.js"></script> -->
+
 
 <link rel="import" href="../ar-editor/ar-editor.html" async>
 <link rel="import" href="../ar-grid/ar-grid.html">
@@ -133,11 +137,28 @@
                         label="Nom de la page"
                         placeholder="[[document.pageName]]"
                         value="[[document.pageName]]"></paper-input>
-                    <paper-button raised on-tap="updatePage">VALIDER</paper-button>
+                    <span>
+                        <paper-button raised on-tap="updatePage">
+                        <iron-icon icon="check"></iron-icon>VALIDER</paper-button>
+                        <paper-button raised on-tap="publishPage">
+                            <iron-icon icon="assignment-turned-in"></iron-icon>PUBLIER</paper-button>
+                    </span>
+                </div>
+                <div class="section-header">
+                    <paper-input 
+                        id="pageSlug"
+                        label="URL de la page"
+                        placeholder="[[document.slug]]"
+                        value="[[document.slug]]">
+                        <div prefix>[[origin]]/</div>
+                    </paper-input>
                 </div>
                 <ar-editor id="editor" elevation="3" value="[[document.content]]"></ar-editor>
                 <div class="ctnBtn">
-                    <paper-button raised on-tap="updatePage">VALIDER</paper-button>
+                    <paper-button raised on-tap="updatePage">
+                    <iron-icon icon="check"></iron-icon>VALIDER</paper-button>
+                    <paper-button raised on-tap="publishPage">
+                        <iron-icon icon="assignment-turned-in"></iron-icon>PUBLIER</paper-button>
                 </div>
             </section>
             <section name="test">
@@ -200,11 +221,14 @@
                     {name: "Creation", key: "created"},
                     {name: "Edition", key: "edited"},
                 ];
+
+                this.origin = window.location.origin;
             },
 
             createPage: function () {
                 this.id = uuid.v4();
                 this.set('data.' + this.id, {
+                    slug: getSlug(this.$.pageNameInputAdd.value),
                     pageName: this.$.pageNameInputAdd.value,
                     content: this.$.addEditor.getValue(),
                     created: Date.now()/1000,
@@ -219,6 +243,7 @@
             updatePage: function () {
                 // console.log(moment.unix(Date.now()/1000).format('Do/MM/YYYY, hh:mm'));
                 this.set('document', {
+                    slug: getSlug(this.$.pageSlug.value),
                     pageName: this.$.pageNameInputEdit.value,
                     content: this.$.editor.getValue(),
                     edited: Date.now()/1000,
