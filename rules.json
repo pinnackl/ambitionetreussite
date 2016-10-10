@@ -1,0 +1,27 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "users": {
+      ".read": "(auth != null)",
+      "$users": {
+        ".write": "(auth.uid == $users || root.child('adminisrators').hasChild(auth.uid))",
+        "basicInfo": {
+          ".read": "(auth != null)",
+          ".write": "(auth.uid == $users || root.child('moderators').hasChild(auth.uid) || root.child('adminisrators').hasChild(auth.uid))"
+        },
+        "advancedInfo": {
+          ".read": "(auth.uid == $users || root.child('moderators').hasChild(auth.uid) || root.child('adminisrators').hasChild(auth.uid))",
+          ".write": "(auth.uid == $users || root.child('moderators').hasChild(auth.uid) || root.child('adminisrators').hasChild(auth.uid))"
+        }
+      }
+    },
+    "pages": {
+      ".read": true,
+      ".write": true
+    },
+    "menu": {
+      ".read": true
+    }
+  }
+}

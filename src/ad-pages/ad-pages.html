@@ -6,9 +6,6 @@
 <link rel="import" href="../imports/imports-moment.html">
 <link rel="import" href="../imports/imports-speakingurl.html">
 
-<!-- <script src="../../jquery/dist/jquery.min.js"></script> -->
-
-
 <link rel="import" href="../ar-editor/ar-editor.html" async>
 <link rel="import" href="../ar-grid/ar-grid.html">
 
@@ -105,6 +102,9 @@
                     path="nimda/pages"
                     edit
                     delete></ar-grid>
+                <div id="meterialEditor">
+                    
+                </div>
             </section>
             <section name="add">
                 <firebase-document
@@ -223,6 +223,7 @@
                 ];
 
                 this.origin = window.location.origin;
+
             },
 
             createPage: function () {
@@ -252,6 +253,10 @@
                 });
                 this.isUpdate = true;
                 this.$.stateMessage.text = "Vos modifications ont été sauvegardées!";
+            },
+
+            deletePage: function () {
+                // body...
             },
 
             _routePageChanged: function (action) {

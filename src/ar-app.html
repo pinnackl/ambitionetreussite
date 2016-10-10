@@ -1,12 +1,4 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
+<!-- Polymer element -->
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
@@ -20,7 +12,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
-<link rel="import" href="my-icons.html">
 <link rel="import" href="../bower_components/page-title/page-title.html">
 <link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
@@ -29,6 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 
+<!-- Custom element -->
 <link rel="import" href="ar-logo/ar-logo.html">
 <link rel="import" href="ar-forms/ar-forms.html">
 
@@ -42,6 +34,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
         --app-primary-color: #4285f4;
         --app-secondary-color: black;
+
       }
 
       app-header {
@@ -144,6 +137,62 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin-right: .4em;
       }
 
+      .user-card {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        align-content: space-around;
+        padding: 0.5em;
+      }
+      
+      .user-pseudo {
+        user-select: none;
+        -ms-user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        color: #FFF;
+        font-weight: bold;
+      }
+
+      .user-card iron-icon {
+        -webkit-border-radius: 50%;
+        border-radius: 50%;
+        height: 56px;
+        width: 56px;
+        overflow: hidden;
+      }
+
+      .user-card .email {
+        color: rgba(0,0,0,0.87);
+        font-size: 14px;
+        line-height: 16px;
+        margin-top: 24px;
+        max-width: 217px;
+        min-width: 106px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .user-card .signout {
+        font-weight: 500;
+        font-size: 14px;
+        letter-spacing: .53px;
+        line-height: 16px;
+        margin-top: 12px;
+        max-width: 217px;
+        min-width: 106px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .user-card .signout a {
+        color: #3eb7e9;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+      }
+
       [hidden] {
         display: none !important;
       }
@@ -165,7 +214,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ar-data represent the primary database access
       As we are usiung the firebase service, its aloso handle the authentication process
     -->
-    <ar-data id="arData" data="{{data}}" user="{{user}}"></ar-data>
+    <ar-data id="arData" signed-in="{{signedIn}}" user="{{fireUser}}"></ar-data>
+
+    <!-- User data -->
+    <firebase-document
+      path$="/users/[[fireUser.uid]]/basicInfo"
+      data="{{user}}">
+    </firebase-document>
 
     <app-drawer-layout fullbleed force-narrow>
 
@@ -199,22 +254,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </ar-logo>
             </div>
             <!-- Right menu button -->
-            <paper-menu-button allow-outside-scroll horizontal-align="right">
-              <paper-icon-button
-                class="dropdown-trigger profileBtn"
-                condensed$="[[_computeCondensed(largeScreen, condensed)]]"
-                icon="account-circle">
-              </paper-icon-button>
-              <paper-menu class="dropdown-content user-menu">
-                <paper-item>
-                  <paper-button on-tap="_signIn">
-                    <iron-icon icon="lock-open"></iron-icon>Se connecter</paper-button></paper-item>
-                <paper-item>
-                  <paper-button on-tap="_signUp">
-                    <iron-icon icon="input"></iron-icon>S'inscrire</paper-button>
-                </paper-item>
-              </paper-menu>
-            </paper-menu-button>
+            <span>
+              {{displayUserName}}
+              <span class="user-pseudo"><template is="dom-if" if="{{displayUserName)}}">[[user.name]]</template></span>
+              <paper-menu-button id="userMenu" allow-outside-scroll horizontal-align="right" ignore-select>
+                <paper-icon-button
+                  class="dropdown-trigger profileBtn"
+                  condensed$="[[_computeCondensed(largeScreen, condensed)]]"
+                  icon="account-circle">
+                </paper-icon-button>
+
+                <!-- User not authenticated -->
+                <template is="dom-if" if={{!signedIn}}>
+                  <paper-menu class="dropdown-content user-menu">
+
+                    <paper-item>
+                      <paper-button on-tap="_signIn">
+                        <iron-icon icon="lock-open"></iron-icon>Se connecter</paper-button></paper-item>
+                    <paper-item>
+                      <paper-button on-tap="_signUp">
+                        <iron-icon icon="input"></iron-icon>S'inscrire</paper-button>
+                    </paper-item>
+                  </paper-menu>
+                </template>
+
+                <!-- User authenticated -->
+                <template is="dom-if" if={{signedIn}}>
+                  <div class="dropdown-content user-menu user-card">
+                    <iron-icon icon="account-box"></iron-icon>
+                    <div>
+                      <div class="email">[[user.email]]</div>
+                      <div class="signout"><a href="#" title="DÉCONEXION" on-tap="logout">DÉCONEXION</a></div>
+                    </div>
+                  </div>
+                </template>
+
+              </paper-menu-button>
+            </span>
           </app-toolbar>
           <!-- Lower toolbar -->
           <template is="dom-if" if={{_computeHidden(largeScreen)}}>
@@ -259,10 +335,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         signedIn: {
-          observer: '_signInChanged'
+          observer: '_signedInChanged'
         },
 
         largeScreen: Boolean,
+
+        displayUserName: {
+          type: Boolean,
+          notify: true
+        },
 
         granted: {
           type: Boolean,
@@ -283,11 +364,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       observers: [
-        '_routePageChanged(routeData.page)'
+        '_routePageChanged(routeData.page)',
+        '_displayUserName(largeScreen, signedIn)'
       ],
 
       listeners: {
-        'ar-login-event': 'login'
+        'ar-login-event': 'login',
+        'ar-signup-event': 'signup'
       },
 
       ready: function (e) {
@@ -306,6 +389,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.arData.loginUser(detail.user);
       },
 
+      signup: function (e, detail) {
+        this.$.arData.createUser(detail.user);
+      },
+
+      logout: function () {
+        this.$.arData.logoutUser();
+      },
+
       _signIn: function (e) {
         console.info('sign-in');
         this.fire('sign-in');
@@ -316,6 +407,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         console.info('sign-up');
         this.fire('sign-up');
         this.$.formDialog.openDialog('signUp');
+      },
+
+      _signedInChanged: function (e) {
+        console.log('Toast!');
       },
 
       _routePageChanged: function(page) {
@@ -338,6 +433,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _computeCondensed: function (largeScreen, condensed) {
         return largeScreen && condensed;
+      },
+
+      _displayUserName: function (largeScreen, signedIn) {
+        console.log(largeScreen && signedIn);
+        this.set('displayUserName', largeScreen && signedIn);
       },
 
       _getMenu: function () {

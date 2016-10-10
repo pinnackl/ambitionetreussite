@@ -41,7 +41,11 @@ Example:
                             <sign-in id="signIn"></sign-in>
                         </paper-material>
                     </section>
-                    <section name="signUp"></section>
+                    <section name="signUp">
+                        <paper-material elevation="0">
+                            <sign-up id="signUp"></sign-up>                        
+                        </paper-material>
+                    </section>
                 </iron-pages>
             </paper-dialog-scrollable>
             <div class="buttons">
@@ -67,7 +71,7 @@ Example:
                 if (name == 'signIn') {
                     this.dialogTitle = "CONNECTION";
                     this.dialogConfirm = "SE CONNECTER";
-                } else if (name == 'signIn') {
+                } else if (name == 'signUp') {
                     this.dialogTitle = "INSCRIPTION";
                     this.dialogConfirm = "S'INSCRIRE";
                 } else {
@@ -84,8 +88,10 @@ Example:
             },
 
             _confirm: function (e) {
-                if (this.$.signIn.user.email) {
+                if (this.name == 'signIn' && this.$.signIn.user.email) {
                     this.fire('ar-login-event', {user: this.$.signIn.user});
+                } else if (this.name == 'signUp') {
+                    this.fire('ar-signup-event', {user: this.$.signIn.user});
                 }
             }
         });

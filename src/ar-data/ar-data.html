@@ -13,13 +13,17 @@
             tail="{{subroute}}"></app-route>
 
         <ar-firebase></ar-firebase>
-        <firebase-auth id="auth"
+        <firebase-auth
+            id="auth"
             user="{{user}}"
-            signed-in="[[signedIn]]"
+            signed-in="{{signedIn}}"
             on-error="_handleError"
         >
         </firebase-auth>
-
+        <firebase-document
+          path="/users"
+          data="{{users}}">
+        </firebase-document>
     </template>
     <script>
         Polymer({
@@ -39,8 +43,12 @@
                 },
 
                 user: {
-                    observer: '_userChanged',
                     notify: true
+                },
+
+                users: {
+                    type: Object,
+                    observer: '_usersChanged'
                 },
 
                 accessGranted: {
@@ -60,35 +68,74 @@
             ],
 
             listeners: {
-                'loginUser': 'login',
             },
 
+            /**
+             * Create user
+             * @param  {Object} userObject
+             * @return void
+             */
             createUser: function (userObject) {
-                console.log("Register");
+                console.info("Register");
+                var _this = this;
                 var email = typeof userObject.email ? userObject.email : "";
                 var password = typeof userObject.password ? userObject.password : "";
 
                 var auth = this.$.auth.createUserWithEmailAndPassword(email, password);
 
-                // auth.then(e => {
-                //     console.log(e);
-                // }).catch(e => {
-                //     console.error(e);
-                // });
+                auth.then(function (e) {
+                    console.info('Registration succed', e.uid);
+                    _this.set('users.' + e.uid, {
+                        basicInfo: {
+                            name: email
+                        },
+                        advancedInfo: {
+                            name: email
+                        }
+                    });
+                }).catch(function (e) {
+                    console.error(e);
+                });
             },
 
             loginUser: function (userObject) {
                 console.info("Login");
+                var _this = this;
                 var email = typeof userObject.email ? userObject.email : "";
                 var password = typeof userObject.password ? userObject.password : "";
 
                 var auth = this.$.auth.signInWithEmailAndPassword(email, password);
 
-                // auth.then(e => {
-                //     console.log(e);
-                // }).catch(e => {
-                //     console.error(e);
-                // });
+                auth.then(function (e) {
+                    console.log(e);
+                }).catch(function (e) {
+                    console.error(e);
+                });
+            },
+
+            logoutUser: function () {
+                var auth = this.$.auth.signOut();
+
+                auth.then(function (e) {
+                    // body...
+                }).catch(function (e) {
+                    console.error(e);
+                });
+            },
+
+            _usersChanged: function (users) {
+                // console.log('Users :', users);
+            },
+
+            _accessGrantedChanged: function (e) {
+            },
+
+            _handleError: function (e) {
+                console.error(e);
+            },
+
+            _signedInChanged: function (signed) {
+                // console.info('The user is signed in: ', signed);
             },
 
             _routePageChanged: function (page) {
@@ -102,24 +149,9 @@
                 }
             },
 
-            _accessGrantedChanged: function (e) {
-            },
-
-            _handleError: function (e) {
-                console.error(e);
-            },
-
             _grantAdmin: function () {
                 return true;
             },
-
-            _userChanged: function (e) {
-                // console.log(e);
-            },
-
-            _signedInChanged: function (e) {
-                console.log(e);
-            }
 
         });
     </script>
