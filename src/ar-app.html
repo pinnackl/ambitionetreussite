@@ -19,10 +19,18 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 
 <!-- Custom element -->
+<link rel="import" href="ar-data/ar-data.html">
 <link rel="import" href="ar-logo/ar-logo.html">
 <link rel="import" href="ar-forms/ar-forms.html">
+<link rel="import" href="ar-firebase/ar-firebase.html">
 
 <dom-module id="ar-app">
 
@@ -255,8 +263,7 @@
             </div>
             <!-- Right menu button -->
             <span>
-              {{displayUserName}}
-              <span class="user-pseudo"><template is="dom-if" if="{{displayUserName)}}">[[user.name]]</template></span>
+              <span class="user-pseudo" hidden$="[[displayUserName]]">[[user.name]]</span>
               <paper-menu-button id="userMenu" allow-outside-scroll horizontal-align="right" ignore-select>
                 <paper-icon-button
                   class="dropdown-trigger profileBtn"
@@ -383,6 +390,9 @@
             _this.condensed = false;
           }
         });
+
+        // Remove restor focus to the menu button
+        this.$.userMenu.restoreFocusOnClose = false;
       },
 
       login: function (e, detail) {
@@ -409,8 +419,12 @@
         this.$.formDialog.openDialog('signUp');
       },
 
-      _signedInChanged: function (e) {
-        console.log('Toast!');
+      _signedInChanged: function (userStatus) {
+        if (userStatus) {
+          console.info("User logged in");
+        } else {
+          console.info("User logged out");
+        }
       },
 
       _routePageChanged: function(page) {
@@ -436,7 +450,6 @@
       },
 
       _displayUserName: function (largeScreen, signedIn) {
-        console.log(largeScreen && signedIn);
         this.set('displayUserName', largeScreen && signedIn);
       },
 
