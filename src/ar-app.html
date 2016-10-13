@@ -17,6 +17,7 @@
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
@@ -25,6 +26,10 @@
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+
+<!-- Admin setup -->
+<link rel="import" href="ar-nimda/ar-nimda.html">
+<link rel="import" href="ar-admin-router/ar-admin-router.html">
 
 <!-- Custom element -->
 <link rel="import" href="ar-data/ar-data.html">
@@ -263,7 +268,7 @@
             </div>
             <!-- Right menu button -->
             <span>
-              <span class="user-pseudo" hidden$="[[displayUserName]]">[[user.name]]</span>
+              <span class="user-pseudo" hidden$="[[!displayUserName]]">[[user.name]]</span>
               <paper-menu-button id="userMenu" allow-outside-scroll horizontal-align="right" ignore-select>
                 <paper-icon-button
                   class="dropdown-trigger profileBtn"
