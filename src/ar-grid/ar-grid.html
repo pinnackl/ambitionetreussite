@@ -1,6 +1,8 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
 
+<link rel="import" href="ar-grid-button.html">
+
 <dom-module id="ar-grid">
     <template>
         <style>
@@ -38,8 +40,8 @@
                         <col name="publier">
                     </colgroup>
                     <tbody>
-                        <template is="dom-repeat" items={{data}} 
-                            as=item index-as=index initial-count="1">
+                        <template is="dom-repeat" items={{data}}
+                            as=item index-as=index>
                             <tr>
                                 <template is="dom-repeat" items={{header}} 
                                     as=headerItem index-as=index>
@@ -56,10 +58,7 @@
                                 </template>
                                 <template is="dom-if" if={{delete}}>
                                     <td>
-                                        <paper-button class="btn-delete"
-                                            style="background:#ff1A1A;
-                                                color:#ffffff;" raised>
-                                            <iron-icon icon="delete"></iron-icon>SUPRIMER</paper-button>
+                                        <ar-grid-button item$="[[item]]" delete></ar-grid-button>
                                     </td>
                                 </template>
                                 <td>
