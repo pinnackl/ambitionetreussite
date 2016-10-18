@@ -89,7 +89,8 @@
                 <firebase-query
                     id="query"
                     path="/pages"
-                    equal-to="[[trash]]"
+                    order-by-child="trash"
+                    equal-to="[[trashState]]"
                     data="{{pageList}}">
                 </firebase-query>
                 <div class="section-header">
@@ -223,8 +224,8 @@
                     {name: "Edition", key: "edited"},
                 ];
 
-                // FIXME: equalTo
-                // this.trash = 'false';
+                // Define the trash state to false
+                this.trashState = false;
 
                 this.origin = window.location.origin;
 
@@ -282,7 +283,7 @@
             _routePageChanged: function (action) {
                 this.page = action || 'list';
                 if (this.page == 'list') {
-                    // Reset editor value
+                    // Reset editor values
                     this.$.pageNameInputAdd.value = null;
                     this.$.addEditor.value = null;
                 }
