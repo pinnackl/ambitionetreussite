@@ -228,7 +228,10 @@
       ar-data represent the primary database access
       As we are usiung the firebase service, its aloso handle the authentication process
     -->
-    <ar-data id="arData" signed-in="{{signedIn}}" user="{{fireUser}}"></ar-data>
+    <ar-data id="arData"
+      signed-in="{{signedIn}}"
+      user="{{fireUser}}"
+      access-granted="{{accessGranted}}"></ar-data>
 
     <!-- User data -->
     <firebase-document
@@ -325,6 +328,10 @@
           <ar-accueil name="accueil"></ar-accueil>
           <!-- User view -->
           <div name="user">User</div>
+
+          <div name="nimda">
+            <h1>404</h1>
+          </div>
         </iron-pages>
         <ar-forms id="formDialog" name="signIn"></ar-forms>
       </app-header-layout>

@@ -136,7 +136,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body>
 
   <template is="dom-bind" id="app">
-    <ar-admin-router access-granted="{{accessGranted}}"></ar-admin-router>
     <!-- Conditionnal access to ar-nimmda, the admin section -->
     <template is="dom-if" if=[[accessGranted]]>
       <ar-nimda id="" data="{{data}}" access-granted="{{accessGranted}}" auth="{{auth}}"></ar-nimda>
@@ -166,6 +165,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     (function (document) {
 
       const app = document.querySelector('#app');
+      app.accessGranted = false;
+
       var section;
 
       app.addEventListener('dom-change', function() {
