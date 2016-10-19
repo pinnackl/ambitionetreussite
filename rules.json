@@ -3,7 +3,7 @@
     ".read": false,
     ".write": false,
     "users": {
-      ".read": "(auth != null)",
+      ".read": true,
       "$users": {
         ".write": "(auth.uid == $users || root.child('adminisrators').hasChild(auth.uid))",
         "basicInfo": {
