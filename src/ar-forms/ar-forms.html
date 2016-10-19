@@ -21,6 +21,7 @@ Example:
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 
 <link rel="import" href="sign-in.html">
+<link rel="import" href="sign-up.html">
 
 <dom-module id="ar-forms">
     <template>
@@ -92,7 +93,7 @@ Example:
                 if (this.name == 'signIn' && this.$.signIn.user.email) {
                     this.fire('ar-login-event', {user: this.$.signIn.user});
                 } else if (this.name == 'signUp') {
-                    this.fire('ar-signup-event', {user: this.$.signIn.user});
+                    this.fire('ar-signup-event', {user: this.$.signUp.user});
                 }
             }
         });
