@@ -108,7 +108,7 @@
           ar-data represent the primary database access
           As we are usiung the firebase service, its aloso handle the authentication process
         -->
-        <ar-data id="arData" data="{{data}}" user="{{user}}"></ar-data>
+        <!-- <ar-data id="arData" data="{{data}}" user="{{user}}"></ar-data> -->
 
         <!-- Access to menu data -->
         <firebase-document
@@ -124,7 +124,7 @@
         <page-title base-title="Nimda" title="[[_ucFirst(page)]]" direction="reversed"></page-title>
 
 
-        <app-drawer-layout fullbleed>
+        <app-drawer-layout fullbleed force-narrow>
 
             <!-- Drawer content -->
             <app-drawer id="appDrawer" swipe-open>
@@ -253,6 +253,9 @@
 
             _routePageChanged: function(page) {
                 this.page = page || 'dashboard';
+
+                // Force the drawer to close
+                this.$.appDrawer.opened = false;
             },
 
             _pageChanged: function(page) {

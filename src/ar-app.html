@@ -29,7 +29,6 @@
 
 <!-- Admin setup -->
 <link rel="import" href="ar-nimda/ar-nimda.html">
-<link rel="import" href="ar-admin-router/ar-admin-router.html">
 
 <!-- Custom element -->
 <link rel="import" href="ar-data/ar-data.html">
@@ -231,7 +230,7 @@
     <ar-data id="arData"
       signed-in="{{signedIn}}"
       user="{{fireUser}}"
-      access-granted="{{accessGranted}}"></ar-data>
+      mode="{{mode}}"></ar-data>
 
     <!-- User data -->
     <firebase-document
@@ -323,13 +322,15 @@
           </template>
         </app-header>
 
-        <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
+        <iron-pages role="main" selected="[[page]]" attr-for-selected="name" fallback-selection="404">
           <!-- Home view -->
           <ar-accueil name="accueil"></ar-accueil>
           <!-- User view -->
           <div name="user">User</div>
 
-          <div name="nimda">
+          <div name="nimda"></div>
+
+          <div name="404">
             <h1>404</h1>
           </div>
         </iron-pages>
@@ -365,9 +366,11 @@
           notify: true
         },
 
-        granted: {
-          type: Boolean,
+        mode: {
+          type: String,
           notify: true,
+          reflectToAttribute: true,
+          observer: 'modeChanged'
         },
 
         menu: {
@@ -418,6 +421,9 @@
 
       logout: function () {
         this.$.arData.logoutUser();
+      },
+
+      modeChanged: function (e) {
       },
 
       _signIn: function (e) {
