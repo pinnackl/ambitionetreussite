@@ -93,8 +93,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </script>
 
   <link rel="import" href="/src/ar-app.html">
-  <link rel="import" href="/src/ar-nimda/ar-nimda.html">
-  <link rel="import" href="/src/ar-admin-router/ar-admin-router.html">
 
   <style>
 
@@ -106,29 +104,91 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       background-color: #eee;
     }
 
+    .delete-dialog {
+      width: 50%;
+    }
+
+    .btn {
+      color: #757575;
+    }
+
+    .btn.delete-btn {
+      color: #ffffff;
+      background: #ff5252;
+    }
+
+    .section-header {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: space-between;
+      margin-bottom: 1em;
+      align-items: center;
+    }
+
+    .important-message {
+      color: #d50000;
+      background: #fbe9e7;
+      padding: 1em 2em;
+    }
   </style>
 
 </head>
 <body>
 
   <template is="dom-bind" id="app">
-    <ar-admin-router access-granted="{{accessGranted}}"></ar-admin-router>
-    <!-- Conditionnal access to ar-nimmda, the admin section -->
-    <template is="dom-if" if=[[accessGranted]]>
-      <ar-nimda data="{{data}}" access-granted="{{accessGranted}}" auth="{{auth}}"></ar-nimda>
-    </template>
-    <!-- Display or not the main app -->
-    <template is="dom-if" if=[[!accessGranted]]>
-      <ar-app data="{{data}}" access-granted="{{accessGranted}}" auth="{{auth}}"></ar-app>
-    </template>
+    <iron-pages id="pager" selected="[[mode]]" attr-for-selected="name" fallback-selection="app">
+      <!-- Conditionnal access to ar-nimmda, the admin section -->
+        <ar-nimda name="nimda" mode="{{mode}}"></ar-nimda>
+      <!-- Display or not the main app -->
+        <ar-app name="app" mode="{{mode}}"></ar-app>
+    </iron-pages>
+    <!-- Admin delete dialog -->
+    <paper-dialog class="delete-dialog" modal>
+      <div class="section-header">
+        <h2>Supprimer des données</h2>
+        <paper-icon-button icon="close" dialog-dismiss></paper-icon-button>
+      </div>
+      <div class="content">
+        <div class="important-message">
+          <iron-icon icon="report-problem"></iron-icon>Toutes les données supprimées seront  toujours accessible via la corbeil.</div>
+      </div>
+      <div class="buttons">
+        <paper-button class="btn" dialog-dismiss>ANNULER</paper-button>
+        <paper-button class="btn delete-btn" dialog-confirm autofocus raised>SUPPRIMER</paper-button>
+      </div>
+    </paper-dialog>
   </template>
   <script>
     (function (document) {
 
       const app = document.querySelector('#app');
 
+      var   section;
+
       app.addEventListener('dom-change', function() {
         console.info('App ready');
+
+        const pager = document.querySelector('#pager');
+
+        pager.addEventListener('iron-deselect', function (e) {
+          pager.notifyResize();
+        });
+
+        const deleteDialog = document.querySelector('.delete-dialog');
+        // Open modal
+        document.addEventListener('trigger-delete-modal', function (e) {
+          // Set the section name
+          section = e.detail.section;
+          deleteDialog.open();
+        });
+        // close modal
+        deleteDialog.addEventListener('iron-overlay-closed', function (e) {
+          // If the modal is confirmed trigger the confirm event
+          if (e.detail.confirmed) {
+            var event = new Event('modal-' + section);
+            document.dispatchEvent(event);
+          }
+        });
       });
       
     })(document);

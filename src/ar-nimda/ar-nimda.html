@@ -15,9 +15,41 @@
 <link rel="import" href="../../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../../bower_components/page-title/page-title.html">
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+
+<!-- Editor -->
+<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-e.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-tool-behavior.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-tool-styles.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/bold.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/italic.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/underline.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/strike.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/clear.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/code.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/link.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/image.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/audio.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/video.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/ordered.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/unordered.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/indent.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/outdent.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/heading.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/justify.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/blockquote.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/undo.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/redo.html">
 
 <!-- Custom element -->
 <link rel="import" href="../ar-data/ar-data.html">
+<link rel="import" href="../imports/imports-uuid.html">
+<link rel="import" href="../imports/imports-moment.html">
+<link rel="import" href="../imports/imports-speakingurl.html">
+
+<link rel="import" href="../ar-editor/ar-editor.html" async>
+<link rel="import" href="../ar-grid/ar-grid.html">
 
 <dom-module id="ar-nimda">
     <template>
@@ -76,7 +108,7 @@
           ar-data represent the primary database access
           As we are usiung the firebase service, its aloso handle the authentication process
         -->
-        <ar-data id="arData" data="{{data}}" user="{{user}}"></ar-data>
+        <!-- <ar-data id="arData" data="{{data}}" user="{{user}}"></ar-data> -->
 
         <!-- Access to menu data -->
         <firebase-document
@@ -92,7 +124,7 @@
         <page-title base-title="Nimda" title="[[_ucFirst(page)]]" direction="reversed"></page-title>
 
 
-        <app-drawer-layout fullbleed>
+        <app-drawer-layout fullbleed force-narrow>
 
             <!-- Drawer content -->
             <app-drawer id="appDrawer" swipe-open>
@@ -221,6 +253,9 @@
 
             _routePageChanged: function(page) {
                 this.page = page || 'dashboard';
+
+                // Force the drawer to close
+                this.$.appDrawer.opened = false;
             },
 
             _pageChanged: function(page) {

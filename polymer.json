@@ -2,7 +2,9 @@
   "entrypoint": "index.html",
   "shell": "src/ar-app.html",
   "fragments": [
-    "src/ar-accueil/ar-accueil.html"
+    "src/ar-accueil/ar-accueil.html",
+    "src/ar-nimda/ar-nimda.html",
+    "src/ad-pages/ad-pages.html"
   ],
   "sourceGlobs": [
    "src/**/*",

@@ -1,5 +1,6 @@
 <!-- bower_components -->
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 
 <!-- custom element -->
 <link rel="import" href="../imports/imports-uuid.html">
@@ -88,6 +89,8 @@
                 <firebase-query
                     id="query"
                     path="/pages"
+                    order-by-child="trash"
+                    equal-to="[[trashState]]"
                     data="{{pageList}}">
                 </firebase-query>
                 <div class="section-header">
@@ -101,10 +104,8 @@
                     data="[[pageList]]"
                     path="nimda/pages"
                     edit
-                    delete></ar-grid>
-                <div id="meterialEditor">
-                    
-                </div>
+                    delete
+                    on-delete-item="_triggerModal"></ar-grid>
             </section>
             <section name="add">
                 <firebase-document
@@ -215,6 +216,7 @@
             },
 
             ready: function () {
+                var _this = this;
                 this.gridHeader = [
                     {name: "Nom", key: "pageName"},
                     {name: "Auteur", key: ""},
@@ -222,8 +224,14 @@
                     {name: "Edition", key: "edited"},
                 ];
 
+                // Define the trash state to false
+                this.trashState = false;
+
                 this.origin = window.location.origin;
 
+                document.addEventListener('modal-pages', function () {
+                    _this.deletePage();
+                });
             },
 
             createPage: function () {
@@ -235,7 +243,8 @@
                     created: Date.now()/1000,
                     edited: Date.now()/1000,
                     author: "",
-                    published: false
+                    published: false,
+                    trash: false
                 });
                 this.isUpdate = true;
                 this.$.stateMessage.text = "Contenu créé avec succès!";
@@ -247,22 +256,34 @@
                     slug: getSlug(this.$.pageSlug.value),
                     pageName: this.$.pageNameInputEdit.value,
                     content: this.$.editor.getValue(),
+                    created: this.document.created,
                     edited: Date.now()/1000,
                     author: "",
-                    published: false
+                    published: false,
+                    trash: false
                 });
                 this.isUpdate = true;
                 this.$.stateMessage.text = "Vos modifications ont été sauvegardées!";
             },
 
-            deletePage: function () {
-                // body...
+            deletePage: function (e, detail) {
+                this.set('document.trash', true);
+                this.isUpdate = true;
+                this.$.stateMessage.text = "Vos modifications ont été sauvegardées!";
+            },
+
+            _triggerModal: function (e, detail) {
+                this.set('id', detail.item.$key);
+                var event = new CustomEvent('trigger-delete-modal', {'detail': {
+                    'section': 'pages'
+                }});
+                document.dispatchEvent(event);
             },
 
             _routePageChanged: function (action) {
                 this.page = action || 'list';
                 if (this.page == 'list') {
-                    // Reset editor value
+                    // Reset editor values
                     this.$.pageNameInputAdd.value = null;
                     this.$.addEditor.value = null;
                 }

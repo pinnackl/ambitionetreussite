@@ -17,6 +17,7 @@
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
@@ -25,6 +26,9 @@
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+
+<!-- Admin setup -->
+<link rel="import" href="ar-nimda/ar-nimda.html">
 
 <!-- Custom element -->
 <link rel="import" href="ar-data/ar-data.html">
@@ -168,6 +172,7 @@
         height: 56px;
         width: 56px;
         overflow: hidden;
+        color: #3eb7e9;
       }
 
       .user-card .email {
@@ -222,7 +227,10 @@
       ar-data represent the primary database access
       As we are usiung the firebase service, its aloso handle the authentication process
     -->
-    <ar-data id="arData" signed-in="{{signedIn}}" user="{{fireUser}}"></ar-data>
+    <ar-data id="arData"
+      signed-in="{{signedIn}}"
+      user="{{fireUser}}"
+      mode="{{mode}}"></ar-data>
 
     <!-- User data -->
     <firebase-document
@@ -263,8 +271,8 @@
             </div>
             <!-- Right menu button -->
             <span>
-              <span class="user-pseudo" hidden$="[[displayUserName]]">[[user.name]]</span>
-              <paper-menu-button id="userMenu" allow-outside-scroll horizontal-align="right" ignore-select>
+              <span class="user-pseudo" hidden$="[[!displayUserName]]">[[user.name]]</span>
+              <paper-menu-button id="userMenu" allow-outside-scroll horizontal-align="right">
                 <paper-icon-button
                   class="dropdown-trigger profileBtn"
                   condensed$="[[_computeCondensed(largeScreen, condensed)]]"
@@ -314,11 +322,17 @@
           </template>
         </app-header>
 
-        <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
+        <iron-pages role="main" selected="[[page]]" attr-for-selected="name" fallback-selection="404">
           <!-- Home view -->
           <ar-accueil name="accueil"></ar-accueil>
           <!-- User view -->
           <div name="user">User</div>
+
+          <div name="nimda"></div>
+
+          <div name="404">
+            <h1>404</h1>
+          </div>
         </iron-pages>
         <ar-forms id="formDialog" name="signIn"></ar-forms>
       </app-header-layout>
@@ -352,9 +366,11 @@
           notify: true
         },
 
-        granted: {
-          type: Boolean,
+        mode: {
+          type: String,
           notify: true,
+          reflectToAttribute: true,
+          observer: 'modeChanged'
         },
 
         menu: {
@@ -405,6 +421,9 @@
 
       logout: function () {
         this.$.arData.logoutUser();
+      },
+
+      modeChanged: function (e) {
       },
 
       _signIn: function (e) {

@@ -3,7 +3,7 @@
     ".read": false,
     ".write": false,
     "users": {
-      ".read": "(auth != null)",
+      ".read": true,
       "$users": {
         ".write": "(auth.uid == $users || root.child('adminisrators').hasChild(auth.uid))",
         "basicInfo": {
@@ -22,6 +22,30 @@
     },
     "menu": {
       ".read": true
+    },
+    "adminisrators": {
+      ".read": true,
+      "$users": {
+        ".write": "(auth.uid == $users || root.child('adminisrators').hasChild(auth.uid))"
+      }
+    },
+    "moderators": {
+      ".read": true,
+      "$users": {
+        ".write": "(auth.uid == $users || root.child('adminisrators').hasChild(auth.uid))"
+      }
+    },
+    "editors": {
+      ".read": true,
+      "$users": {
+        ".write": "(auth.uid == $users || root.child('adminisrators').hasChild(auth.uid) || root.child('moderators').hasChild(auth.uid))"
+      }
+    },
+    "viewers": {
+      ".read": true,
+      "$users": {
+        ".write": "(auth.uid != null)"
+      }
     }
   }
 }

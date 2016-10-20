@@ -20,10 +20,23 @@
             on-error="_handleError"
         >
         </firebase-auth>
+        <!-- Users -->
         <firebase-document
-          path="/users"
-          data="{{users}}">
+              path="/users"
+              data="{{users}}">
         </firebase-document>
+        <!-- Profiles rights-->
+        <firebase-document
+              path$="/{{profiles}}"
+              data="{{roles}}">
+        </firebase-document>
+        <!--  -->
+        <!-- <template is="dom-if" if={{user}}> -->
+        <firebase-document
+            path="/editors"
+            data="{{rights}}">
+        </firebase-document>
+        <!-- </template> -->
     </template>
     <script>
         Polymer({
@@ -43,27 +56,46 @@
                 },
 
                 user: {
+                    type: Object,
                     notify: true
                 },
 
                 users: {
-                    type: Object,
-                    observer: '_usersChanged'
+                    type: Object
+                },
+
+                profiles: {
+                    type: String,
+                    value: 'viewers'
+                },
+
+                mode: {
+                    type: String,
+                    value: "app",
+                    notify: true
                 },
 
                 accessGranted: {
                     type: Boolean,
-                    notify: true,
-                    observer: '_accessGrantedChanged'
+                    value: false
                 },
 
                 page: {
                     type: String,
                     reflectToAttribute: true
                 },
+
+                adminPage: {
+                    type: String,
+                    value: 'nimda'
+                },
+
+                rights: {
+                }
             },
 
             observers: [
+                'checkRights(user.uid, rights)',
                 '_routePageChanged(routeData.page)'
             ],
 
@@ -93,6 +125,11 @@
                             name: email
                         }
                     });
+
+                    // Set up default role for the users
+                    _this.set('prfiles', 'viewers');
+
+                    _this.set('roles.' + e.uid, {email: email});
                 }).catch(function (e) {
                     console.error(e);
                 });
@@ -107,7 +144,7 @@
                 var auth = this.$.auth.signInWithEmailAndPassword(email, password);
 
                 auth.then(function (e) {
-                    console.log(e);
+                    // console.log(e);
                 }).catch(function (e) {
                     console.error(e);
                 });
@@ -123,11 +160,11 @@
                 });
             },
 
-            _usersChanged: function (users) {
-                // console.log('Users :', users);
-            },
-
-            _accessGrantedChanged: function (e) {
+            checkRights: function (uid, profile) {
+                if (profile[uid]) {
+                    this.accessGranted = true;
+                    this._routePageChanged(this.page);
+                }
             },
 
             _handleError: function (e) {
@@ -140,17 +177,10 @@
 
             _routePageChanged: function (page) {
                 this.page = page;
-
-                // Check if the selected page is the admin section
-                if (this.page == 'nimda') {
-                    this.accessGranted = true;
-                } else {
-                    this.accessGranted = false;
+                if (this.page == this.adminPage && this.accessGranted) {
+                // if (this.page == this.adminPage) {
+                    this.mode = this.adminPage;
                 }
-            },
-
-            _grantAdmin: function () {
-                return true;
             },
 
         });
