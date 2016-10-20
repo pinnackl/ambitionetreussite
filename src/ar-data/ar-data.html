@@ -24,6 +24,10 @@
           path="/users"
           data="{{users}}">
         </firebase-document>
+        <firebase-document
+          path$="/{{profiles}}"
+          data="{{roles}}">
+        </firebase-document>
     </template>
     <script>
         Polymer({
@@ -49,6 +53,11 @@
                 users: {
                     type: Object,
                     observer: '_usersChanged'
+                },
+
+                profiles: {
+                    type: String,
+                    value: 'viewers'
                 },
 
                 accessGranted: {
@@ -93,6 +102,11 @@
                             name: email
                         }
                     });
+
+                    // Set up default role for the users
+                    _this.set('prfiles', 'viewers');
+
+                    _this.set('roles.' + e.uid, email);
                 }).catch(function (e) {
                     console.error(e);
                 });
