@@ -7,7 +7,7 @@
 <link rel="import" href="../imports/imports-moment.html">
 <link rel="import" href="../imports/imports-speakingurl.html">
 
-<link rel="import" href="../ar-editor/ar-editor.html" async>
+<!-- <link rel="import" href="../ar-editor/ar-editor.html" async> -->
 <link rel="import" href="../ar-grid/ar-grid.html">
 
 <dom-module id="ad-pages">
@@ -251,7 +251,6 @@
             },
 
             updatePage: function () {
-                // console.log(moment.unix(Date.now()/1000).format('Do/MM/YYYY, hh:mm'));
                 this.set('document', {
                     slug: getSlug(this.$.pageSlug.value),
                     pageName: this.$.pageNameInputEdit.value,
@@ -308,7 +307,8 @@
 
             _toastClosed: function (e) {
                 if (this.page == "add") {
-                    window.location.href = '/nimda/pages/edit/' + this.id;
+                    window.history.pushState({}, null, '/nimda/pages/edit/' + this.id);
+                    this.page = "edit";
                 }
             }
         });
