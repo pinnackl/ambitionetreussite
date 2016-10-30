@@ -155,7 +155,7 @@
                         <paper-button raised on-tap="updatePage">
                         <iron-icon icon="check"></iron-icon>VALIDER</paper-button>
                         <paper-button raised on-tap="publishPage">
-                            <iron-icon icon="assignment-turned-in"></iron-icon>PUBLIER</paper-button>
+                            <iron-icon icon="assignment-turned-in"></iron-icon><span hidden$="[[!document.published]]">DE</span>PUBLIER</paper-button>
                     </span>
                 </div>
                 <div class="section-header">
@@ -172,11 +172,8 @@
                     <paper-button raised on-tap="updatePage">
                     <iron-icon icon="check"></iron-icon>VALIDER</paper-button>
                     <paper-button raised on-tap="publishPage">
-                        <iron-icon icon="assignment-turned-in"></iron-icon>PUBLIER</paper-button>
+                        <iron-icon icon="assignment-turned-in"></iron-icon><span hidden$="[[!document.published]]">DE</span>PUBLIER</paper-button>
                 </div>
-            </section>
-            <section name="test">
-                <test-editor></test-editor>
             </section>
         </iron-pages>
         <paper-toast id="stateMessage" horizontal-align="right" always-on-top duration="3000" text="" on-iron-overlay-closed="_toastClosed">
@@ -284,6 +281,12 @@
                     published: false,
                     trash: false
                 });
+                this.isUpdate = true;
+                this.$.stateMessage.text = "Vos modifications ont été sauvegardées!";
+            },
+
+            publishPage: function () {
+                this.set('document.published', !this.document.published);
                 this.isUpdate = true;
                 this.$.stateMessage.text = "Vos modifications ont été sauvegardées!";
             },
