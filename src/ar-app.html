@@ -26,6 +26,7 @@
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 
 <!-- Admin setup -->
 <link rel="import" href="ar-nimda/ar-nimda.html">
@@ -206,6 +207,13 @@
         letter-spacing: 0.1em;
       }
 
+      iron-pages [name=nimda] {
+        height: 80vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
       [hidden] {
         display: none !important;
       }
@@ -328,7 +336,9 @@
           <!-- User view -->
           <div name="user">User</div>
 
-          <div name="nimda"></div>
+          <div name="nimda">
+            <paper-spinner active></paper-spinner>
+          </div>
 
           <div name="404">
             <h1>404</h1>
