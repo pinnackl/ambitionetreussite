@@ -138,9 +138,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template is="dom-bind" id="app">
     <iron-pages id="pager" selected="[[mode]]" attr-for-selected="name" fallback-selection="app">
       <!-- Conditionnal access to ar-nimmda, the admin section -->
-        <ar-nimda name="nimda" mode="{{mode}}"></ar-nimda>
+        <ar-nimda name="nimda" fire-user="{{fireUser}}" mode="{{mode}}"></ar-nimda>
       <!-- Display or not the main app -->
-        <ar-app name="app" mode="{{mode}}"></ar-app>
+        <ar-app name="app" fire-user="{{fireUser}}" mode="{{mode}}"></ar-app>
     </iron-pages>
     <!-- Admin delete dialog -->
     <paper-dialog class="delete-dialog" modal>

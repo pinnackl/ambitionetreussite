@@ -355,6 +355,11 @@
           observer: '_pageChanged'
         },
 
+        fireUser: {
+          type: Object,
+          notify: true
+        },
+
         signedIn: {
           observer: '_signedInChanged'
         },
@@ -366,6 +371,9 @@
           notify: true
         },
 
+        /**
+         * Represent the app mode : App | Admin
+         */
         mode: {
           type: String,
           notify: true,

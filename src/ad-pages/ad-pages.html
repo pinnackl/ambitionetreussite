@@ -83,6 +83,11 @@
             pattern="/:id"
             data="{{surouteData}}"></app-route>
 
+        <firebase-document
+          path="/users/[[fireUser.uid]]/basicInfo"
+          data="{{user}}">
+        </firebase-document>
+
         <h1>Gérer les pages</h1>
         <iron-pages selected="[[page]]" attr-for-selected="name">
             <section name="list">
@@ -204,6 +209,14 @@
                     value: false
                 },
 
+                fireUser: {
+                    type: Object
+                },
+
+                user: {
+                    type: Object
+                }
+
             },
 
             observers: [
@@ -219,7 +232,7 @@
                 var _this = this;
                 this.gridHeader = [
                     {name: "Nom", key: "pageName"},
-                    {name: "Auteur", key: ""},
+                    {name: "Auteur", key: "author"},
                     {name: "Creation", key: "created"},
                     {name: "Edition", key: "edited"},
                 ];
@@ -242,7 +255,8 @@
                     content: this.$.addEditor.getValue(),
                     created: Date.now()/1000,
                     edited: Date.now()/1000,
-                    author: "",
+                    author: this.user.name,
+                    authorID: this.fireUser.uid,
                     published: false,
                     trash: false
                 });
@@ -257,7 +271,8 @@
                     content: this.$.editor.getValue(),
                     created: this.document.created,
                     edited: Date.now()/1000,
-                    author: "",
+                    author: this.document.author,
+                    authorID: this.document.authorID,
                     published: false,
                     trash: false
                 });
@@ -269,6 +284,9 @@
                 this.set('document.trash', true);
                 this.isUpdate = true;
                 this.$.stateMessage.text = "Vos modifications ont été sauvegardées!";
+            },
+
+            _userChanged: function (user) {
             },
 
             _triggerModal: function (e, detail) {
@@ -284,7 +302,8 @@
                 if (this.page == 'list') {
                     // Reset editor values
                     this.$.pageNameInputAdd.value = null;
-                    this.$.addEditor.value = null;
+                    // ...
+                    this.$.addEditor.setValue('');
                 }
             },
 

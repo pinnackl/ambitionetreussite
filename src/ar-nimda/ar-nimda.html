@@ -19,28 +19,8 @@
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 
 <!-- Editor -->
-<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-e.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-tool-behavior.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-tool-styles.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/bold.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/italic.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/underline.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/strike.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/clear.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/code.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/link.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/image.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/audio.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/video.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/ordered.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/unordered.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/indent.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/outdent.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/heading.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/justify.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/blockquote.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/undo.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/redo.html">
+<link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
+<link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
 
 <!-- Custom element -->
 <link rel="import" href="../ar-data/ar-data.html">
@@ -104,25 +84,7 @@
                 data="{{routeData}}"
                 tail="{{subroute}}"></app-route>
 
-        <!--
-          ar-data represent the primary database access
-          As we are usiung the firebase service, its aloso handle the authentication process
-        -->
-        <!-- <ar-data id="arData" data="{{data}}" user="{{user}}"></ar-data> -->
-
-        <!-- Access to menu data -->
-        <firebase-document
-          path="/menu"
-          data="{{menuData}}">
-        </firebase-document>
-
-        <firebase-document
-            path="/pages"
-            data="{{pageData}}">
-        </firebase-document>
-
         <page-title base-title="Nimda" title="[[_ucFirst(page)]]" direction="reversed"></page-title>
-
 
         <app-drawer-layout fullbleed force-narrow>
 
@@ -152,8 +114,8 @@
 
                 <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
                     <ad-dashboard name="dashboard"></ad-dashboard>
-                    <ad-pages route="{{subroute}}" data="{{data}}" name="pages"></ad-pages>
-                    <ad-posts route="{{subroute}}" data="{{data}}" name="posts"></ad-posts>
+                    <ad-pages route="{{subroute}}" fire-user="{{fireUser}}"name="pages"></ad-pages>
+                    <ad-posts route="{{subroute}}" name="posts"></ad-posts>
                 </iron-pages>
 
             </app-header-layout>
@@ -173,6 +135,15 @@
                     type: String,
                     value: '/pages',
                     observer: '_pathChanged'
+                },
+
+                user: {
+                    type: Object,
+                    observer: '_userChanged'
+                },
+
+                fireUser: {
+                  type: Object
                 },
 
                 pageData: {
@@ -198,8 +169,13 @@
             },
 
             observers: [
-                '_routePageChanged(routeData.page)'
+                '_signedInChanged(signedIn)',
+                '_routePageChanged(routeData.page)',
             ],
+
+            _signedInChanged: function (signed) {
+                console.info('The user is signed in: ', signed);
+            },
 
             _pathChanged: function (e) {
                 console.info('The path have changed');
@@ -253,6 +229,10 @@
 
             _routePageChanged: function(page) {
                 this.page = page || 'dashboard';
+
+                // Scroll to the top of the page on every *route* change. Use `Polymer.AppLayout.scroll`
+                // with `behavior: 'silent'` to disable header scroll effects during the scroll.
+                Polymer.AppLayout.scroll({ top: 0, behavior: 'silent' });
 
                 // Force the drawer to close
                 this.$.appDrawer.opened = false;
