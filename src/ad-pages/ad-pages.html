@@ -117,6 +117,10 @@
                   path="/pages"
                   data="{{data}}">
                 </firebase-document>
+                <div>
+                    <a href="/nimda/pages/list" title="RETOUR">
+                        <paper-button raised><iron-icon icon="arrow-back"></iron-icon>RETOUR</paper-button></a>
+                </div>
                 <h2>Ajouter une nouvelle page</h2>
                 <div class="section-header">
                     <paper-input
@@ -136,6 +140,10 @@
                   path="/pages/[[id]]"
                   data="{{document}}">
                 </firebase-document>
+                <div>
+                    <a href="/nimda/pages/list" title="RETOUR">
+                        <paper-button raised><iron-icon icon="arrow-back"></iron-icon>RETOUR</paper-button></a>
+                </div>
                 <h2>Modifier une page : [[document.pageName]]</h2>
                 <div class="section-header">
                     <paper-input
