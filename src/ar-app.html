@@ -11,43 +11,45 @@
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+
+<link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/page-title/page-title.html">
-<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../bower_components/iron-image/iron-image.html">
-<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
-
-<!-- Admin setup -->
-<link rel="import" href="ar-nimda/ar-nimda.html">
 
 <!-- Custom element -->
 <link rel="import" href="ar-data/ar-data.html">
 <link rel="import" href="ar-logo/ar-logo.html">
+
 <link rel="import" href="ar-forms/ar-forms.html">
-<link rel="import" href="ar-firebase/ar-firebase.html">
+
+<!-- <link rel="import" href="ar-firebase/ar-firebase.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-storage-script.html"> -->
 
 <dom-module id="ar-app">
-
   <template>
-
-    <style>
-
+    <style include="app-grid-style">
       :host {
         display: block;
         --app-primary-color: #4285f4;
         --app-secondary-color: black;
 
+        --app-grid-columns: 3;
+        --app-grid-item-height: 30vh;
+        --app-grid-expandible-item-columns: 3;
       }
 
       app-header {
@@ -72,8 +74,17 @@
 
         color: #fff;
       }
+
       app-header paper-icon-button {
         --paper-icon-button-ink-color: white;
+      }
+
+      app-header .logo[condensed] {
+        position: absolute;
+        top: 55px;
+        vertical-align: middle;
+        width: 45px;
+        height: 75px;
       }
 
       .drawer-list {
@@ -92,15 +103,6 @@
       }
       .drawer-list a.subroute {
         padding-left: 32px;
-      }
-
-      app-toolbar[sticky] {
-        /* Liear gradient background */
-        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+7,ffffff+15,ffffff+40,ffffff+70&0+0,0.2+8,0.4+15,0.3+40,0+70 */
-        background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,0.05) 7%,rgba(255,255,255,0.07) 8%,rgba(255,255,255,0.12) 15%,rgba(255,255,255,0.17) 40%,rgba(255,255,255,0) 75%); /* FF3.6-15 */
-        background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,0.05) 7%,rgba(255,255,255,0.07) 8%,rgba(255,255,255,0.12) 15%,rgba(255,255,255,0.17) 40%,rgba(255,255,255,0) 75%); /* Chrome10-25,Safari5.1-6 */
-        background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.05) 7%,rgba(255,255,255,0.07) 8%,rgba(255,255,255,0.12) 15%,rgba(255,255,255,0.17) 40%,rgba(255,255,255,0) 75%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#00ffffff',GradientType=1 ); /* IE6-9 */
       }
 
       paper-tabs {
@@ -150,68 +152,63 @@
         margin-right: .4em;
       }
 
-      .user-card {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        align-content: space-around;
-        padding: 0.5em;
+      iron-pages {
+        min-height: 90vh;
+      }
+
+      .end {
+        background-color: #f8f8f8;        
+      }
+
+      .footer {
+        min-height: 30vh;
+      }
+
+      .item:nth-child(4) {
+        @apply(--app-grid-expandible-item);
+        height: 24px;
+      }
+
+      .right {
+        text-align: center;
+        vertical-align: middle;
+        font-weight: bold;
+        font-size: 12px;
+        line-height: 24px;
+        color: #757575;
       }
       
-      .user-pseudo {
-        user-select: none;
-        -ms-user-select: none;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        color: #FFF;
+      .right iron-icon {
+        height: 18px;
+        vertical-align: middle; 
+      }
+
+      .item .footer-cln-header {
         font-weight: bold;
+        font-size: 12px;
+        line-height: 24px;
+        color: #179BD7;
       }
 
-      .user-card iron-icon {
-        -webkit-border-radius: 50%;
-        border-radius: 50%;
-        height: 56px;
-        width: 56px;
-        overflow: hidden;
-        color: #3eb7e9;
+      .item ul, .item li {
+        list-style: none;
       }
 
-      .user-card .email {
-        color: rgba(0,0,0,0.87);
-        font-size: 14px;
-        line-height: 16px;
-        margin-top: 24px;
-        max-width: 217px;
-        min-width: 106px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .user-card .signout {
-        font-weight: 500;
-        font-size: 14px;
-        letter-spacing: .53px;
-        line-height: 16px;
-        margin-top: 12px;
-        max-width: 217px;
-        min-width: 106px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .user-card .signout a {
-        color: #3eb7e9;
+      .item li a {
+        color: #757575;
+        font-size: 12px;
         text-decoration: none;
-        font-size: 16px;
-        font-weight: 600;
-        letter-spacing: 0.1em;
+        line-height: 24px;
       }
 
-      iron-pages [name=nimda] {
-        height: 80vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+      .item li .github {
+        vertical-align: middle;
+        width: 2em;
+        height: 2em;
+      }
+
+      .item li .social {
+        line-height: 24px;
       }
 
       [hidden] {
@@ -249,13 +246,13 @@
     <app-drawer-layout fullbleed force-narrow>
 
       <!-- Drawer content -->
-      <app-drawer id="appDrawer" swipe-open hidden$="[[_computeHidden(largeScreen)]]">
-        <app-toolbar></app-toolbar>
+      <app-drawer id="appDrawer" swipe-open>
         <app-toolbar>Menu</app-toolbar>
-
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="nimda" href="/nimda">Nimda</a>
-          <a name="home" href="/home">Home</a>
+          <template is="dom-repeat" items={{menu}} 
+            as=item index-as=index>
+            <a href="[[item.path]]" name="[[item.name]]" title="[[_ucFirst(item.label)]]">[[_ucFirst(item.label)]]</a>
+          </template>
         </iron-selector>
       </app-drawer>
 
@@ -263,16 +260,12 @@
       <app-header-layout>
 
         <!-- Main header -->
-        <app-header condenses reveals fixed="[[_computeHidden(largeScreen)]]" effects="parallax-background">
-          <!-- Upper toolbar -->
+        <app-header condenses reveals effects="parallax-background" fixed>
           <app-toolbar>
             <!-- Left menu button -->
-            <paper-icon-button icon="menu"
-              drawer-toggle
-              hidden$="[[_computeHidden(largeScreen)]]">
-            </paper-icon-button>
+            <paper-icon-button icon="menu" drawer-toggle hidden$="[[_computeHidden(largeScreen)]]"></paper-icon-button>
             <!-- left / centered (minified)logo -->
-            <div class="logo" title>
+            <div class="logo" main-title condensed$="[[_computeCondensed(largeScreen, condensed)]]">
               <ar-logo center$="[[!_computeHidden(largeScreen)]]" condensed$="[[_computeCondensed(largeScreen, condensed)]]">
                 <span class="title">AMBITION <span class="titleAnd">&amp;</span> RÉUSSITE</span>
               </ar-logo>
@@ -325,7 +318,6 @@
                 </template>
               </paper-tabs>
               <div title></div>
-              <paper-icon-button icon="search"></paper-icon-button>
             </app-toolbar>
           </template>
         </app-header>
@@ -333,17 +325,53 @@
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name" fallback-selection="404">
           <!-- Home view -->
           <ar-accueil name="accueil"></ar-accueil>
+          <!-- Article view -->
+          <ar-article name="article"></ar-article>
+          <!-- About view -->
+          <ar-a-propos name="a-propos"></ar-a-propos>
           <!-- User view -->
           <div name="user">User</div>
 
-          <div name="nimda">
+          <!-- <div name="nimda">
             <paper-spinner active></paper-spinner>
-          </div>
+          </div> -->
 
           <div name="404">
             <h1>404</h1>
           </div>
         </iron-pages>
+        <div class="end footer">
+          <div class="app-grid">
+            <div class="item">
+              <ul>
+                <div class="footer-cln-header">Projects</div>
+                <!-- <li><a href="/projects/detail/pinnackl" title="Pinnackl Press">Pinnackl Press</a></li> -->
+                <!-- <li><a href="/projects/detail/backdrop" title="Backdrop">Backdrop</a></li> -->
+                <!-- <li><a href="/projects/detail/ok-mom2" title="OK Mom2">OK Mom2</a></li> -->
+              </ul>
+            </div>
+            <div class="item">
+              <ul>
+                <div class="footer-cln-header">A propos</div>
+                <!-- <li><a href="/about" title="About Pinnackl">About Pinnackl</a></li> -->
+              </ul>
+            </div>
+            <div class="item">
+              <ul>
+                <li>
+                  <div class="footer-cln-header">Retrouver nous</div>
+                  <div class="social">
+                    <!-- <a href="https://github.com/pinnackl" title="Github">
+                      <iron-image class="github" src="/images/github.svg" preload sizing="cover"></iron-image>
+                      <span>Github</span>
+                    </a> -->
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="item end right">Ambition &amp; Réussite<iron-icon icon="copyright"></iron-icon>{{year}}</div>
+          </div>
+        </div>
         <ar-forms id="formDialog" name="signIn"></ar-forms>
       </app-header-layout>
 
@@ -395,6 +423,14 @@
           type: Object,
           value: function () {
             return this._getMenu();
+          }
+        },
+
+        year: {
+          type: String,
+          value: function () {
+            var d = new Date();
+            return d.getFullYear();
           }
         },
 
@@ -499,29 +535,14 @@
             label: 'accueil'
           },
           {
-            name: 'menu',
-            path: 'menu',
-            label: 'menu'
+            name: 'article',
+            path: 'article',
+            label: 'article'
           },
           {
-            name: 'menu',
-            path: 'menu',
-            label: 'menu'
-          },
-          {
-            name: 'menu',
-            path: 'menu',
-            label: 'menu'
-          },
-          {
-            name: 'menu',
-            path: 'menu',
-            label: 'menu'
-          },
-          {
-            name: 'menu',
-            path: 'menu',
-            label: 'Menu'
+            name: 'a-propos',
+            path: 'a-propos',
+            label: 'a propos'
           },
         ];
       },
