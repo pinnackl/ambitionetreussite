@@ -1,31 +1,99 @@
-<!--
-A comment describing this element
-
-Example:
-
-    <my-elem></my-elem>
-
-Example:
-
-    <my-elem>
-      <h2>Hello my-elem</h2>
-    </my-elem>
-
-@demo demo/index.html
--->
-
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../shared-styles.html">
 <dom-module id="ar-article">
-	<template>
-		<style>
-			:host {
-				display: block;
-			}
-		</style>
-	<h1>Article</h1>
-	</template>
-	<script>
-		Polymer({
-			is: 'ar-article'
-		});
-	</script>
+    <template>
+        <style include="shared-styles app-grid-style">
+            :host {
+                display: block;
+
+                --app-grid-columns: 3;
+                --app-grid-item-height: 200px;
+            }
+
+            .item {
+                padding: 0 1em 2em 1em;
+            }
+
+            paper-material {
+                height: 100%;
+            }
+
+            paper-material iron-image {
+                width : 40%;
+                height: 100%;
+                vertical-align: top;
+            }
+
+            paper-material .description {
+                display: inline-block;
+            }
+        </style>
+        <app-route
+            route="{{route}}"
+            pattern="/:page"
+            data="{{routeData}}"
+            tail="{{subroute}}"></app-route>
+        <app-route 
+            route="{{subroute}}"
+            pattern="/:article"
+            data="{{subRouteData}}"></app-route>
+        <div class="material">
+            <h1>Article [[page]]</h1>
+            <iron-pages selected="[[page]]" attr-for-selected="name">
+                <section name="nouveau">Create</section>
+                <section name="liste">
+                    <div class="app-grid">
+                        <template is="dom-repeat" items={{plop}} 
+                            as=item index-as=index>
+                            <article class="item">
+                                <paper-material elevation="1">
+                                    <iron-image src="http://placehold.it/480/480" preload sizing="cover"></iron-image>
+                                    <div class="description">
+                                        <h1>[[item.name]]</h1>
+                                    </div>
+                                </paper-material>
+                            </article>
+                        </template>
+                    </div>
+                </section>
+                <section name="editer">
+                    <div class="material">
+                        <paper-input label="Titre"></paper-input>
+                    </div>
+                </section>
+            </iron-pages>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'ar-article',
+
+            properties: {
+                route: {
+                    type: Object
+                },
+            },
+
+            observers: [
+                '_routePageChanged(routeData.page)',
+            ],
+
+            ready: function () {
+                this.plop = [{name: 'plop1'}, {name: 'plop2'}, {name: 'plop3'}, {name: 'plop1'}, {name: 'plop2'}, {name: 'plop3'}];
+            },
+
+            _routePageChanged: function (page) {
+                this.page = page || 'liste';
+                this.subpage = this.page;
+                this.editData = {
+                };
+                if (this.user != null) {
+                    // this.checkRights(this.user.uid, this.rights);
+                }
+                if (this.isAdmin && this.page == 'create') {
+                    // this.editMode = true;
+                }
+            },
+        });
+    </script>
 </dom-module>

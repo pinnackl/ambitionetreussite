@@ -1,31 +1,19 @@
-<!--
-A comment describing this element
-
-Example:
-
-    <my-elem></my-elem>
-
-Example:
-
-    <my-elem>
-      <h2>Hello my-elem</h2>
-    </my-elem>
-
-@demo demo/index.html
--->
-
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../shared-styles.html">
 <dom-module id="ar-a-propos">
-	<template>
-		<style>
-			:host {
-				display: block;
-			}
-		</style>
-		<h1>A propos</h1>
-	</template>
-	<script>
-		Polymer({
-			is: 'ar-a-propos'
-		});
-	</script>
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+        </style>
+        <div class="material">
+            <h1>A propos</h1>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'ar-a-propos'
+        });
+    </script>
 </dom-module>
