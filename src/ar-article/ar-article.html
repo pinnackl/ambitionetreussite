@@ -1,4 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
+
 <link rel="import" href="../shared-styles.html">
 <dom-module id="ar-article">
     <template>
@@ -11,21 +14,126 @@
             }
 
             .item {
-                padding: 0 1em 2em 1em;
+                padding: 0 0.5em 1em 0.5em;
             }
 
             paper-material {
                 height: 100%;
             }
 
-            paper-material iron-image {
+            paper-material iron-image.thumbnail {
                 width : 40%;
                 height: 100%;
                 vertical-align: top;
             }
 
             paper-material .description {
+                width : 40%;
+                height: 100%;
                 display: inline-block;
+            }
+
+            article paper-material {
+                overflow: hidden;
+                border-radius: 3px;
+                background-color: #ffffff;
+            }
+
+            article paper-material:hover .filter{
+                cursor: pointer;
+                transform: translateX(0%);
+            }
+
+            article .filter {
+                position: absolute;
+                z-index: 1;
+                width : 40%;
+                height: 100%;
+                color: #ffffff;
+                font-weight: 400;
+                font-size: 12px;
+                background-color: rgba(0,0,0,0);
+                background-image: -webkit-linear-gradient(rgba(0,0,0,0.6) 0%,rgba(0,0,0,.6) 75%,rgba(0,0,0,.6) 100%); 
+                background-image: linear-gradient(rgba(0,0,0,0.6) 0%,rgba(0,0,0,.6) 75%,rgba(0,0,0,.6) 100%);
+                transform: translateX(-100%);
+                -webkit-transition: all .2s ease;
+                -moz-transition: all .2s ease;
+                -ms-transition: all .2s ease;
+                -o-transition: all .2s ease;
+                transition: all .2s ease;
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                justify-content: center;
+                align-items: center;
+            }
+
+            article .filter .avatar-ctn {
+                width: 64px;
+                height: 64px;
+                border-radius: 100%;
+                overflow: hidden;
+            }
+
+            article .filter .avatar-ctn iron-image.avatar {
+                width: 64px;
+                height: 64px;
+            }
+
+            article .tags {
+                position: absolute;
+                right: 0;
+                bottom: 36px;
+                width: 60%;
+                height: 36px;
+                padding: 0 8px;
+                text-align: left;
+                box-sizing: border-box;
+            }
+            
+            article .tags .tag{
+                display: inline-block;
+                background-color: #56585c;
+                color: #ffffff;
+                font-size: 10px;
+                font-weight: 400;
+                text-align: center;
+                padding: 2px 5px;
+                border-radius: 2px;
+                box-sizing: border-box;
+            }
+
+            article .tags .tag:hover {
+                background-color: #3eb7e9;
+            }
+
+            article .social {
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                width: 60%;
+                height: 36px;
+                padding: 0 8px;
+                text-align: right;
+                box-sizing: border-box;
+            }
+
+
+            article .social .circle {
+                width: 24px;
+                height: 24px;
+                margin: 6px;
+                display: inline-block;
+                color: #56585c;
+            }
+
+            article .social .circle > paper-badge {
+            }
+
+            @media (max-width: 799px) {
+                :host {
+                    --app-grid-columns: 1;
+                }
             }
         </style>
         <app-route
@@ -47,10 +155,33 @@
                             as=item index-as=index>
                             <article class="item">
                                 <paper-material elevation="1">
-                                    <iron-image src="http://placehold.it/480/480" preload sizing="cover"></iron-image>
-                                    <div class="description">
-                                        <h1>[[item.name]]</h1>
-                                    </div>
+                                    <a class="article" href="#" title="[[item.name]]">
+                                        <div class="filter">
+                                            <div class="avatar-ctn">
+                                                <iron-image class="avatar" src="http://placehold.it/64/ffffff/000000" preload sizing="cover" style="background-color: lightgray;"></iron-image>
+                                            </div>
+                                            <div class="autor-name">Par R.R.Martins,</div>
+                                            <div class="published">il y a 20 minutes</div>
+                                        </div>
+                                        <iron-image class="thumbnail" src="http://placehold.it/480/3eb7e9/ffffff" preload sizing="cover"></iron-image>
+                                        <div class="description">
+                                            <h1>[[item.name]]</h1>
+                                        </div>
+                                    </a>
+                                    <footer>
+                                        <div class="tags">
+                                            <a class="tag" href="#">StarCraft2</a>
+                                            <a class="tag" href="#">eSport</a>
+                                            <a class="tag" href="#">eSport</a>
+                                            <a class="tag" href="#">eSport</a>
+                                            <a class="tag" href="#">eSport</a>
+                                        </div>
+                                        <div class="social">
+                                            <span class="circle">
+                                                <iron-icon icon="question-answer"></iron-icon>
+                                                <paper-badge label="3"></paper-badge></span>
+                                        </div>
+                                    </footer>
                                 </paper-material>
                             </article>
                         </template>
