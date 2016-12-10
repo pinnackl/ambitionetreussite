@@ -1,0 +1,363 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/social-media-icons/social-media-icons.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+
+<link rel="import" href="../shared-styles.html">
+<dom-module id="ar-article-page">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                height: 100%;
+            }
+
+            .post .cover {
+                position: relative;
+                width: 100%;
+                height: 60vh;
+            }
+
+            .post .cover iron-image {
+                width: 100%;
+                height: 100%;
+            }
+
+            .post .filter {
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 1;
+                width : 100%;
+                height: 100%;
+                color: #ffffff;
+                font-weight: 400;
+                font-size: 12px;
+                background-color: rgba(0,0,0,0);
+                background-image: -webkit-linear-gradient(rgba(0,0,0,0.4) 0%,rgba(0,0,0,.4) 75%,rgba(0,0,0,.4) 100%); 
+                background-image: linear-gradient(rgba(0,0,0,0.4) 0%,rgba(0,0,0,.4) 75%,rgba(0,0,0,.4) 100%);
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .post .filter h1.title {
+                color: #f7f7f7;
+                font-size: 47px;
+                line-height: 52px;
+                width: 80%;
+                text-align: center;
+                text-transform: none;
+                letter-spacing: 0px;
+            }
+
+            .post .filter .article-info {
+                display: block;
+                width: 90%;
+                margin-top: 20px;
+                font-size: 20px;
+
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -webkit-flex-direction: row;
+                -ms-flex-direction: row;
+                flex-direction: row;
+                -webkit-flex-wrap: nowrap;
+                -ms-flex-wrap: nowrap;
+                flex-wrap: nowrap;
+                -webkit-justify-content: flex-start;
+                -ms-flex-pack: start;
+                justify-content: flex-start;
+                -webkit-align-content: stretch;
+                -ms-flex-line-pack: stretch;
+                align-content: stretch;
+                -webkit-align-items: flex-start;
+                -ms-flex-align: start;
+                align-items: flex-start;
+
+            }
+
+            .post .filter .article-info .avatar-ctn,
+            .post .material.footer .comment .avatar-ctn {
+                width: 64px;
+                height: 64px;
+                border-radius: 100%;
+                overflow: hidden;
+                display: inline-block;
+                vertical-align: middle;
+            }
+            
+            .post .filter .article-info .author-ctn,
+            .post .material.footer .comment .author-ctn {
+                display: inline-block;
+                vertical-align: middle;
+                padding-left: 12px;
+            }
+            
+            .post .filter .article-info .social {
+                height: 64px;
+                padding: 0 8px;
+                text-align: right;
+                box-sizing: border-box;
+                z-index: 1;
+                -webkit-order: 0;
+                -ms-flex-order: 0;
+                order: 0;
+                -webkit-flex: 1 1 auto;
+                -ms-flex: 1 1 auto;
+                flex: 1 1 auto;
+                -webkit-align-self: auto;
+                -ms-flex-item-align: auto;
+                align-self: auto;
+            }
+
+            .post .filter .article-info .autor-name {
+            }
+
+            .post .filter .article-info .autor-name a {
+                text-decoration: none;
+                color: #f7f7f7;
+            }
+
+            .post .material.footer .comment a {
+                text-decoration: none;
+                color: #56585c;
+            }
+
+            .post .filter .article-info .autor-name a:hover,
+            .post .material.footer .comment a:hover {
+                text-decoration: underline;
+            }
+
+            .post .filter .article-info .published {
+                font-size: 0.6em;
+            }
+
+            .post .filter .article-info .category {
+                height: 64px;
+                padding-left: 12px;
+                vertical-align: middle;
+                -webkit-order: 0;
+                -ms-flex-order: 0;
+                order: 0;
+                -webkit-flex: 1 1 auto;
+                -ms-flex: 1 1 auto;
+                flex: 1 1 auto;
+                -webkit-align-self: auto;
+                -ms-flex-item-align: auto;
+                align-self: auto;
+            }
+
+            .post .filter .article-info .category a.tag {
+                display: inline-block;
+                background-color: #3eb7e9;
+                color: #ffffff;
+                text-align: center;
+                text-decoration: none;
+                padding: 2px 5px;
+                border-radius: 2px;
+                box-sizing: border-box;
+            }
+
+            .post .filter .article-info .category .tag:hover {
+                background-color: #3eb7e9;
+            }
+
+            .post .filter .avatar-ctn iron-image.avatar,
+            .post .footer .comment .author .avatar-ctn iron-image.avatar {
+                width: 64px;
+                height: 64px;
+            }
+
+            .post .material.content {
+                position: relative;
+                background-color: #ffffff;
+                max-width: 1000px;
+                margin-left: auto;
+                margin-right: auto;
+                z-index: 3;
+                -moz-transform: translateY(-100px);
+                -webkit-transform: translateY(-100px);
+                -o-transform: translateY(-100px);
+                -ms-transform: translateY(-100px);
+                transform: translateY(-100px);
+            }
+
+            .post .material.footer {
+                min-height: 128px;
+                margin: 0;
+            }
+
+            .post .material.footer h2 {
+                color: #56585c;
+            }
+
+            .post .material.footer h2 .icon {
+                padding-right: 12px;
+            }
+
+            .post .material.footer:before {
+                display: block;
+                content: '';
+                width: 30%;
+                border-bottom: solid 1px #56585c
+            }
+
+            .post .material.footer .social paper-button {
+                color: #ffffff;
+            }
+            
+            .post .material.footer .social paper-button a {
+                display: inline-block;
+                color: #ffffff;
+                text-decoration: none;
+            }
+
+            .post .material.footer .social paper-button.facebook {
+                background-color: #3B5998;
+            }
+            
+            .post .material.footer .social paper-button.facebook social-media-icons {
+                margin-right: 8px;
+                vertical-align: middle;
+            }
+
+            .post .material.footer .comment .material {
+                background-color: #F7F7F7;
+                min-height: 128px;
+                margin: 0 0 12px 0;
+            }
+            
+            .post .material.footer .comment .material .comment {
+                margin-top: 8px;
+            }
+
+            .post .material.footer .comment .material .published {
+                font-size: 0.6em;
+            }
+
+            .post .material.footer .comment .avatar-ctn {
+                display: inline-block;
+            }
+
+            /* Mobil */
+            @media (max-width: 799px) {
+                .post .material {
+                    margin-top: 0;
+                }
+
+                .post .material.content {
+                    -moz-transform: translateY(0px);
+                    -webkit-transform: translateY(0px);
+                    -o-transform: translateY(0px);
+                    -ms-transform: translateY(0px);
+                    transform: translateY(0px);
+                }
+            }
+        </style>
+        <div class="post">
+            <div class="cover">
+                <iron-image src="https://static.pexels.com/photos/25833/pexels-photo-25833.jpg" preload style="background: #3eb7e9;" sizing="cover"></iron-image>
+                <!-- <iron-image src="http://placeholda.it/720/3eb7e9/ffffff" preload style="background: #3eb7e9;" sizing="cover"></iron-image> -->
+                <div class="filter">
+                    <h1 class="title">Plop is the new plop of the greatest plop even plopped !</h1> 
+                    <div class="article-info">
+                        <div class="avatar-ctn">
+                            <iron-image class="avatar" src="http://placehold.it/64/ffffff/000000" preload sizing="cover" style="background-color: lightgray;"></iron-image>
+                        </div>
+                        <div class="author-ctn">
+                            <div class="autor-name">Par <a href="#" title="George R.R Martins">George R. R. Martin</a>,</div>
+                            <div class="published">il y a 20 minutes</div>
+                        </div>
+                        <div class="category">
+                            <a class="tag" href="/categorie/#google" title="Google">Google</a>
+                        </div>
+                        <div class="social">
+                            <span class="circle">
+                                <iron-icon icon="question-answer"></iron-icon>
+                                <paper-badge label="3"></paper-badge></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="material content">
+                <article>
+                    <p>Lorem ipsum Esse quis culpa dolor mollit non laborum consequat exercitation qui ut esse nulla esse cillum nostrud aute in dolor quis do dolor dolore Ut in dolore et sed Duis dolor nisi dolore sunt proident aute Duis do do commodo exercitation dolore eu anim cupidatat dolor esse minim Duis anim in irure in deserunt occaecat pariatur dolore sunt incididunt elit ea labore eiusmod laboris reprehenderit aute aliquip Ut sint quis Excepteur est non irure labore sit irure anim cupidatat proident consequat sunt fugiat do dolor cillum reprehenderit minim in consequat enim esse occaecat pariatur aute qui commodo cillum ut quis laborum ut ex sed veniam ut sunt consectetur mollit fugiat cillum dolore qui cupidatat ex culpa dolore dolore ex Ut irure magna velit nulla eiusmod velit minim magna Ut eu nostrud cupidatat labore anim ut anim amet cillum exercitation in consectetur occaecat deserunt aute fugiat nostrud nostrud anim elit occaecat eiusmod non Duis in do incididunt tempor in consequat ut consequat veniam nulla Ut in eu dolor tempor commodo nostrud laboris ex elit minim nisi labore nisi incididunt dolor incididunt aute do labore occaecat ullamco in ut quis sit tempor pariatur aute sint sint sint est dolore eiusmod ut dolor qui do ea sit nulla proident commodo do magna dolore ad eiusmod eiusmod voluptate dolor Duis sed non minim ut aute dolor sit adipisicing amet consectetur aliquip sint officia dolore culpa nulla reprehenderit amet eu fugiat in in in aute in quis veniam esse voluptate laborum ut cupidatat laboris laboris quis Ut do dolore tempor.</p>
+                    <p>Lorem ipsum Esse quis culpa dolor mollit non laborum consequat exercitation qui ut esse nulla esse cillum nostrud aute in dolor quis do dolor dolore Ut in dolore et sed Duis dolor nisi dolore sunt proident aute Duis do do commodo exercitation dolore eu anim cupidatat dolor esse minim Duis anim in irure in deserunt occaecat pariatur dolore sunt incididunt elit ea labore eiusmod laboris reprehenderit aute aliquip Ut sint quis Excepteur est non irure labore sit irure anim cupidatat proident consequat sunt fugiat do dolor cillum reprehenderit minim in consequat enim esse occaecat pariatur aute qui commodo cillum ut quis laborum ut ex sed veniam ut sunt consectetur mollit fugiat cillum dolore qui cupidatat ex culpa dolore dolore ex Ut irure magna velit nulla eiusmod velit minim magna Ut eu nostrud cupidatat labore anim ut anim amet cillum exercitation in consectetur occaecat deserunt aute fugiat nostrud nostrud anim elit occaecat eiusmod non Duis in do incididunt tempor in consequat ut consequat veniam nulla Ut in eu dolor tempor commodo nostrud laboris ex elit minim nisi labore nisi incididunt dolor incididunt aute do labore occaecat ullamco in ut quis sit tempor pariatur aute sint sint sint est dolore eiusmod ut dolor qui do ea sit nulla proident commodo do magna dolore ad eiusmod eiusmod voluptate dolor Duis sed non minim ut aute dolor sit adipisicing amet consectetur aliquip sint officia dolore culpa nulla reprehenderit amet eu fugiat in in in aute in quis veniam esse voluptate laborum ut cupidatat laboris laboris quis Ut do dolore tempor.</p>
+                    <p>Lorem ipsum Esse quis culpa dolor mollit non laborum consequat exercitation qui ut esse nulla esse cillum nostrud aute in dolor quis do dolor dolore Ut in dolore et sed Duis dolor nisi dolore sunt proident aute Duis do do commodo exercitation dolore eu anim cupidatat dolor esse minim Duis anim in irure in deserunt occaecat pariatur dolore sunt incididunt elit ea labore eiusmod laboris reprehenderit aute aliquip Ut sint quis Excepteur est non irure labore sit irure anim cupidatat proident consequat sunt fugiat do dolor cillum reprehenderit minim in consequat enim esse occaecat pariatur aute qui commodo cillum ut quis laborum ut ex sed veniam ut sunt consectetur mollit fugiat cillum dolore qui cupidatat ex culpa dolore dolore ex Ut irure magna velit nulla eiusmod velit minim magna Ut eu nostrud cupidatat labore anim ut anim amet cillum exercitation in consectetur occaecat deserunt aute fugiat nostrud nostrud anim elit occaecat eiusmod non Duis in do incididunt tempor in consequat ut consequat veniam nulla Ut in eu dolor tempor commodo nostrud laboris ex elit minim nisi labore nisi incididunt dolor incididunt aute do labore occaecat ullamco in ut quis sit tempor pariatur aute sint sint sint est dolore eiusmod ut dolor qui do ea sit nulla proident commodo do magna dolore ad eiusmod eiusmod voluptate dolor Duis sed non minim ut aute dolor sit adipisicing amet consectetur aliquip sint officia dolore culpa nulla reprehenderit amet eu fugiat in in in aute in quis veniam esse voluptate laborum ut cupidatat laboris laboris quis Ut do dolore tempor.</p>
+                    <p>Lorem ipsum Esse quis culpa dolor mollit non laborum consequat exercitation qui ut esse nulla esse cillum nostrud aute in dolor quis do dolor dolore Ut in dolore et sed Duis dolor nisi dolore sunt proident aute Duis do do commodo exercitation dolore eu anim cupidatat dolor esse minim Duis anim in irure in deserunt occaecat pariatur dolore sunt incididunt elit ea labore eiusmod laboris reprehenderit aute aliquip Ut sint quis Excepteur est non irure labore sit irure anim cupidatat proident consequat sunt fugiat do dolor cillum reprehenderit minim in consequat enim esse occaecat pariatur aute qui commodo cillum ut quis laborum ut ex sed veniam ut sunt consectetur mollit fugiat cillum dolore qui cupidatat ex culpa dolore dolore ex Ut irure magna velit nulla eiusmod velit minim magna Ut eu nostrud cupidatat labore anim ut anim amet cillum exercitation in consectetur occaecat deserunt aute fugiat nostrud nostrud anim elit occaecat eiusmod non Duis in do incididunt tempor in consequat ut consequat veniam nulla Ut in eu dolor tempor commodo nostrud laboris ex elit minim nisi labore nisi incididunt dolor incididunt aute do labore occaecat ullamco in ut quis sit tempor pariatur aute sint sint sint est dolore eiusmod ut dolor qui do ea sit nulla proident commodo do magna dolore ad eiusmod eiusmod voluptate dolor Duis sed non minim ut aute dolor sit adipisicing amet consectetur aliquip sint officia dolore culpa nulla reprehenderit amet eu fugiat in in in aute in quis veniam esse voluptate laborum ut cupidatat laboris laboris quis Ut do dolore tempor.</p>
+                    <p>Lorem ipsum Esse quis culpa dolor mollit non laborum consequat exercitation qui ut esse nulla esse cillum nostrud aute in dolor quis do dolor dolore Ut in dolore et sed Duis dolor nisi dolore sunt proident aute Duis do do commodo exercitation dolore eu anim cupidatat dolor esse minim Duis anim in irure in deserunt occaecat pariatur dolore sunt incididunt elit ea labore eiusmod laboris reprehenderit aute aliquip Ut sint quis Excepteur est non irure labore sit irure anim cupidatat proident consequat sunt fugiat do dolor cillum reprehenderit minim in consequat enim esse occaecat pariatur aute qui commodo cillum ut quis laborum ut ex sed veniam ut sunt consectetur mollit fugiat cillum dolore qui cupidatat ex culpa dolore dolore ex Ut irure magna velit nulla eiusmod velit minim magna Ut eu nostrud cupidatat labore anim ut anim amet cillum exercitation in consectetur occaecat deserunt aute fugiat nostrud nostrud anim elit occaecat eiusmod non Duis in do incididunt tempor in consequat ut consequat veniam nulla Ut in eu dolor tempor commodo nostrud laboris ex elit minim nisi labore nisi incididunt dolor incididunt aute do labore occaecat ullamco in ut quis sit tempor pariatur aute sint sint sint est dolore eiusmod ut dolor qui do ea sit nulla proident commodo do magna dolore ad eiusmod eiusmod voluptate dolor Duis sed non minim ut aute dolor sit adipisicing amet consectetur aliquip sint officia dolore culpa nulla reprehenderit amet eu fugiat in in in aute in quis veniam esse voluptate laborum ut cupidatat laboris laboris quis Ut do dolore tempor.</p>
+                    <p>Lorem ipsum Esse quis culpa dolor mollit non laborum consequat exercitation qui ut esse nulla esse cillum nostrud aute in dolor quis do dolor dolore Ut in dolore et sed Duis dolor nisi dolore sunt proident aute Duis do do commodo exercitation dolore eu anim cupidatat dolor esse minim Duis anim in irure in deserunt occaecat pariatur dolore sunt incididunt elit ea labore eiusmod laboris reprehenderit aute aliquip Ut sint quis Excepteur est non irure labore sit irure anim cupidatat proident consequat sunt fugiat do dolor cillum reprehenderit minim in consequat enim esse occaecat pariatur aute qui commodo cillum ut quis laborum ut ex sed veniam ut sunt consectetur mollit fugiat cillum dolore qui cupidatat ex culpa dolore dolore ex Ut irure magna velit nulla eiusmod velit minim magna Ut eu nostrud cupidatat labore anim ut anim amet cillum exercitation in consectetur occaecat deserunt aute fugiat nostrud nostrud anim elit occaecat eiusmod non Duis in do incididunt tempor in consequat ut consequat veniam nulla Ut in eu dolor tempor commodo nostrud laboris ex elit minim nisi labore nisi incididunt dolor incididunt aute do labore occaecat ullamco in ut quis sit tempor pariatur aute sint sint sint est dolore eiusmod ut dolor qui do ea sit nulla proident commodo do magna dolore ad eiusmod eiusmod voluptate dolor Duis sed non minim ut aute dolor sit adipisicing amet consectetur aliquip sint officia dolore culpa nulla reprehenderit amet eu fugiat in in in aute in quis veniam esse voluptate laborum ut cupidatat laboris laboris quis Ut do dolore tempor.</p>
+                    <p>Lorem ipsum Esse quis culpa dolor mollit non laborum consequat exercitation qui ut esse nulla esse cillum nostrud aute in dolor quis do dolor dolore Ut in dolore et sed Duis dolor nisi dolore sunt proident aute Duis do do commodo exercitation dolore eu anim cupidatat dolor esse minim Duis anim in irure in deserunt occaecat pariatur dolore sunt incididunt elit ea labore eiusmod laboris reprehenderit aute aliquip Ut sint quis Excepteur est non irure labore sit irure anim cupidatat proident consequat sunt fugiat do dolor cillum reprehenderit minim in consequat enim esse occaecat pariatur aute qui commodo cillum ut quis laborum ut ex sed veniam ut sunt consectetur mollit fugiat cillum dolore qui cupidatat ex culpa dolore dolore ex Ut irure magna velit nulla eiusmod velit minim magna Ut eu nostrud cupidatat labore anim ut anim amet cillum exercitation in consectetur occaecat deserunt aute fugiat nostrud nostrud anim elit occaecat eiusmod non Duis in do incididunt tempor in consequat ut consequat veniam nulla Ut in eu dolor tempor commodo nostrud laboris ex elit minim nisi labore nisi incididunt dolor incididunt aute do labore occaecat ullamco in ut quis sit tempor pariatur aute sint sint sint est dolore eiusmod ut dolor qui do ea sit nulla proident commodo do magna dolore ad eiusmod eiusmod voluptate dolor Duis sed non minim ut aute dolor sit adipisicing amet consectetur aliquip sint officia dolore culpa nulla reprehenderit amet eu fugiat in in in aute in quis veniam esse voluptate laborum ut cupidatat laboris laboris quis Ut do dolore tempor.</p>
+                </article>
+                <div class="material footer">
+                    <div class="social">
+                        <h2><span class="icon"><iron-icon icon="social:share"></iron-icon></span> PARTAGER SUR LES RÉSEAUX SOCIAUX</h2>
+                        <paper-button class="facebook" raised>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=" title=""><social-media-icons icon="facebook" color="#ffffff"></social-media-icons>facebook</paper-button></a>
+                    </div>
+                    <div class="comment">
+                        <h2><span class="icon"><iron-icon icon="question-answer"></iron-icon></span>COMMENTAIRE</h2>
+                        <paper-material elevation="1" class="material">
+                            <div class="author">
+                                <div class="avatar-ctn">
+                                    <iron-image class="avatar" src="http://placehold.it/64/ffffff/000000" preload sizing="cover" style="background-color: lightgray;"></iron-image>
+                                </div>
+                                <div class="author-ctn">
+                                    <div class="autor-name">Par <a href="#" title="George R.R Martins">George R. R. Martin</a>,</div>
+                                    <div class="published">il y a 20 minutes</div>
+                                </div>
+                            </div>
+                            <div class="comment">
+                                Lorem ipsum Deserunt laboris do laboris cillum nostrud laborum Duis aute amet magna laborum dolore quis exercitation eu exercitation eiusmod fugiat nisi veniam velit consectetur dolor elit mollit sit occaecat non dolore enim laboris laboris est et consequat ut ad tempor ullamco ut consectetur dolore esse amet cupidatat est Duis mollit veniam sed commodo aliqua laboris sint tempor tempor ex laborum aliqua esse non culpa culpa Duis aliqua magna commodo culpa magna nostrud sunt in minim cillum nostrud culpa amet in sint dolore in nulla cupidatat amet Ut irure officia ut in amet eiusmod est in ea tempor anim id ut nisi deserunt nulla elit do anim sed eu et fugiat non deserunt sed incididunt reprehenderit nisi sint et culpa dolor incididunt ullamco culpa ex commodo ullamco ullamco nostrud proident quis qui laborum magna ex fugiat officia occaecat sint consectetur velit irure est dolore enim non magna in et amet officia pariatur labore incididunt dolore laborum exercitation labore et sint ad exercitation quis ex sunt fugiat occaecat laboris Excepteur dolore consectetur Excepteur velit non Duis est non do commodo velit cillum dolor Excepteur velit aute dolore mollit consectetur esse reprehenderit elit dolore Ut commodo cillum pariatur in Duis consectetur in incididunt amet Excepteur occaecat ex do exercitation ut non cupidatat nisi sed aliqua eu culpa aliquip cupidatat eiusmod sed nulla qui ullamco culpa Duis quis Ut cupidatat dolore tempor aliquip et esse in reprehenderit Duis aliquip sunt ad ut mollit id elit eu ut pariatur culpa consequat aliqua adipisicing non Duis culpa proident ullamco eiusmod culpa velit dolore ex do fugiat cupidatat aliqua sit.
+                            </div>
+                        </paper-material>
+                        <paper-material elevation="1" class="material">
+                            <div class="author">
+                                <div class="avatar-ctn">
+                                    <iron-image class="avatar" src="http://placehold.it/64/ffffff/000000" preload sizing="cover" style="background-color: lightgray;"></iron-image>
+                                </div>
+                                <div class="author-ctn">
+                                    <div class="autor-name">Par <a href="#" title="George R.R Martins">George R. R. Martin</a>,</div>
+                                    <div class="published">il y a 20 minutes</div>
+                                </div>
+                            </div>
+                            <div class="comment">
+                                Lorem ipsum Deserunt laboris do laboris cillum nostrud laborum Duis aute amet magna laborum dolore quis exercitation eu exercitation eiusmod fugiat nisi veniam velit consectetur dolor elit mollit sit occaecat non dolore enim laboris laboris est et consequat ut ad tempor ullamco ut consectetur dolore esse amet cupidatat est Duis mollit veniam sed commodo aliqua laboris sint tempor tempor ex laborum aliqua esse non culpa culpa Duis aliqua magna commodo culpa magna nostrud sunt in minim cillum nostrud culpa amet in sint dolore in nulla cupidatat amet Ut irure officia ut in amet eiusmod est in ea tempor anim id ut nisi deserunt nulla elit do anim sed eu et fugiat non deserunt sed incididunt reprehenderit nisi sint et culpa dolor incididunt ullamco culpa ex commodo ullamco ullamco nostrud proident quis qui laborum magna ex fugiat officia occaecat sint consectetur velit irure est dolore enim non magna in et amet officia pariatur labore incididunt dolore laborum exercitation labore et sint ad exercitation quis ex sunt fugiat occaecat laboris Excepteur dolore consectetur Excepteur velit non Duis est non do commodo velit cillum dolor Excepteur velit aute dolore mollit consectetur esse reprehenderit elit dolore Ut commodo cillum pariatur in Duis consectetur in incididunt amet Excepteur occaecat ex do exercitation ut non cupidatat nisi sed aliqua eu culpa aliquip cupidatat eiusmod sed nulla qui ullamco culpa Duis quis Ut cupidatat dolore tempor aliquip et esse in reprehenderit Duis aliquip sunt ad ut mollit id elit eu ut pariatur culpa consequat aliqua adipisicing non Duis culpa proident ullamco eiusmod culpa velit dolore ex do fugiat cupidatat aliqua sit.
+                            </div>
+                        </paper-material>
+                        <paper-material elevation="1" class="material">
+                            <div class="author">
+                                <div class="avatar-ctn">
+                                    <iron-image class="avatar" src="http://placehold.it/64/ffffff/000000" preload sizing="cover" style="background-color: lightgray;"></iron-image>
+                                </div>
+                                <div class="author-ctn">
+                                    <div class="autor-name">Par <a href="#" title="George R.R Martins">George R. R. Martin</a>,</div>
+                                    <div class="published">il y a 20 minutes</div>
+                                </div>
+                            </div>
+                            <div class="comment">
+                                Lorem ipsum Deserunt laboris do laboris cillum nostrud laborum Duis aute amet magna laborum dolore quis exercitation eu exercitation eiusmod fugiat nisi veniam velit consectetur dolor elit mollit sit occaecat non dolore enim laboris laboris est et consequat ut ad tempor ullamco ut consectetur dolore esse amet cupidatat est Duis mollit veniam sed commodo aliqua laboris sint tempor tempor ex laborum aliqua esse non culpa culpa Duis aliqua magna commodo culpa magna nostrud sunt in minim cillum nostrud culpa amet in sint dolore in nulla cupidatat amet Ut irure officia ut in amet eiusmod est in ea tempor anim id ut nisi deserunt nulla elit do anim sed eu et fugiat non deserunt sed incididunt reprehenderit nisi sint et culpa dolor incididunt ullamco culpa ex commodo ullamco ullamco nostrud proident quis qui laborum magna ex fugiat officia occaecat sint consectetur velit irure est dolore enim non magna in et amet officia pariatur labore incididunt dolore laborum exercitation labore et sint ad exercitation quis ex sunt fugiat occaecat laboris Excepteur dolore consectetur Excepteur velit non Duis est non do commodo velit cillum dolor Excepteur velit aute dolore mollit consectetur esse reprehenderit elit dolore Ut commodo cillum pariatur in Duis consectetur in incididunt amet Excepteur occaecat ex do exercitation ut non cupidatat nisi sed aliqua eu culpa aliquip cupidatat eiusmod sed nulla qui ullamco culpa Duis quis Ut cupidatat dolore tempor aliquip et esse in reprehenderit Duis aliquip sunt ad ut mollit id elit eu ut pariatur culpa consequat aliqua adipisicing non Duis culpa proident ullamco eiusmod culpa velit dolore ex do fugiat cupidatat aliqua sit.
+                            </div>
+                        </paper-material>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'ar-article-page',
+
+            properties: {
+                article: {
+
+                }
+            }
+        });
+    </script>
+</dom-module>

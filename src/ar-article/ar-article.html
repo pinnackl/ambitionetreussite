@@ -1,13 +1,13 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
 <link rel="import" href="../ar-article-card/ar-article-card.html">
+<link rel="import" href="../ar-article-page/ar-article-page.html">
 <link rel="import" href="../shared-styles.html">
 <dom-module id="ar-article">
     <template>
         <style include="shared-styles app-grid-style">
             :host {
                 display: block;
-                height: 100%;
 
                 --app-grid-columns: 3;
                 --app-grid-item-height: 200px;
@@ -37,25 +37,23 @@
             route="{{subroute}}"
             pattern="/:article"
             data="{{subRouteData}}"></app-route>
-        <div class="material">
-            <h1>Article [[page]]</h1>
-            <iron-pages selected="[[page]]" attr-for-selected="name">
-                <section name="nouveau">Create</section>
-                <section name="liste">
+        <iron-pages selected="[[page]]" attr-for-selected="name">
+            <section name="nouveau">Create</section>
+            <section name="liste">
+                <div class="material">
+                    <h1>Article [[page]]</h1>
                     <div class="app-grid">
                         <template is="dom-repeat" items={{articles}} 
                             as=item index-as=index>
                             <ar-article-card class="item" article="{{item}}"></ar-article-card>
                         </template>
                     </div>
-                </section>
-                <section name="editer">
-                    <div class="material">
-                        <paper-input label="Titre"></paper-input>
-                    </div>
-                </section>
-            </iron-pages>
-        </div>
+                </div>
+            </section>
+            <section name="lire">
+                <ar-article-page></ar-article-page>
+            </section>
+        </iron-pages>
     </template>
     <script>
         Polymer({
