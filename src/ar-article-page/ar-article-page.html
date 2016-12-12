@@ -57,7 +57,7 @@
             .post .filter .article-info {
                 display: block;
                 width: 90%;
-                margin-top: 20px;
+                margin: 20px 0;
                 font-size: 20px;
 
                 display: -ms-flexbox;
@@ -75,9 +75,9 @@
                 -webkit-align-content: stretch;
                 -ms-flex-line-pack: stretch;
                 align-content: stretch;
-                -webkit-align-items: flex-start;
-                -ms-flex-align: start;
-                align-items: flex-start;
+                -webkit-align-items: center;
+                -ms-flex-align: center;
+                align-items: center;
 
             }
 
@@ -85,6 +85,8 @@
             .post .material.footer .comment .avatar-ctn {
                 width: 64px;
                 height: 64px;
+                min-width: 64px;
+                min-height: 64px;
                 border-radius: 100%;
                 overflow: hidden;
                 display: inline-block;
@@ -99,7 +101,7 @@
             }
             
             .post .filter .article-info .social {
-                height: 64px;
+                /*height: 64px;*/
                 padding: 0 8px;
                 text-align: right;
                 box-sizing: border-box;
@@ -138,7 +140,7 @@
             }
 
             .post .filter .article-info .category {
-                height: 64px;
+                /*height: 64px;*/
                 padding-left: 12px;
                 vertical-align: middle;
                 -webkit-order: 0;
@@ -185,6 +187,14 @@
                 -o-transform: translateY(-100px);
                 -ms-transform: translateY(-100px);
                 transform: translateY(-100px);
+            }
+
+            .post .material.content article {
+                color: #444444;
+            }
+            
+            .post .material.content article .section-header {
+                text-align: right;
             }
 
             .post .material.footer {
@@ -244,10 +254,35 @@
                 display: inline-block;
             }
 
+            .post .material.footer .tags {
+                margin-top: 20px;
+            }
+
+            .post .material.footer .tags .tag {
+                display: inline-block;
+                background-color: #56585c;
+                color: #ffffff;
+                font-size: 1em;
+                font-weight: 400;
+                text-align: center;
+                text-decoration: none;
+                padding: 2px 5px;
+                border-radius: 2px;
+                box-sizing: border-box;
+            }
+
+            .post .material.footer .tags .tag:hover {
+                background-color: #3eb7e9;
+            }
+
             /* Mobil */
             @media (max-width: 799px) {
                 .post .material {
                     margin-top: 0;
+                }
+
+                .post .filter h1.title {
+                    font-size: 27px;
                 }
 
                 .post .material.content {
@@ -261,8 +296,7 @@
         </style>
         <div class="post">
             <div class="cover">
-                <iron-image src="https://static.pexels.com/photos/25833/pexels-photo-25833.jpg" preload style="background: #3eb7e9;" sizing="cover"></iron-image>
-                <!-- <iron-image src="http://placeholda.it/720/3eb7e9/ffffff" preload style="background: #3eb7e9;" sizing="cover"></iron-image> -->
+                <iron-image src="https://static.pexels.com/photos/25833/pexels-photo-25833.jpg" preload style="background: #3eb7e9;" fade sizing="cover"></iron-image>
                 <div class="filter">
                     <h1 class="title">Plop is the new plop of the greatest plop even plopped !</h1> 
                     <div class="article-info">
@@ -274,7 +308,7 @@
                             <div class="published">il y a 20 minutes</div>
                         </div>
                         <div class="category">
-                            <a class="tag" href="/categorie/#google" title="Google">Google</a>
+                            <a class="tag" href="/categorie/#google" title="Google">[[_ucfirst(article.name)]]</a>
                         </div>
                         <div class="social">
                             <span class="circle">
@@ -285,6 +319,15 @@
                 </div>
             </div>
             <div class="material content">
+                <div class="section-header">
+                    <span></span>
+                    <template is="dom-if" if={{isAdmin}}>
+                        <paper-icon-button icon="create" raised on-tap="edit"
+                            hidden$="[[editMode]]"></paper-icon-button>
+                        <paper-icon-button icon="close" raised on-tap="close"
+                            hidden$="[[!editMode]]"></paper-icon-button>
+                    </template>
+                </div>
                 <article>
                     <p>Lorem ipsum Esse quis culpa dolor mollit non laborum consequat exercitation qui ut esse nulla esse cillum nostrud aute in dolor quis do dolor dolore Ut in dolore et sed Duis dolor nisi dolore sunt proident aute Duis do do commodo exercitation dolore eu anim cupidatat dolor esse minim Duis anim in irure in deserunt occaecat pariatur dolore sunt incididunt elit ea labore eiusmod laboris reprehenderit aute aliquip Ut sint quis Excepteur est non irure labore sit irure anim cupidatat proident consequat sunt fugiat do dolor cillum reprehenderit minim in consequat enim esse occaecat pariatur aute qui commodo cillum ut quis laborum ut ex sed veniam ut sunt consectetur mollit fugiat cillum dolore qui cupidatat ex culpa dolore dolore ex Ut irure magna velit nulla eiusmod velit minim magna Ut eu nostrud cupidatat labore anim ut anim amet cillum exercitation in consectetur occaecat deserunt aute fugiat nostrud nostrud anim elit occaecat eiusmod non Duis in do incididunt tempor in consequat ut consequat veniam nulla Ut in eu dolor tempor commodo nostrud laboris ex elit minim nisi labore nisi incididunt dolor incididunt aute do labore occaecat ullamco in ut quis sit tempor pariatur aute sint sint sint est dolore eiusmod ut dolor qui do ea sit nulla proident commodo do magna dolore ad eiusmod eiusmod voluptate dolor Duis sed non minim ut aute dolor sit adipisicing amet consectetur aliquip sint officia dolore culpa nulla reprehenderit amet eu fugiat in in in aute in quis veniam esse voluptate laborum ut cupidatat laboris laboris quis Ut do dolore tempor.</p>
                     <p>Lorem ipsum Esse quis culpa dolor mollit non laborum consequat exercitation qui ut esse nulla esse cillum nostrud aute in dolor quis do dolor dolore Ut in dolore et sed Duis dolor nisi dolore sunt proident aute Duis do do commodo exercitation dolore eu anim cupidatat dolor esse minim Duis anim in irure in deserunt occaecat pariatur dolore sunt incididunt elit ea labore eiusmod laboris reprehenderit aute aliquip Ut sint quis Excepteur est non irure labore sit irure anim cupidatat proident consequat sunt fugiat do dolor cillum reprehenderit minim in consequat enim esse occaecat pariatur aute qui commodo cillum ut quis laborum ut ex sed veniam ut sunt consectetur mollit fugiat cillum dolore qui cupidatat ex culpa dolore dolore ex Ut irure magna velit nulla eiusmod velit minim magna Ut eu nostrud cupidatat labore anim ut anim amet cillum exercitation in consectetur occaecat deserunt aute fugiat nostrud nostrud anim elit occaecat eiusmod non Duis in do incididunt tempor in consequat ut consequat veniam nulla Ut in eu dolor tempor commodo nostrud laboris ex elit minim nisi labore nisi incididunt dolor incididunt aute do labore occaecat ullamco in ut quis sit tempor pariatur aute sint sint sint est dolore eiusmod ut dolor qui do ea sit nulla proident commodo do magna dolore ad eiusmod eiusmod voluptate dolor Duis sed non minim ut aute dolor sit adipisicing amet consectetur aliquip sint officia dolore culpa nulla reprehenderit amet eu fugiat in in in aute in quis veniam esse voluptate laborum ut cupidatat laboris laboris quis Ut do dolore tempor.</p>
@@ -295,6 +338,14 @@
                     <p>Lorem ipsum Esse quis culpa dolor mollit non laborum consequat exercitation qui ut esse nulla esse cillum nostrud aute in dolor quis do dolor dolore Ut in dolore et sed Duis dolor nisi dolore sunt proident aute Duis do do commodo exercitation dolore eu anim cupidatat dolor esse minim Duis anim in irure in deserunt occaecat pariatur dolore sunt incididunt elit ea labore eiusmod laboris reprehenderit aute aliquip Ut sint quis Excepteur est non irure labore sit irure anim cupidatat proident consequat sunt fugiat do dolor cillum reprehenderit minim in consequat enim esse occaecat pariatur aute qui commodo cillum ut quis laborum ut ex sed veniam ut sunt consectetur mollit fugiat cillum dolore qui cupidatat ex culpa dolore dolore ex Ut irure magna velit nulla eiusmod velit minim magna Ut eu nostrud cupidatat labore anim ut anim amet cillum exercitation in consectetur occaecat deserunt aute fugiat nostrud nostrud anim elit occaecat eiusmod non Duis in do incididunt tempor in consequat ut consequat veniam nulla Ut in eu dolor tempor commodo nostrud laboris ex elit minim nisi labore nisi incididunt dolor incididunt aute do labore occaecat ullamco in ut quis sit tempor pariatur aute sint sint sint est dolore eiusmod ut dolor qui do ea sit nulla proident commodo do magna dolore ad eiusmod eiusmod voluptate dolor Duis sed non minim ut aute dolor sit adipisicing amet consectetur aliquip sint officia dolore culpa nulla reprehenderit amet eu fugiat in in in aute in quis veniam esse voluptate laborum ut cupidatat laboris laboris quis Ut do dolore tempor.</p>
                 </article>
                 <div class="material footer">
+                    <div class="tags">
+                        <a class="tag" href="#">Google</a>
+                        <a class="tag" href="#">Facebook</a>
+                        <a class="tag" href="#">Twitter</a>
+                        <a class="tag" href="#">Microsoft</a>
+                        <a class="tag" href="#">Amazon</a>
+                        <a class="tag" href="#">Apple</a>
+                    </div>
                     <div class="social">
                         <h2><span class="icon"><iron-icon icon="social:share"></iron-icon></span> PARTAGER SUR LES RÉSEAUX SOCIAUX</h2>
                         <paper-button class="facebook" raised>
@@ -355,9 +406,26 @@
 
             properties: {
                 article: {
+                    type: Object,
+                },
 
+                isAdmin: {
+                    type: Boolean,
+                    value: false,
+                },
+
+                editMode: {
+                    type: Boolean,
+                    value: false,
                 }
-            }
+            },
+
+            _ucfirst: function (string) {
+                if (string) {
+                    return string.charAt(0).toUpperCase() + string.slice(1);
+                }
+                return '';
+            },
         });
     </script>
 </dom-module>

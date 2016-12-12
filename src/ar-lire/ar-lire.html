@@ -1,0 +1,43 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../ar-article/ar-article.html">
+<dom-module id="ar-lire">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <app-route
+            route="{{route}}"
+            pattern="/:category/:article"
+            data="{{routeData}}"
+            tail="{{subroute}}"></app-route>
+        <!-- <h1>[[category]]/[[article]]</h1> -->
+        <ar-article view="read" category="[[category]]"></ar-article>
+    </template>
+    <script>
+        Polymer({
+            is: 'ar-lire',
+
+            properties: {
+                route: {
+                    type: Object
+                }
+            },
+
+            observers: [
+                '_routePageChanged(routeData.category)',
+                '_routeSubPageChanged(routeData.article)',
+            ],
+
+            _routePageChanged: function (category) {
+                this.category = category;
+            },
+
+            _routeSubPageChanged: function (article) {
+                this.article = article;
+            }          
+        });
+    </script>
+</dom-module>

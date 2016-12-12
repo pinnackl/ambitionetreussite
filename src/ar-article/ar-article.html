@@ -1,5 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+
 <link rel="import" href="../ar-article-card/ar-article-card.html">
 <link rel="import" href="../ar-article-page/ar-article-page.html">
 <link rel="import" href="../shared-styles.html">
@@ -18,6 +20,22 @@
                 height: 100%;
             }
 
+            .material h1 {
+                padding-left: 8px;
+                border-left: solid #3eb7e9 6px;
+                color: #56585c;
+            }
+
+            .material .section-header {
+                margin: 0 8px;
+            }
+
+            .material .section-header a {
+                text-decoration: none;
+                color: #757575;
+                display: block;
+            }
+
             .item {
                 padding: 0 0.5em 1em 0.5em;
             }
@@ -28,7 +46,7 @@
                 }
             }
         </style>
-        <app-route
+        <!-- <app-route
             route="{{route}}"
             pattern="/:page"
             data="{{routeData}}"
@@ -36,12 +54,19 @@
         <app-route 
             route="{{subroute}}"
             pattern="/:article"
-            data="{{subRouteData}}"></app-route>
-        <iron-pages selected="[[page]]" attr-for-selected="name">
-            <section name="nouveau">Create</section>
-            <section name="liste">
+            data="{{subRouteData}}"></app-route> -->
+        <iron-pages selected="[[view]]" attr-for-selected="name">
+            <section name="new">Create</section>
+            <section name="list">
                 <div class="material">
-                    <h1>Article [[page]]</h1>
+                    <div class="section-header">
+                        <h1>[[_ucfirst(category)]]</h1>
+                        <template is="dom-if" if={{!isAdmin}}>
+                            <a href="#/projects/create" title="Créer un article">
+                                <paper-icon-button class="" icon="add"></paper-icon-button>
+                            </a>
+                        </template>
+                    </div>
                     <div class="app-grid">
                         <template is="dom-repeat" items={{articles}} 
                             as=item index-as=index>
@@ -50,8 +75,8 @@
                     </div>
                 </div>
             </section>
-            <section name="lire">
-                <ar-article-page></ar-article-page>
+            <section name="read">
+                <ar-article-page article="[[article]]"></ar-article-page>
             </section>
         </iron-pages>
     </template>
@@ -60,30 +85,31 @@
             is: 'ar-article',
 
             properties: {
-                route: {
-                    type: Object
+                view: {
+                    type: String
+                },
+
+                category: {
+                    type: String
                 },
             },
 
-            observers: [
-                '_routePageChanged(routeData.page)',
-            ],
-
             ready: function () {
-                this.articles = [{name: 'plop1'}, {name: 'plop2'}, {name: 'plop3'}, {name: 'plop1'}, {name: 'plop2'}, {name: 'plop3'}];
+                this.articles = [
+                    {name: 'plop1'}, {name: 'plop2'}, {name: 'plop3'},
+                    {name: 'plop4'}, {name: 'plop5'}, {name: 'plop6'},
+                    {name: 'plop7'}, {name: 'plop8'}, {name: 'plop9'},
+                    {name: 'plop10'}, {name: 'plop11'}, {name: 'plop12'},
+                ];
+
+                this.article = {name: 'plop1'};
             },
 
-            _routePageChanged: function (page) {
-                this.page = page || 'liste';
-                this.subpage = this.page;
-                this.editData = {
-                };
-                if (this.user != null) {
-                    // this.checkRights(this.user.uid, this.rights);
+            _ucfirst: function (string) {
+                if (string) {
+                    return string.charAt(0).toUpperCase() + string.slice(1);
                 }
-                if (this.isAdmin && this.page == 'create') {
-                    // this.editMode = true;
-                }
+                return '';
             },
         });
     </script>

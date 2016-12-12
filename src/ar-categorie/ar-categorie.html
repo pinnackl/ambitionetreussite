@@ -1,0 +1,45 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../ar-article/ar-article.html">
+<dom-module id="ar-categorie">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <app-route
+            route="{{route}}"
+            pattern="/:category"
+            data="{{routeData}}"
+            tail="{{subroute}}"></app-route>
+        <ar-article view="list" category="[[category]]"></ar-article>
+    </template>
+    <script>
+        Polymer({
+            is: 'ar-categorie',
+
+            properties: {
+                route: {
+                    type: Object
+                }
+            },
+
+            observers: [
+                '_routePageChanged(routeData.category)',
+            ],
+
+            _routePageChanged: function (category) {
+                this.category = category;
+                // this.editData = {
+                // };
+                // if (this.user != null) {
+                //     // this.checkRights(this.user.uid, this.rights);
+                // }
+                // if (this.isAdmin && this.page == 'create') {
+                //     // this.editMode = true;
+                // }
+            },
+        });
+    </script>
+</dom-module>

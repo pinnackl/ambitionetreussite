@@ -260,7 +260,7 @@
       <app-header-layout>
 
         <!-- Main header -->
-        <app-header condenses reveals effects="parallax-background" fixed>
+        <app-header condenses reveals effects="parallax-background" fixed$="[[!_computeHidden(largeScreen)]]">
           <app-toolbar>
             <!-- Left menu button -->
             <paper-icon-button icon="menu" drawer-toggle hidden$="[[_computeHidden(largeScreen)]]"></paper-icon-button>
@@ -325,8 +325,10 @@
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name" fallback-selection="404">
           <!-- Home view -->
           <ar-accueil name="accueil"></ar-accueil>
-          <!-- Article view -->
-          <ar-article name="article" route="{{subroute}}"></ar-article>
+          <!-- Category view -->
+          <ar-categorie name="categorie" route="{{subroute}}"></ar-categorie>
+          <!-- Read view -->
+          <ar-lire name="lire" route="{{subroute}}"></ar-lire>
           <!-- About view -->
           <ar-a-propos name="a-propos"></ar-a-propos>
           <!-- User view -->
