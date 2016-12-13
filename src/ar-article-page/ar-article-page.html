@@ -4,6 +4,9 @@
 <link rel="import" href="../../bower_components/social-media-icons/social-media-icons.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 
+<link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
+<link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
+
 <link rel="import" href="../shared-styles.html">
 <dom-module id="ar-article-page">
     <template>
@@ -117,7 +120,7 @@
                 align-self: auto;
             }
 
-            .post .filter .article-info .autor-name {
+            .post .secton-header {
             }
 
             .post .filter .article-info .autor-name a {
@@ -178,6 +181,7 @@
             .post .material.content {
                 position: relative;
                 background-color: #ffffff;
+                color: #444444;
                 max-width: 1000px;
                 margin-left: auto;
                 margin-right: auto;
@@ -187,10 +191,6 @@
                 -o-transform: translateY(-100px);
                 -ms-transform: translateY(-100px);
                 transform: translateY(-100px);
-            }
-
-            .post .material.content article {
-                color: #444444;
             }
             
             .post .material.content article .section-header {
@@ -275,6 +275,11 @@
                 background-color: #3eb7e9;
             }
 
+            .save-button {
+                background-color: #179BD7;
+                color: #FFFFFF;
+            }
+
             /* Mobil */
             @media (max-width: 799px) {
                 .post .material {
@@ -328,14 +333,39 @@
                             hidden$="[[!editMode]]"></paper-icon-button>
                     </template>
                 </div>
-                <article>
-                    <p>Lorem ipsum Esse quis culpa dolor mollit non laborum consequat exercitation qui ut esse nulla esse cillum nostrud aute in dolor quis do dolor dolore Ut in dolore et sed Duis dolor nisi dolore sunt proident aute Duis do do commodo exercitation dolore eu anim cupidatat dolor esse minim Duis anim in irure in deserunt occaecat pariatur dolore sunt incididunt elit ea labore eiusmod laboris reprehenderit aute aliquip Ut sint quis Excepteur est non irure labore sit irure anim cupidatat proident consequat sunt fugiat do dolor cillum reprehenderit minim in consequat enim esse occaecat pariatur aute qui commodo cillum ut quis laborum ut ex sed veniam ut sunt consectetur mollit fugiat cillum dolore qui cupidatat ex culpa dolore dolore ex Ut irure magna velit nulla eiusmod velit minim magna Ut eu nostrud cupidatat labore anim ut anim amet cillum exercitation in consectetur occaecat deserunt aute fugiat nostrud nostrud anim elit occaecat eiusmod non Duis in do incididunt tempor in consequat ut consequat veniam nulla Ut in eu dolor tempor commodo nostrud laboris ex elit minim nisi labore nisi incididunt dolor incididunt aute do labore occaecat ullamco in ut quis sit tempor pariatur aute sint sint sint est dolore eiusmod ut dolor qui do ea sit nulla proident commodo do magna dolore ad eiusmod eiusmod voluptate dolor Duis sed non minim ut aute dolor sit adipisicing amet consectetur aliquip sint officia dolore culpa nulla reprehenderit amet eu fugiat in in in aute in quis veniam esse voluptate laborum ut cupidatat laboris laboris quis Ut do dolore tempor.</p>
-                    <p>Lorem ipsum Esse quis culpa dolor mollit non laborum consequat exercitation qui ut esse nulla esse cillum nostrud aute in dolor quis do dolor dolore Ut in dolore et sed Duis dolor nisi dolore sunt proident aute Duis do do commodo exercitation dolore eu anim cupidatat dolor esse minim Duis anim in irure in deserunt occaecat pariatur dolore sunt incididunt elit ea labore eiusmod laboris reprehenderit aute aliquip Ut sint quis Excepteur est non irure labore sit irure anim cupidatat proident consequat sunt fugiat do dolor cillum reprehenderit minim in consequat enim esse occaecat pariatur aute qui commodo cillum ut quis laborum ut ex sed veniam ut sunt consectetur mollit fugiat cillum dolore qui cupidatat ex culpa dolore dolore ex Ut irure magna velit nulla eiusmod velit minim magna Ut eu nostrud cupidatat labore anim ut anim amet cillum exercitation in consectetur occaecat deserunt aute fugiat nostrud nostrud anim elit occaecat eiusmod non Duis in do incididunt tempor in consequat ut consequat veniam nulla Ut in eu dolor tempor commodo nostrud laboris ex elit minim nisi labore nisi incididunt dolor incididunt aute do labore occaecat ullamco in ut quis sit tempor pariatur aute sint sint sint est dolore eiusmod ut dolor qui do ea sit nulla proident commodo do magna dolore ad eiusmod eiusmod voluptate dolor Duis sed non minim ut aute dolor sit adipisicing amet consectetur aliquip sint officia dolore culpa nulla reprehenderit amet eu fugiat in in in aute in quis veniam esse voluptate laborum ut cupidatat laboris laboris quis Ut do dolore tempor.</p>
-                    <p>Lorem ipsum Esse quis culpa dolor mollit non laborum consequat exercitation qui ut esse nulla esse cillum nostrud aute in dolor quis do dolor dolore Ut in dolore et sed Duis dolor nisi dolore sunt proident aute Duis do do commodo exercitation dolore eu anim cupidatat dolor esse minim Duis anim in irure in deserunt occaecat pariatur dolore sunt incididunt elit ea labore eiusmod laboris reprehenderit aute aliquip Ut sint quis Excepteur est non irure labore sit irure anim cupidatat proident consequat sunt fugiat do dolor cillum reprehenderit minim in consequat enim esse occaecat pariatur aute qui commodo cillum ut quis laborum ut ex sed veniam ut sunt consectetur mollit fugiat cillum dolore qui cupidatat ex culpa dolore dolore ex Ut irure magna velit nulla eiusmod velit minim magna Ut eu nostrud cupidatat labore anim ut anim amet cillum exercitation in consectetur occaecat deserunt aute fugiat nostrud nostrud anim elit occaecat eiusmod non Duis in do incididunt tempor in consequat ut consequat veniam nulla Ut in eu dolor tempor commodo nostrud laboris ex elit minim nisi labore nisi incididunt dolor incididunt aute do labore occaecat ullamco in ut quis sit tempor pariatur aute sint sint sint est dolore eiusmod ut dolor qui do ea sit nulla proident commodo do magna dolore ad eiusmod eiusmod voluptate dolor Duis sed non minim ut aute dolor sit adipisicing amet consectetur aliquip sint officia dolore culpa nulla reprehenderit amet eu fugiat in in in aute in quis veniam esse voluptate laborum ut cupidatat laboris laboris quis Ut do dolore tempor.</p>
-                    <p>Lorem ipsum Esse quis culpa dolor mollit non laborum consequat exercitation qui ut esse nulla esse cillum nostrud aute in dolor quis do dolor dolore Ut in dolore et sed Duis dolor nisi dolore sunt proident aute Duis do do commodo exercitation dolore eu anim cupidatat dolor esse minim Duis anim in irure in deserunt occaecat pariatur dolore sunt incididunt elit ea labore eiusmod laboris reprehenderit aute aliquip Ut sint quis Excepteur est non irure labore sit irure anim cupidatat proident consequat sunt fugiat do dolor cillum reprehenderit minim in consequat enim esse occaecat pariatur aute qui commodo cillum ut quis laborum ut ex sed veniam ut sunt consectetur mollit fugiat cillum dolore qui cupidatat ex culpa dolore dolore ex Ut irure magna velit nulla eiusmod velit minim magna Ut eu nostrud cupidatat labore anim ut anim amet cillum exercitation in consectetur occaecat deserunt aute fugiat nostrud nostrud anim elit occaecat eiusmod non Duis in do incididunt tempor in consequat ut consequat veniam nulla Ut in eu dolor tempor commodo nostrud laboris ex elit minim nisi labore nisi incididunt dolor incididunt aute do labore occaecat ullamco in ut quis sit tempor pariatur aute sint sint sint est dolore eiusmod ut dolor qui do ea sit nulla proident commodo do magna dolore ad eiusmod eiusmod voluptate dolor Duis sed non minim ut aute dolor sit adipisicing amet consectetur aliquip sint officia dolore culpa nulla reprehenderit amet eu fugiat in in in aute in quis veniam esse voluptate laborum ut cupidatat laboris laboris quis Ut do dolore tempor.</p>
-                    <p>Lorem ipsum Esse quis culpa dolor mollit non laborum consequat exercitation qui ut esse nulla esse cillum nostrud aute in dolor quis do dolor dolore Ut in dolore et sed Duis dolor nisi dolore sunt proident aute Duis do do commodo exercitation dolore eu anim cupidatat dolor esse minim Duis anim in irure in deserunt occaecat pariatur dolore sunt incididunt elit ea labore eiusmod laboris reprehenderit aute aliquip Ut sint quis Excepteur est non irure labore sit irure anim cupidatat proident consequat sunt fugiat do dolor cillum reprehenderit minim in consequat enim esse occaecat pariatur aute qui commodo cillum ut quis laborum ut ex sed veniam ut sunt consectetur mollit fugiat cillum dolore qui cupidatat ex culpa dolore dolore ex Ut irure magna velit nulla eiusmod velit minim magna Ut eu nostrud cupidatat labore anim ut anim amet cillum exercitation in consectetur occaecat deserunt aute fugiat nostrud nostrud anim elit occaecat eiusmod non Duis in do incididunt tempor in consequat ut consequat veniam nulla Ut in eu dolor tempor commodo nostrud laboris ex elit minim nisi labore nisi incididunt dolor incididunt aute do labore occaecat ullamco in ut quis sit tempor pariatur aute sint sint sint est dolore eiusmod ut dolor qui do ea sit nulla proident commodo do magna dolore ad eiusmod eiusmod voluptate dolor Duis sed non minim ut aute dolor sit adipisicing amet consectetur aliquip sint officia dolore culpa nulla reprehenderit amet eu fugiat in in in aute in quis veniam esse voluptate laborum ut cupidatat laboris laboris quis Ut do dolore tempor.</p>
-                    <p>Lorem ipsum Esse quis culpa dolor mollit non laborum consequat exercitation qui ut esse nulla esse cillum nostrud aute in dolor quis do dolor dolore Ut in dolore et sed Duis dolor nisi dolore sunt proident aute Duis do do commodo exercitation dolore eu anim cupidatat dolor esse minim Duis anim in irure in deserunt occaecat pariatur dolore sunt incididunt elit ea labore eiusmod laboris reprehenderit aute aliquip Ut sint quis Excepteur est non irure labore sit irure anim cupidatat proident consequat sunt fugiat do dolor cillum reprehenderit minim in consequat enim esse occaecat pariatur aute qui commodo cillum ut quis laborum ut ex sed veniam ut sunt consectetur mollit fugiat cillum dolore qui cupidatat ex culpa dolore dolore ex Ut irure magna velit nulla eiusmod velit minim magna Ut eu nostrud cupidatat labore anim ut anim amet cillum exercitation in consectetur occaecat deserunt aute fugiat nostrud nostrud anim elit occaecat eiusmod non Duis in do incididunt tempor in consequat ut consequat veniam nulla Ut in eu dolor tempor commodo nostrud laboris ex elit minim nisi labore nisi incididunt dolor incididunt aute do labore occaecat ullamco in ut quis sit tempor pariatur aute sint sint sint est dolore eiusmod ut dolor qui do ea sit nulla proident commodo do magna dolore ad eiusmod eiusmod voluptate dolor Duis sed non minim ut aute dolor sit adipisicing amet consectetur aliquip sint officia dolore culpa nulla reprehenderit amet eu fugiat in in in aute in quis veniam esse voluptate laborum ut cupidatat laboris laboris quis Ut do dolore tempor.</p>
-                    <p>Lorem ipsum Esse quis culpa dolor mollit non laborum consequat exercitation qui ut esse nulla esse cillum nostrud aute in dolor quis do dolor dolore Ut in dolore et sed Duis dolor nisi dolore sunt proident aute Duis do do commodo exercitation dolore eu anim cupidatat dolor esse minim Duis anim in irure in deserunt occaecat pariatur dolore sunt incididunt elit ea labore eiusmod laboris reprehenderit aute aliquip Ut sint quis Excepteur est non irure labore sit irure anim cupidatat proident consequat sunt fugiat do dolor cillum reprehenderit minim in consequat enim esse occaecat pariatur aute qui commodo cillum ut quis laborum ut ex sed veniam ut sunt consectetur mollit fugiat cillum dolore qui cupidatat ex culpa dolore dolore ex Ut irure magna velit nulla eiusmod velit minim magna Ut eu nostrud cupidatat labore anim ut anim amet cillum exercitation in consectetur occaecat deserunt aute fugiat nostrud nostrud anim elit occaecat eiusmod non Duis in do incididunt tempor in consequat ut consequat veniam nulla Ut in eu dolor tempor commodo nostrud laboris ex elit minim nisi labore nisi incididunt dolor incididunt aute do labore occaecat ullamco in ut quis sit tempor pariatur aute sint sint sint est dolore eiusmod ut dolor qui do ea sit nulla proident commodo do magna dolore ad eiusmod eiusmod voluptate dolor Duis sed non minim ut aute dolor sit adipisicing amet consectetur aliquip sint officia dolore culpa nulla reprehenderit amet eu fugiat in in in aute in quis veniam esse voluptate laborum ut cupidatat laboris laboris quis Ut do dolore tempor.</p>
+                <!-- Edit content -->
+                <!-- <template is="dom-if" if={{contentReady}}> -->
+                    <template is="dom-if" if={{editMode}}>
+                        <div class="edit">
+                            <div class="section-header">
+                                <paper-input
+                                    id="articleTitle"
+                                    label="Titre"
+                                    value="{{editData.title}}"></paper-input>
+                                <paper-button
+                                    class="save-button"
+                                    raised
+                                    on-tap="update">
+                                    <iron-icon icon="done"></iron-icon>UPDATE</paper-button>
+                            </div>
+                            <div class="section-header">
+                                <paper-input 
+                                    id="githubValue"
+                                    label="Github name"
+                                    value="{{editData.github}}"></paper-input>
+                            </div>
+                        </div>
+                    </template>
+                <!-- </template> -->
+                <polymer-tinymce id="editor"
+                    base-url="[[origin]]/bower_components/tinymce"
+                    hidden$="[[!editMode]]"
+                    tinytoolbar="insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image" 
+                    tinyplugins='["advlist autolink lists link image charmap print preview anchor","searchreplace visualblocks code fullscreen","insertdatetime media table contextmenu paste"]'
+                ></polymer-tinymce>
+
+                <article id="content">
+
                 </article>
                 <div class="material footer">
                     <div class="tags">
@@ -406,17 +436,38 @@
 
             properties: {
                 article: {
-                    type: Object,
+                    type: Object
                 },
 
                 isAdmin: {
                     type: Boolean,
-                    value: false,
+                    value: true,
                 },
 
                 editMode: {
                     type: Boolean,
-                    value: false,
+                    value: true,
+                },
+
+                origin: String
+            },
+
+            observers: [
+                '_articleChanged(article.content)'
+            ],
+
+            ready: function () {
+                this.origin = window.location.origin;
+            },
+
+            _articleChanged: function (content) {
+               this.editData = {
+
+                };
+                this.$.content.innerHTML = content || '';
+                if (typeof content != 'undefined') {
+                    // this.$.editor.setContent("content");
+                    // console.log(this.$.editor.getContent());
                 }
             },
 
