@@ -20,6 +20,13 @@
       ".read": true,
       ".write": true
     },
+    "articles": {
+      ".read": true,
+      "$article": {
+        ".read": true,
+        ".write": "(!root.child('articles').hasChild(newData.child('slug').val()) && auth != null && (root.child('editors').hasChild(auth.uid) || root.child('moderators').hasChild(auth.uid) || root.child('adminisrators').hasChild(auth.uid)))"
+      }
+    },
     "menu": {
       ".read": true
     },
@@ -46,6 +53,6 @@
       "$users": {
         ".write": "(auth.uid != null)"
       }
-    }
+    },
   }
 }
