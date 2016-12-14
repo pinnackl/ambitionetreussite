@@ -3,9 +3,16 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/social-media-icons/social-media-icons.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 
 <link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
 <link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
+<link rel="import" href="../../bower_components/file-upload/file-upload.html">
+
+<link rel="import" href="../imports/imports-moment.html">
+<link rel="import" href="../imports/imports-speakingurl.html">
 
 <link rel="import" href="../shared-styles.html">
 <dom-module id="ar-article-create">
@@ -254,6 +261,22 @@
                 display: inline-block;
             }
 
+            .post .material paper-menu {
+                height: 144px;
+                background-color: #f7F7F7;
+                overflow-y: scroll;
+                padding: 0 6px;
+            }
+
+            .post .material paper-menu paper-item {
+                cursor: pointer;
+            }
+
+            .post .material paper-menu paper-item.iron-selected {
+                background-color: #179BD7;
+                color: #ffffff;
+            }
+
             .post .material.footer .tags {
                 margin-top: 20px;
             }
@@ -301,7 +324,7 @@
         </style>
         <firebase-document
             path="/articles"
-            data="{{newArticleDate}}">
+            data="{{article}}">
         </firebase-document>
         <div class="post">
             <div class="cover">
@@ -317,7 +340,7 @@
                             <div class="published">il y a 20 minutes</div>
                         </div>
                         <div class="category">
-                            <a class="tag" href="/categorie/#google" title="Google">[[_ucfirst(article.name)]]</a>
+                            <a class="tag" href="/categorie/#google" title="Google">[[_ucfirst(category)]]</a>
                         </div>
                         <div class="social">
                             <span class="circle">
@@ -349,14 +372,27 @@
                                 <paper-button
                                     class="save-button"
                                     raised
-                                    on-tap="update">
-                                    <iron-icon icon="done"></iron-icon>UPDATE</paper-button>
+                                    on-tap="create">
+                                    <iron-icon icon="done"></iron-icon>Créer</paper-button>
                             </div>
                             <div class="section-header">
-                                <paper-input 
-                                    id="githubValue"
-                                    label="Github name"
-                                    value="{{editData.github}}"></paper-input>
+                                <!-- FIXME : Get the target from config -->
+                                <file-upload
+                                    droppable="true"
+                                    raised="true"
+                                    accept="image/*"
+                                    method="POST"
+                                    file-data-name="cover"
+                                    target="https://cdn.pinnackl.com/api/images/upload"
+                                    on-success="fileUploaded">Choose File</file-upload>
+                                <paper-dropdown-menu label="Choisir une catégorie" value="{{category}}">
+                                    <paper-listbox class="dropdown-content">
+                                        <template is="dom-repeat" items={{categoryList}} 
+                                            as=item index-as=index>
+                                            <paper-item>[[item]]</paper-item>
+                                        </template>
+                                    </paper-listbox>
+                                </paper-dropdown-menu>
                             </div>
                         </div>
                     </template>
@@ -368,17 +404,26 @@
                     tinyplugins='["advlist autolink lists link image charmap print preview anchor","searchreplace visualblocks code fullscreen","insertdatetime media table contextmenu paste"]'
                 ></polymer-tinymce>
 
-                <article id="content">
-
-                </article>
+                <article id="content"></article>
                 <div class="material footer">
+                    <div class="material">
+                        <h3>Choisir des tags</h3>
+                        <div class="section-header">
+                            <paper-input label="Ajouter un tag" value="{{newTag}}"></paper-input>
+                            <paper-button raised class="save-button" on-tap="addTag">Ajouter</paper-button>
+                        </div>
+                        <paper-menu multi attr-for-selected="name" selected-values="{{tags}}">
+                            <template is="dom-repeat" items={{tagList}} 
+                                as=item index-as=index>
+                                <paper-item name="[[item]]">[[item]]</paper-item>
+                            </template>
+                        </paper-menu>
+                    </div>
                     <div class="tags">
-                        <a class="tag" href="#">Google</a>
-                        <a class="tag" href="#">Facebook</a>
-                        <a class="tag" href="#">Twitter</a>
-                        <a class="tag" href="#">Microsoft</a>
-                        <a class="tag" href="#">Amazon</a>
-                        <a class="tag" href="#">Apple</a>
+                        <template is="dom-repeat" items={{tags}} 
+                            as=item index-as=index>
+                            <a class="tag" href="#">[[item]]</a>
+                        </template>
                     </div>
                 </div>
             </div>
@@ -403,17 +448,88 @@
                     value: true,
                 },
 
-                origin: String
+                origin: String,
+
+                title: {
+                    type: String
+                },
+
+                slug: {
+                    type: String
+                },
+
+                category: {
+                    type: String
+                },
+
+                categoryList: {
+                    type: Array,
+                    value: function (e) {
+                        return [
+                            "Google",
+                            "Facebook",
+                            "Twitter",
+                            "Microsoft",
+                            "Amazon",
+                            "Apple",
+                        ]
+                    }
+                },
+
+                tags: {
+                    type: Array
+                },
+
+                tagList : {
+                    type: Array,
+                    value: function (e) {
+                        return [
+                            "Google",
+                            "Facebook",
+                            "Twitter",
+                            "Microsoft",
+                            "Amazon",
+                            "Apple",
+                        ];
+                    }
+                }
             },
 
             ready: function () {
                 this.origin = window.location.origin;
             },
 
-            createArticle: function (e) {
-                this.push('newArticleDate', {
+            create: function (e) {
+                var slug = getSlug(this.title);
+                if (slug != "") {
+                    this.set('article.' + slug, {
+                        slug: slug,
+                        title: this.title,
+                        category: this.category,
+                        cover: this.cover,
+                        tags: this.tags,
+                        content: this.$.editor.getContent(),
+                        created: Date.now()/1000,
+                        edited: Date.now()/1000,
+                        author: "",
+                        authorID: "",
+                        published: false,
+                        trash: false,
+                    });
+                }
+            },
 
-                });
+            fileUploaded: function (e, detail) {
+                var parsedResponse = JSON.parse(detail.xhr.response);
+                this.cover = parsedResponse.name;
+            },
+
+            addTag: function (e) {
+                this.push('tagList', this.newTag);
+            },
+
+            _tagsChanged: function (e) {
+                console.log(this.tags);
             },
 
             _ucfirst: function (string) {
