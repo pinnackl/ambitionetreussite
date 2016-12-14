@@ -6,6 +6,7 @@
 
 <link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
 <link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
+<link rel="import" href="../../bower_components/file-upload/file-upload.html">
 
 <link rel="import" href="../shared-styles.html">
 <dom-module id="ar-article-page">
@@ -349,10 +350,15 @@
                                     <iron-icon icon="done"></iron-icon>UPDATE</paper-button>
                             </div>
                             <div class="section-header">
-                                <paper-input 
-                                    id="githubValue"
-                                    label="Github name"
-                                    value="{{editData.github}}"></paper-input>
+                                <!-- FIXME : Get the target from config -->
+                                <file-upload
+                                    droppable="true"
+                                    raised="true"
+                                    accept="image/*"
+                                    method="POST"
+                                    file-data-name="cover"
+                                    target="https://cdn.pinnackl.com/api/images/upload"
+                                    on-success="fileUploaded">Choose File</file-upload>
                             </div>
                         </div>
                     </template>
@@ -364,9 +370,7 @@
                     tinyplugins='["advlist autolink lists link image charmap print preview anchor","searchreplace visualblocks code fullscreen","insertdatetime media table contextmenu paste"]'
                 ></polymer-tinymce>
 
-                <article id="content">
-
-                </article>
+                <article id="content"></article>
                 <div class="material footer">
                     <div class="tags">
                         <a class="tag" href="#">Google</a>
@@ -446,7 +450,8 @@
 
                 editMode: {
                     type: Boolean,
-                    value: true,
+                    value: false,
+                    observer: '_editModeChanged'
                 },
 
                 origin: String
@@ -460,13 +465,35 @@
                 this.origin = window.location.origin;
             },
 
-            _articleChanged: function (content) {
-               this.editData = {
+            edit: function (e) {
+                this.editMode = true;
+            },
 
-                };
+            close: function (e) {
+                this.editMode = false;
+            },
+
+            fileUploaded: function (e, detail) {
+                console.log(detail.xhr.response);
+            },
+
+            _articleChanged: function (content) {
+                this.editData = {};
                 this.$.content.innerHTML = content || '';
+
                 if (typeof content != 'undefined') {
-                    this.$.editor.setContent(content);
+                    // Set edito value
+                    this.set('editData', {
+                        title: this.editData.title || '',
+                        content: content || '',
+                    });
+                    this.$.editor.setContent(this.editData.content);
+                }
+            },
+
+            _editModeChanged: function (e) {
+                if (e) {
+                    this.$.editor.setContent(this.editData.content);
                 }
             },
 
