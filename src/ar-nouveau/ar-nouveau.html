@@ -1,0 +1,53 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../ar-article-create/ar-article-create.html">
+
+<dom-module id="ar-nouveau">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <app-route
+            route="{{route}}"
+            pattern="/:page"
+            data="{{routeData}}"
+            tail="{{subroute}}"></app-route>
+        <!-- <app-route 
+            route="{{subroute}}"
+            pattern="/:article"
+            data="{{subRouteData}}"></app-route> -->
+        <iron-pages selected="[[page]]" attr-for-selected="name">
+            <section name="article">
+                <ar-article-create edit-mode="true"></ar-article-create>
+            </section>
+            <section name="categorie">
+                
+            </section>
+            <section name="page">
+                
+            </section>
+        </iron-pages>
+    </template>
+    <script>
+        Polymer({
+            is: 'ar-nouveau',
+
+            properties: {
+                route: {
+                    type: Object
+                }
+            },
+
+            observers: [
+                '_routePageChanged(routeData.page)'
+            ],
+
+            _routePageChanged: function (page) {
+                console.log(page);
+                this.page = page || '';
+            },
+        });
+    </script>
+</dom-module>

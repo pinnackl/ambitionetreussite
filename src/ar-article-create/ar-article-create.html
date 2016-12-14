@@ -8,7 +8,7 @@
 <link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
 
 <link rel="import" href="../shared-styles.html">
-<dom-module id="ar-article-page">
+<dom-module id="ar-article-create">
     <template>
         <style include="shared-styles">
             :host {
@@ -299,11 +299,15 @@
                 }
             }
         </style>
+        <firebase-document
+            path="/articles"
+            data="{{newArticleDate}}">
+        </firebase-document>
         <div class="post">
             <div class="cover">
                 <iron-image src="https://static.pexels.com/photos/25833/pexels-photo-25833.jpg" preload style="background: #3eb7e9;" fade sizing="cover"></iron-image>
                 <div class="filter">
-                    <h1 class="title">[[article.title]]</h1> 
+                    <h1 class="title">[[title]]</h1> 
                     <div class="article-info">
                         <div class="avatar-ctn">
                             <iron-image class="avatar" src="http://placehold.it/64/ffffff/000000" preload sizing="cover" style="background-color: lightgray;"></iron-image>
@@ -341,7 +345,7 @@
                                 <paper-input
                                     id="articleTitle"
                                     label="Titre"
-                                    value="{{editData.title}}"></paper-input>
+                                    value="{{title}}"></paper-input>
                                 <paper-button
                                     class="save-button"
                                     raised
@@ -376,63 +380,13 @@
                         <a class="tag" href="#">Amazon</a>
                         <a class="tag" href="#">Apple</a>
                     </div>
-                    <div class="social">
-                        <h2><span class="icon"><iron-icon icon="social:share"></iron-icon></span> PARTAGER SUR LES RÉSEAUX SOCIAUX</h2>
-                        <paper-button class="facebook" raised>
-                            <a href="https://www.facebook.com/sharer/sharer.php?u=" title=""><social-media-icons icon="facebook" color="#ffffff"></social-media-icons>facebook</paper-button></a>
-                    </div>
-                    <div class="comment">
-                        <h2><span class="icon"><iron-icon icon="question-answer"></iron-icon></span>COMMENTAIRE</h2>
-                        <paper-material elevation="1" class="material">
-                            <div class="author">
-                                <div class="avatar-ctn">
-                                    <iron-image class="avatar" src="http://placehold.it/64/ffffff/000000" preload sizing="cover" style="background-color: lightgray;"></iron-image>
-                                </div>
-                                <div class="author-ctn">
-                                    <div class="autor-name">Par <a href="#" title="George R.R Martins">George R. R. Martin</a>,</div>
-                                    <div class="published">il y a 20 minutes</div>
-                                </div>
-                            </div>
-                            <div class="comment">
-                                Lorem ipsum Deserunt laboris do laboris cillum nostrud laborum Duis aute amet magna laborum dolore quis exercitation eu exercitation eiusmod fugiat nisi veniam velit consectetur dolor elit mollit sit occaecat non dolore enim laboris laboris est et consequat ut ad tempor ullamco ut consectetur dolore esse amet cupidatat est Duis mollit veniam sed commodo aliqua laboris sint tempor tempor ex laborum aliqua esse non culpa culpa Duis aliqua magna commodo culpa magna nostrud sunt in minim cillum nostrud culpa amet in sint dolore in nulla cupidatat amet Ut irure officia ut in amet eiusmod est in ea tempor anim id ut nisi deserunt nulla elit do anim sed eu et fugiat non deserunt sed incididunt reprehenderit nisi sint et culpa dolor incididunt ullamco culpa ex commodo ullamco ullamco nostrud proident quis qui laborum magna ex fugiat officia occaecat sint consectetur velit irure est dolore enim non magna in et amet officia pariatur labore incididunt dolore laborum exercitation labore et sint ad exercitation quis ex sunt fugiat occaecat laboris Excepteur dolore consectetur Excepteur velit non Duis est non do commodo velit cillum dolor Excepteur velit aute dolore mollit consectetur esse reprehenderit elit dolore Ut commodo cillum pariatur in Duis consectetur in incididunt amet Excepteur occaecat ex do exercitation ut non cupidatat nisi sed aliqua eu culpa aliquip cupidatat eiusmod sed nulla qui ullamco culpa Duis quis Ut cupidatat dolore tempor aliquip et esse in reprehenderit Duis aliquip sunt ad ut mollit id elit eu ut pariatur culpa consequat aliqua adipisicing non Duis culpa proident ullamco eiusmod culpa velit dolore ex do fugiat cupidatat aliqua sit.
-                            </div>
-                        </paper-material>
-                        <paper-material elevation="1" class="material">
-                            <div class="author">
-                                <div class="avatar-ctn">
-                                    <iron-image class="avatar" src="http://placehold.it/64/ffffff/000000" preload sizing="cover" style="background-color: lightgray;"></iron-image>
-                                </div>
-                                <div class="author-ctn">
-                                    <div class="autor-name">Par <a href="#" title="George R.R Martins">George R. R. Martin</a>,</div>
-                                    <div class="published">il y a 20 minutes</div>
-                                </div>
-                            </div>
-                            <div class="comment">
-                                Lorem ipsum Deserunt laboris do laboris cillum nostrud laborum Duis aute amet magna laborum dolore quis exercitation eu exercitation eiusmod fugiat nisi veniam velit consectetur dolor elit mollit sit occaecat non dolore enim laboris laboris est et consequat ut ad tempor ullamco ut consectetur dolore esse amet cupidatat est Duis mollit veniam sed commodo aliqua laboris sint tempor tempor ex laborum aliqua esse non culpa culpa Duis aliqua magna commodo culpa magna nostrud sunt in minim cillum nostrud culpa amet in sint dolore in nulla cupidatat amet Ut irure officia ut in amet eiusmod est in ea tempor anim id ut nisi deserunt nulla elit do anim sed eu et fugiat non deserunt sed incididunt reprehenderit nisi sint et culpa dolor incididunt ullamco culpa ex commodo ullamco ullamco nostrud proident quis qui laborum magna ex fugiat officia occaecat sint consectetur velit irure est dolore enim non magna in et amet officia pariatur labore incididunt dolore laborum exercitation labore et sint ad exercitation quis ex sunt fugiat occaecat laboris Excepteur dolore consectetur Excepteur velit non Duis est non do commodo velit cillum dolor Excepteur velit aute dolore mollit consectetur esse reprehenderit elit dolore Ut commodo cillum pariatur in Duis consectetur in incididunt amet Excepteur occaecat ex do exercitation ut non cupidatat nisi sed aliqua eu culpa aliquip cupidatat eiusmod sed nulla qui ullamco culpa Duis quis Ut cupidatat dolore tempor aliquip et esse in reprehenderit Duis aliquip sunt ad ut mollit id elit eu ut pariatur culpa consequat aliqua adipisicing non Duis culpa proident ullamco eiusmod culpa velit dolore ex do fugiat cupidatat aliqua sit.
-                            </div>
-                        </paper-material>
-                        <paper-material elevation="1" class="material">
-                            <div class="author">
-                                <div class="avatar-ctn">
-                                    <iron-image class="avatar" src="http://placehold.it/64/ffffff/000000" preload sizing="cover" style="background-color: lightgray;"></iron-image>
-                                </div>
-                                <div class="author-ctn">
-                                    <div class="autor-name">Par <a href="#" title="George R.R Martins">George R. R. Martin</a>,</div>
-                                    <div class="published">il y a 20 minutes</div>
-                                </div>
-                            </div>
-                            <div class="comment">
-                                Lorem ipsum Deserunt laboris do laboris cillum nostrud laborum Duis aute amet magna laborum dolore quis exercitation eu exercitation eiusmod fugiat nisi veniam velit consectetur dolor elit mollit sit occaecat non dolore enim laboris laboris est et consequat ut ad tempor ullamco ut consectetur dolore esse amet cupidatat est Duis mollit veniam sed commodo aliqua laboris sint tempor tempor ex laborum aliqua esse non culpa culpa Duis aliqua magna commodo culpa magna nostrud sunt in minim cillum nostrud culpa amet in sint dolore in nulla cupidatat amet Ut irure officia ut in amet eiusmod est in ea tempor anim id ut nisi deserunt nulla elit do anim sed eu et fugiat non deserunt sed incididunt reprehenderit nisi sint et culpa dolor incididunt ullamco culpa ex commodo ullamco ullamco nostrud proident quis qui laborum magna ex fugiat officia occaecat sint consectetur velit irure est dolore enim non magna in et amet officia pariatur labore incididunt dolore laborum exercitation labore et sint ad exercitation quis ex sunt fugiat occaecat laboris Excepteur dolore consectetur Excepteur velit non Duis est non do commodo velit cillum dolor Excepteur velit aute dolore mollit consectetur esse reprehenderit elit dolore Ut commodo cillum pariatur in Duis consectetur in incididunt amet Excepteur occaecat ex do exercitation ut non cupidatat nisi sed aliqua eu culpa aliquip cupidatat eiusmod sed nulla qui ullamco culpa Duis quis Ut cupidatat dolore tempor aliquip et esse in reprehenderit Duis aliquip sunt ad ut mollit id elit eu ut pariatur culpa consequat aliqua adipisicing non Duis culpa proident ullamco eiusmod culpa velit dolore ex do fugiat cupidatat aliqua sit.
-                            </div>
-                        </paper-material>
-                    </div>
                 </div>
             </div>
         </div>
     </template>
     <script>
         Polymer({
-            is: 'ar-article-page',
+            is: 'ar-article-create',
 
             properties: {
                 article: {
@@ -452,22 +406,14 @@
                 origin: String
             },
 
-            observers: [
-                '_articleChanged(article.content)'
-            ],
-
             ready: function () {
                 this.origin = window.location.origin;
             },
 
-            _articleChanged: function (content) {
-               this.editData = {
+            createArticle: function (e) {
+                this.push('newArticleDate', {
 
-                };
-                this.$.content.innerHTML = content || '';
-                if (typeof content != 'undefined') {
-                    this.$.editor.setContent(content);
-                }
+                });
             },
 
             _ucfirst: function (string) {

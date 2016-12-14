@@ -1,6 +1,8 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
+<link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
 
 <link rel="import" href="../ar-article-card/ar-article-card.html">
 <link rel="import" href="../ar-article-page/ar-article-page.html">
@@ -58,17 +60,22 @@
         <iron-pages selected="[[view]]" attr-for-selected="name">
             <section name="new">Create</section>
             <section name="list">
+                <firebase-query
+                    id="query"
+                    path="/articles"
+                    data="{{data}}">
+                </firebase-query>
                 <div class="material">
                     <div class="section-header">
                         <h1>[[_ucfirst(category)]]</h1>
                         <template is="dom-if" if={{!isAdmin}}>
-                            <a href="#/projects/create" title="Créer un article">
+                            <a href="/nouveau/article" title="Créer un article">
                                 <paper-icon-button class="" icon="add"></paper-icon-button>
                             </a>
                         </template>
                     </div>
                     <div class="app-grid">
-                        <template is="dom-repeat" items={{articles}} 
+                        <template is="dom-repeat" items={{data}} 
                             as=item index-as=index>
                             <ar-article-card class="item" article="{{item}}"></ar-article-card>
                         </template>
@@ -92,6 +99,11 @@
                 category: {
                     type: String
                 },
+
+                isAdmin: {
+                    type: Boolean,
+                    value: false,
+                }
             },
 
             ready: function () {
