@@ -6,6 +6,7 @@
 <link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 
 <link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
 <link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
@@ -303,6 +304,14 @@
                 color: #FFFFFF;
             }
 
+            #stateMessage {
+                width: 30vw;
+            }
+
+            .validate-icon {
+                color: #4CAF50;
+            }
+
             /* Mobil */
             @media (max-width: 799px) {
                 .post .material {
@@ -323,12 +332,13 @@
             }
         </style>
         <firebase-document
+            id="fireDoc"
             path="/articles"
             data="{{article}}">
         </firebase-document>
         <div class="post">
             <div class="cover">
-                <iron-image src="https://static.pexels.com/photos/25833/pexels-photo-25833.jpg" preload style="background: #3eb7e9;" fade sizing="cover"></iron-image>
+                <iron-image src$="https://cdn.pinnackl.com/images/[[cover]]" preload style="background: #3eb7e9;" fade sizing="cover"></iron-image>
                 <div class="filter">
                     <h1 class="title">[[title]]</h1> 
                     <div class="article-info">
@@ -428,6 +438,9 @@
                 </div>
             </div>
         </div>
+        <paper-toast id="stateMessage" horizontal-align="right" always-on-top duration="3000" text="" on-iron-overlay-closed="_toastClosed">
+            <iron-icon class="validate-icon" icon="check-circle"></iron-icon>
+        </paper-toast>
     </template>
     <script>
         Polymer({
@@ -435,7 +448,8 @@
 
             properties: {
                 article: {
-                    type: Object
+                    type: Object,
+                    observer: '_articleChanged'
                 },
 
                 isAdmin: {
@@ -495,20 +509,25 @@
                 }
             },
 
+            observers: [
+                // '_dataChanged(article)'
+            ],
+
             ready: function () {
                 this.origin = window.location.origin;
+                this.promise = this.$.fireDoc.transactionsComplete;
             },
 
             create: function (e) {
-                var slug = getSlug(this.title);
-                if (slug != "") {
-                    this.set('article.' + slug, {
-                        slug: slug,
-                        title: this.title,
-                        category: this.category,
-                        cover: this.cover,
-                        tags: this.tags,
-                        content: this.$.editor.getContent(),
+                this.slug = getSlug(this.title);
+                if (this.slug != "") {
+                    this.set('article.' + this.slug, {
+                        slug: this.slug,
+                        title: this.title || "",
+                        category: this.category || "",
+                        cover: this.cover || "",
+                        tags: this.tags || "",
+                        content: this.$.editor.getContent() || "",
                         created: Date.now()/1000,
                         edited: Date.now()/1000,
                         author: "",
@@ -516,6 +535,8 @@
                         published: false,
                         trash: false,
                     });
+                    this.isUpdate = true;
+                    this.$.stateMessage.text = "Vos modifications ont été sauvegardées!";
                 }
             },
 
@@ -528,13 +549,22 @@
                 this.push('tagList', this.newTag);
             },
 
-            _tagsChanged: function (e) {
-                console.log(this.tags);
+            _articleChanged: function (article) {
+                if (article && this.isUpdate) {
+                    this.$.stateMessage.open();
+                    this.isUpdate = false;
+                }
+            },
+
+            _toastClosed: function (e) {
+                if (this.slug && this.category) {
+                    window.location.href = "/lire/" + this.category + this.slug;
+                }
             },
 
             _ucfirst: function (string) {
                 if (string) {
-                    return string.charAt(0).toUpperCase() + string.slice(1);
+                    return string.charAt(0).toUpperCase() + "/" + string.slice(1);
                 }
                 return '';
             },
