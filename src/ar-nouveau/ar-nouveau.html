@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 
 <link rel="import" href="../ar-article-create/ar-article-create.html">
+<link rel="import" href="../ar-category-create/ar-category-create.html">
 
 <dom-module id="ar-nouveau">
     <template>
@@ -50,7 +51,7 @@
                 <ar-article-create edit-mode="true" user="{{user}}"></ar-article-create>
             </section>
             <section name="categorie">
-                
+                <ar-category-create user="{{user}}"></ar-category-create>
             </section>
             <section name="page">
                 
@@ -89,16 +90,17 @@
             checkRights: function (uid, editors, moderators, adminisrators) {
                 if ((editors && editors[uid] || moderators && moderators[uid] || adminisrators && adminisrators[uid])) {
                     this.isAdmin = true;
-                    this.page = "article";
+                    this.page = this.tempPage;
                 } else {
                     this.page = "spinner";
                 }
-                console.log(this.page);
             },
 
             _routePageChanged: function (page) {
                 if (this.isAdmin) {
                     this.page = page || '';
+                } else {
+                    this.tempPage = page;
                 }
             },
 
