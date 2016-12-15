@@ -3,6 +3,7 @@
 
 <link rel="import" href="../ar-article-create/ar-article-create.html">
 <link rel="import" href="../ar-category-create/ar-category-create.html">
+<link rel="import" href="../ar-tag-create/ar-tag-create.html">
 
 <dom-module id="ar-nouveau">
     <template>
@@ -52,6 +53,9 @@
             </section>
             <section name="categorie">
                 <ar-category-create user="{{user}}"></ar-category-create>
+            </section>
+            <section name="tag">
+                <ar-tag-create user="{{user}}"></ar-tag-create>
             </section>
             <section name="page">
                 

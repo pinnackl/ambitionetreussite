@@ -351,6 +351,11 @@
             path="/categories"
             data="{{categories}}">
         </firebase-query>
+        <firebase-query
+            id="tags"
+            path="/tags"
+            data="{{tags}}">
+        </firebase-query>
 
         <div class="post">
             <div class="cover">
@@ -377,6 +382,7 @@
                 </div>
             </div>
             <div class="material content">
+                <h1>Créer un nouvelle article</h1>
                 <!-- Edit content -->
                 <template is="dom-if" if={{editMode}}>
                     <div class="edit">
@@ -431,15 +437,15 @@
                             <paper-input label="Ajouter un tag" value="{{newTag}}"></paper-input>
                             <paper-button raised class="save-button" on-tap="addTag">Ajouter</paper-button>
                         </div>
-                        <paper-menu multi attr-for-selected="name" selected-values="{{tags}}">
-                            <template is="dom-repeat" items={{tagList}} 
+                        <paper-menu multi attr-for-selected="name" selected-values="{{selectedTags}}">
+                            <template is="dom-repeat" items={{tags}} 
                                 as=item index-as=index>
-                                <paper-item name="[[item]]">[[item]]</paper-item>
+                                <paper-item name="[[item.name]]">[[item.name]]</paper-item>
                             </template>
                         </paper-menu>
                     </div>
                     <div class="tags">
-                        <template is="dom-repeat" items={{tags}} 
+                        <template is="dom-repeat" items={{selectedTags}} 
                             as=item index-as=index>
                             <a class="tag" href="#">[[item]]</a>
                         </template>
@@ -543,20 +549,6 @@
                 tags: {
                     type: Array
                 },
-
-                tagList : {
-                    type: Array,
-                    value: function (e) {
-                        return [
-                            "Google",
-                            "Facebook",
-                            "Twitter",
-                            "Microsoft",
-                            "Amazon",
-                            "Apple",
-                        ];
-                    }
-                },
             },
 
             ready: function () {
@@ -615,7 +607,13 @@
             },
 
             addTag: function (e) {
-                this.push('tagList', this.newTag);
+                if (this.newTag) {
+                    this.$.tags.ref.push({
+                        slug: getSlug(this.newTag),
+                        name: this.newTag
+                    });
+                }
+                this.newTag = null;
             },
 
             addCategory: function (e) {
