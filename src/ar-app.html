@@ -233,9 +233,14 @@
     -->
     <ar-data id="arData"
       signed-in="{{signedIn}}"
-      user="{{fireUser}}"
       mode="{{mode}}"></ar-data>
 
+    <firebase-auth
+      id="auth"
+      user="{{fireUser}}"
+      signed-in="{{signedIn}}"
+      on-error="_handleError">
+    </firebase-auth>
     <!-- User data -->
     <firebase-document
       path$="/users/[[fireUser.uid]]/basicInfo"
@@ -246,7 +251,7 @@
 
       <!-- Drawer content -->
       <app-drawer id="appDrawer" swipe-open>
-        <app-toolbar>Menu</app-toolbar>
+        <app-toolbar>fireUser</app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
           <template is="dom-repeat" items={{menu}} 
             as=item index-as=index>
@@ -331,7 +336,7 @@
           <!-- About view -->
           <ar-a-propos name="a-propos"></ar-a-propos>
           <!-- New view -->
-          <ar-nouveau name="nouveau" route="{{subroute}}"></ar-nouveau>
+          <ar-nouveau name="nouveau" route="{{subroute}}" user="{{fireUser}}"></ar-nouveau>
           <!-- User view -->
           <div name="user">User</div>
 
@@ -445,7 +450,7 @@
 
       observers: [
         '_routePageChanged(routeData.page)',
-        '_displayUserName(largeScreen, signedIn)'
+        '_displayUserName(largeScreen, signedIn)',
       ],
 
       listeners: {
@@ -507,6 +512,7 @@
         // FIXME : Get the defaulpage from database
         this.page = page || 'accueil';
 
+        Polymer.AppLayout.scroll({ top: 0, behavior: 'silent' });
         // Force the drawer to close
         this.$.appDrawer.opened = false;
       },

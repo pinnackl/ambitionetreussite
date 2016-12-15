@@ -316,6 +316,11 @@
                 color: #ff5252;
             }
 
+            [spinner] {
+                width: 100%;
+                height: 100%;
+            }
+
             /* Mobil */
             @media (max-width: 799px) {
                 .post .material {
@@ -335,16 +340,18 @@
                 }
             }
         </style>
+
         <firebase-document
-            id="fireDoc"
+            id="article"
             path="/articles/{{slug}}"
             data="{{article}}">
         </firebase-document>
         <firebase-query
-            id="query"
+            id="categories"
             path="/categories"
             data="{{categories}}">
         </firebase-query>
+
         <div class="post">
             <div class="cover">
                 <iron-image src$="https://cdn.pinnackl.com/images/[[cover]]" preload style="background: #3eb7e9;" fade sizing="cover"></iron-image>
@@ -359,7 +366,7 @@
                             <div class="published">il y a 20 minutes</div>
                         </div>
                         <div class="category">
-                            <a class="tag" href="/categorie/#google" title="Google">[[_ucfirst(category)]]</a>
+                            <a class="tag" href="/categorie/#google" title="[[_ucfirst(category)]]">[[_ucfirst(category)]]</a>
                         </div>
                         <div class="social">
                             <span class="circle">
@@ -370,15 +377,6 @@
                 </div>
             </div>
             <div class="material content">
-                <div class="section-header">
-                    <span></span>
-                    <template is="dom-if" if={{isAdmin}}>
-                        <paper-icon-button icon="create" raised on-tap="edit"
-                            hidden$="[[editMode]]"></paper-icon-button>
-                        <paper-icon-button icon="close" raised on-tap="close"
-                            hidden$="[[!editMode]]"></paper-icon-button>
-                    </template>
-                </div>
                 <!-- Edit content -->
                 <template is="dom-if" if={{editMode}}>
                     <div class="edit">
@@ -402,16 +400,16 @@
                                 method="POST"
                                 file-data-name="cover"
                                 target="https://cdn.pinnackl.com/api/images/upload"
-                                on-success="fileUploaded">Choose File</file-upload>
+                                on-success="fileUploaded">Choisir un fichier</file-upload>
                             <paper-input
                                 label="Ajouter un catégorie"
                                 value="{{newCategory}}"></paper-input>
                             <paper-button raised class="save-button" on-tap="addCategory">Ajouer</paper-button>
                             <paper-dropdown-menu label="Choisir une catégorie" value="{{category}}">
                                 <paper-listbox class="dropdown-content">
-                                    <template is="dom-repeat" items={{categoryList}} 
+                                    <template is="dom-repeat" items={{categories}} 
                                         as=item index-as=index>
-                                        <paper-item>[[item]]</paper-item>
+                                        <paper-item>[[item.name]]</paper-item>
                                     </template>
                                 </paper-listbox>
                             </paper-dropdown-menu>
@@ -466,6 +464,10 @@
             is: 'ar-article-create',
 
             properties: {
+                user: {
+                    type: Object,
+                },
+
                 article: {
                     type: Object
                 },
@@ -512,6 +514,10 @@
                                 icon: "warning",
                                 text: "Erreur! Vous devez attribuer une catégorie à votre article!",
                             },
+                            'errorRight': {
+                                icon: "warning",
+                                text: "Erreur! Vous n'avez pas les droits!",
+                            },
                         } 
                     }
                 },
@@ -527,20 +533,6 @@
 
                 category: {
                     type: String
-                },
-
-                categoryList: {
-                    type: Array,
-                    value: function (e) {
-                        return [
-                            "Google",
-                            "Facebook",
-                            "Twitter",
-                            "Microsoft",
-                            "Amazon",
-                            "Apple",
-                        ]
-                    }
                 },
 
                 categories: {
@@ -569,14 +561,13 @@
 
             ready: function () {
                 this.origin = window.location.origin;
-                this.promise = this.$.fireDoc.transactionsComplete;
             },
 
             create: function (e) {
                 this.isUpdate = false;
                 if (this.slug != "" && typeof this.category != "undefined" && this.article.slug != this.slug) {
                     var _this = this;
-                    this.$.fireDoc.ref.set({
+                    this.$.article.ref.set({
                         slug: this.slug,
                         title: this.title || "",
                         category: this.category || "",
@@ -607,9 +598,13 @@
                     this.stateMessageIcon = this.stateMessage.errorCategory.icon;
                     this.$.stateMessage.text = this.stateMessage.errorCategory.text;
                     this.$.stateMessage.open();
-                } else {
+                } else if (this.slug == "") {
                     this.stateMessageIcon = this.stateMessage.errorEmpty.icon;
                     this.$.stateMessage.text = this.stateMessage.errorEmpty.text;
+                    this.$.stateMessage.open();
+                } else {
+                    this.stateMessageIcon = this.stateMessage.errorRight.icon;
+                    this.$.stateMessage.text = this.stateMessage.errorRight.text;
                     this.$.stateMessage.open();
                 }
             },
@@ -624,7 +619,13 @@
             },
 
             addCategory: function (e) {
-                this.push('categoryList', this.newCategory);
+                if (this.newCategory) {
+                    this.$.categories.ref.push({
+                        slug: getSlug(this.newCategory),
+                        name: this.newCategory
+                    });
+                }
+                this.newCategory = null;
             },
 
             _titleChanged: function (title) {
@@ -637,7 +638,7 @@
 
             _toastClosed: function (e) {
                 if (this.isUpdate) {
-                    window.location.href = "/lire/" + this.category + "/" + this.slug;
+                    window.location.href = "/lire/" + getSlug(this.category) + "/" + this.slug;
                 }
             },
 

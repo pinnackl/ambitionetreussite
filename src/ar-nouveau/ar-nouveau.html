@@ -1,4 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 
 <link rel="import" href="../ar-article-create/ar-article-create.html">
 
@@ -7,6 +8,22 @@
         <style>
             :host {
                 display: block;
+                min-height: 100vh;
+                width: 100%;
+            }
+
+            iron-pages {
+                min-height: 100vh;
+            }
+
+            iron-pages section {
+                min-height: 50vh;
+            }
+
+            [name=spinner] {
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
         </style>
         <app-route
@@ -14,19 +31,32 @@
             pattern="/:page"
             data="{{routeData}}"
             tail="{{subroute}}"></app-route>
-        <!-- <app-route 
-            route="{{subroute}}"
-            pattern="/:article"
-            data="{{subRouteData}}"></app-route> -->
-        <iron-pages selected="[[page]]" attr-for-selected="name">
+
+        <firebase-document
+          path="/editors"
+          data="{{editors}}">
+        </firebase-document>
+        <firebase-document
+          path="/moderators"
+          data="{{moderators}}">
+        </firebase-document>
+        <firebase-document
+          path="/adminisrators"
+          data="{{adminisrators}}">
+        </firebase-document>
+
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="spinner">
             <section name="article">
-                <ar-article-create edit-mode="true"></ar-article-create>
+                <ar-article-create edit-mode="true" user="{{user}}"></ar-article-create>
             </section>
             <section name="categorie">
                 
             </section>
             <section name="page">
                 
+            </section>
+            <section name="spinner">
+                <paper-spinner active alt="Chargement des contenu"></paper-spinner>
             </section>
         </iron-pages>
     </template>
@@ -37,15 +67,49 @@
             properties: {
                 route: {
                     type: Object
-                }
+                },
+
+                isAdmin: {
+                    type: Boolean,
+                    value: false,
+                },
+
+                user: {
+                    type: Object,
+                    notify: true,
+                },
             },
 
             observers: [
-                '_routePageChanged(routeData.page)'
+                '_routePageChanged(routeData.page)',
+                'checkRights(user.uid, editors, moderators, adminisrators)',
             ],
 
+
+            checkRights: function (uid, editors, moderators, adminisrators) {
+                if ((editors && editors[uid] || moderators && moderators[uid] || adminisrators && adminisrators[uid])) {
+                    this.isAdmin = true;
+                    this.page = "article";
+                } else {
+                    this.page = "spinner";
+                }
+                console.log(this.page);
+            },
+
             _routePageChanged: function (page) {
-                this.page = page || '';
+                if (this.isAdmin) {
+                    this.page = page || '';
+                }
+            },
+
+
+            _userChanged: function (user) {
+                if (user == null) {
+                    this.isAdmin = false;
+                    this.editMode = false;
+                } else {
+                    this.checkRights(user.uid, this.editors, this.moderators, this.adminisrators);
+                }
             },
         });
     </script>
