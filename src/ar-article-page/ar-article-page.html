@@ -3,11 +3,15 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/social-media-icons/social-media-icons.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 
 <link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
 <link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
 <link rel="import" href="../../bower_components/file-upload/file-upload.html">
 
+<link rel="import" href="../imports/imports-speakingurl.html">
 <link rel="import" href="../shared-styles.html">
 <dom-module id="ar-article-page">
     <template>
@@ -255,6 +259,22 @@
                 display: inline-block;
             }
 
+            .post .material paper-menu {
+                height: 144px;
+                background-color: #f7F7F7;
+                overflow-y: scroll;
+                padding: 0 6px;
+            }
+
+            .post .material paper-menu paper-item {
+                cursor: pointer;
+            }
+
+            .post .material paper-menu paper-item.iron-selected {
+                background-color: #179BD7;
+                color: #ffffff;
+            }
+
             .post .material.footer .tags {
                 margin-top: 20px;
             }
@@ -300,26 +320,53 @@
                 }
             }
         </style>
+        <firebase-document
+            id="article"
+            path="/articles/{{_article.slug}}">
+        </firebase-document>
+        <firebase-document
+            id="users"
+            path="/users/[[_article.authorID]]"
+            data="{{user}}">
+        </firebase-document>
+        <firebase-query
+            id="categories"
+            path="/categories"
+            data="{{categories}}">
+        </firebase-query>
+        <firebase-query
+            id="tags"
+            path="/tags"
+            data="{{tags}}">
+        </firebase-query>
         <div class="post">
             <div class="cover">
-                <iron-image src="https://static.pexels.com/photos/25833/pexels-photo-25833.jpg" preload style="background: #3eb7e9;" fade sizing="cover"></iron-image>
-                <div class="filter">
-                    <h1 class="title">[[article.title]]</h1> 
+                <iron-image
+                    style="background: #3eb7e9;"
+                    src$="https://cdn.pinnackl.com/images/[[_article.cover]]"
+                    preload  fade sizing="cover"></iron-image>
+                <div id="filter" class="filter">
+                    <h1 class="title">[[_article.title]]</h1>
                     <div class="article-info">
                         <div class="avatar-ctn">
-                            <iron-image class="avatar" src="http://placehold.it/64/ffffff/000000" preload sizing="cover" style="background-color: lightgray;"></iron-image>
+                            <iron-image class="avatar"
+                                style="background-color: lightgray;"
+                                src="https://cdn.pinnackl.com/avatar/[[user.basicInfo.avatar]]"
+                                preload fade sizing="cover"></iron-image>
                         </div>
                         <div class="author-ctn">
-                            <div class="autor-name">Par <a href="#" title="George R.R Martins">George R. R. Martin</a>,</div>
-                            <div class="published">il y a 20 minutes</div>
+                            <div class="autor-name">Par <a href="/user/[[_article.authorID]]" title="[[_article.author]]">[[_article.author]]</a>,</div>
+                            <div class="published">[[date]]</div>
                         </div>
                         <div class="category">
-                            <a class="tag" href="/categorie/#google" title="Google">[[_ucfirst(article.name)]]</a>
+                            <a class="tag" href="/categorie/[[_lowerCase(_article.category)]]" title="[[_ucfirst(_article.category)]]">[[_ucfirst(_article.category)]]</a>
                         </div>
                         <div class="social">
-                            <span class="circle">
-                                <iron-icon icon="question-answer"></iron-icon>
-                                <paper-badge label="3"></paper-badge></span>
+                            <template is="dom-if" if={{date}}>
+                                <span class="circle">
+                                    <iron-icon icon="question-answer"></iron-icon>
+                                    <paper-badge label="0"></paper-badge></span>
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -342,12 +389,14 @@
                                 <paper-input
                                     id="articleTitle"
                                     label="Titre"
-                                    value="{{editData.title}}"></paper-input>
+                                    value="{{_article.title}}"></paper-input>
+                                <div class="sub-align"><span>Publier</span>
+                                    <paper-toggle-button checked="{{_article.published}}"></paper-toggle-button></div>
                                 <paper-button
                                     class="save-button"
                                     raised
-                                    on-tap="update">
-                                    <iron-icon icon="done"></iron-icon>UPDATE</paper-button>
+                                    on-tap="updateArticle">
+                                    <iron-icon icon="done"></iron-icon>Valider</paper-button>
                             </div>
                             <div class="section-header">
                                 <!-- FIXME : Get the target from config -->
@@ -359,6 +408,18 @@
                                     file-data-name="cover"
                                     target="https://cdn.pinnackl.com/api/images/upload"
                                     on-success="fileUploaded">Choose File</file-upload>
+                                <paper-input
+                                    label="Ajouter un catégorie"
+                                    value="{{newCategory}}"></paper-input>
+                                <paper-button raised class="save-button" on-tap="addCategory">Ajouer</paper-button>
+                                <paper-dropdown-menu label="Choisir une catégorie" value="{{_article.category}}">
+                                    <paper-listbox class="dropdown-content">
+                                        <template is="dom-repeat" items={{categories}} 
+                                            as=item index-as=index>
+                                            <paper-item>[[item.name]]</paper-item>
+                                        </template>
+                                    </paper-listbox>
+                                </paper-dropdown-menu>
                             </div>
                         </div>
                     </template>
@@ -372,13 +433,26 @@
 
                 <article id="content"></article>
                 <div class="material footer">
+                    <template is="dom-if" if={{editMode}}>
+                        <div class="material">
+                            <h3>Choisir des tags</h3>
+                            <div class="section-header">
+                                <paper-input label="Ajouter un tag" value="{{newTag}}"></paper-input>
+                                <paper-button raised class="save-button" on-tap="addTag">Ajouter</paper-button>
+                            </div>
+                            <paper-menu multi attr-for-selected="name" selected-values="{{_article.tags}}">
+                                <template is="dom-repeat" items={{tags}} 
+                                    as=item index-as=index>
+                                    <paper-item name="[[item.name]]">[[item.name]]</paper-item>
+                                </template>
+                            </paper-menu>
+                        </div>
+                    </template>
                     <div class="tags">
-                        <a class="tag" href="#">Google</a>
-                        <a class="tag" href="#">Facebook</a>
-                        <a class="tag" href="#">Twitter</a>
-                        <a class="tag" href="#">Microsoft</a>
-                        <a class="tag" href="#">Amazon</a>
-                        <a class="tag" href="#">Apple</a>
+                        <template is="dom-repeat" items={{_article.tags}} 
+                            as=item index-as=index>
+                            <a class="tag" href="#">[[item]]</a>
+                        </template>
                     </div>
                     <div class="social">
                         <h2><span class="icon"><iron-icon icon="social:share"></iron-icon></span> PARTAGER SUR LES RÉSEAUX SOCIAUX</h2>
@@ -387,52 +461,31 @@
                     </div>
                     <div class="comment">
                         <h2><span class="icon"><iron-icon icon="question-answer"></iron-icon></span>COMMENTAIRE</h2>
-                        <paper-material elevation="1" class="material">
-                            <div class="author">
-                                <div class="avatar-ctn">
-                                    <iron-image class="avatar" src="http://placehold.it/64/ffffff/000000" preload sizing="cover" style="background-color: lightgray;"></iron-image>
+                        <template is="dom-repeat" items={{article.comments}} 
+                            as=item index-as=index>
+                            <!-- FIXME : todo -->
+                            <paper-material elevation="1" class="material">
+                                <div class="author">
+                                    <div class="avatar-ctn">
+                                        <iron-image class="avatar" src="http://placehold.it/64/ffffff/000000" preload sizing="cover" style="background-color: lightgray;"></iron-image>
+                                    </div>
+                                    <div class="author-ctn">
+                                        <div class="autor-name">Par <a href="#" title="George R.R Martins">George R. R. Martin</a>,</div>
+                                        <div class="published">il y a 20 minutes</div>
+                                    </div>
                                 </div>
-                                <div class="author-ctn">
-                                    <div class="autor-name">Par <a href="#" title="George R.R Martins">George R. R. Martin</a>,</div>
-                                    <div class="published">il y a 20 minutes</div>
+                                <div class="comment">
+                                    Lorem ipsum Deserunt laboris do laboris cillum nostrud laborum Duis aute amet magna laborum dolore quis exercitation eu exercitation eiusmod fugiat nisi veniam velit consectetur dolor elit mollit sit occaecat non dolore enim laboris laboris est et consequat ut ad tempor ullamco ut consectetur dolore esse amet cupidatat est Duis mollit veniam sed commodo aliqua laboris sint tempor tempor ex laborum aliqua esse non culpa culpa Duis aliqua magna commodo culpa magna nostrud sunt in minim cillum nostrud culpa amet in sint dolore in nulla cupidatat amet Ut irure officia ut in amet eiusmod est in ea tempor anim id ut nisi deserunt nulla elit do anim sed eu et fugiat non deserunt sed incididunt reprehenderit nisi sint et culpa dolor incididunt ullamco culpa ex commodo ullamco ullamco nostrud proident quis qui laborum magna ex fugiat officia occaecat sint consectetur velit irure est dolore enim non magna in et amet officia pariatur labore incididunt dolore laborum exercitation labore et sint ad exercitation quis ex sunt fugiat occaecat laboris Excepteur dolore consectetur Excepteur velit non Duis est non do commodo velit cillum dolor Excepteur velit aute dolore mollit consectetur esse reprehenderit elit dolore Ut commodo cillum pariatur in Duis consectetur in incididunt amet Excepteur occaecat ex do exercitation ut non cupidatat nisi sed aliqua eu culpa aliquip cupidatat eiusmod sed nulla qui ullamco culpa Duis quis Ut cupidatat dolore tempor aliquip et esse in reprehenderit Duis aliquip sunt ad ut mollit id elit eu ut pariatur culpa consequat aliqua adipisicing non Duis culpa proident ullamco eiusmod culpa velit dolore ex do fugiat cupidatat aliqua sit.
                                 </div>
-                            </div>
-                            <div class="comment">
-                                Lorem ipsum Deserunt laboris do laboris cillum nostrud laborum Duis aute amet magna laborum dolore quis exercitation eu exercitation eiusmod fugiat nisi veniam velit consectetur dolor elit mollit sit occaecat non dolore enim laboris laboris est et consequat ut ad tempor ullamco ut consectetur dolore esse amet cupidatat est Duis mollit veniam sed commodo aliqua laboris sint tempor tempor ex laborum aliqua esse non culpa culpa Duis aliqua magna commodo culpa magna nostrud sunt in minim cillum nostrud culpa amet in sint dolore in nulla cupidatat amet Ut irure officia ut in amet eiusmod est in ea tempor anim id ut nisi deserunt nulla elit do anim sed eu et fugiat non deserunt sed incididunt reprehenderit nisi sint et culpa dolor incididunt ullamco culpa ex commodo ullamco ullamco nostrud proident quis qui laborum magna ex fugiat officia occaecat sint consectetur velit irure est dolore enim non magna in et amet officia pariatur labore incididunt dolore laborum exercitation labore et sint ad exercitation quis ex sunt fugiat occaecat laboris Excepteur dolore consectetur Excepteur velit non Duis est non do commodo velit cillum dolor Excepteur velit aute dolore mollit consectetur esse reprehenderit elit dolore Ut commodo cillum pariatur in Duis consectetur in incididunt amet Excepteur occaecat ex do exercitation ut non cupidatat nisi sed aliqua eu culpa aliquip cupidatat eiusmod sed nulla qui ullamco culpa Duis quis Ut cupidatat dolore tempor aliquip et esse in reprehenderit Duis aliquip sunt ad ut mollit id elit eu ut pariatur culpa consequat aliqua adipisicing non Duis culpa proident ullamco eiusmod culpa velit dolore ex do fugiat cupidatat aliqua sit.
-                            </div>
-                        </paper-material>
-                        <paper-material elevation="1" class="material">
-                            <div class="author">
-                                <div class="avatar-ctn">
-                                    <iron-image class="avatar" src="http://placehold.it/64/ffffff/000000" preload sizing="cover" style="background-color: lightgray;"></iron-image>
-                                </div>
-                                <div class="author-ctn">
-                                    <div class="autor-name">Par <a href="#" title="George R.R Martins">George R. R. Martin</a>,</div>
-                                    <div class="published">il y a 20 minutes</div>
-                                </div>
-                            </div>
-                            <div class="comment">
-                                Lorem ipsum Deserunt laboris do laboris cillum nostrud laborum Duis aute amet magna laborum dolore quis exercitation eu exercitation eiusmod fugiat nisi veniam velit consectetur dolor elit mollit sit occaecat non dolore enim laboris laboris est et consequat ut ad tempor ullamco ut consectetur dolore esse amet cupidatat est Duis mollit veniam sed commodo aliqua laboris sint tempor tempor ex laborum aliqua esse non culpa culpa Duis aliqua magna commodo culpa magna nostrud sunt in minim cillum nostrud culpa amet in sint dolore in nulla cupidatat amet Ut irure officia ut in amet eiusmod est in ea tempor anim id ut nisi deserunt nulla elit do anim sed eu et fugiat non deserunt sed incididunt reprehenderit nisi sint et culpa dolor incididunt ullamco culpa ex commodo ullamco ullamco nostrud proident quis qui laborum magna ex fugiat officia occaecat sint consectetur velit irure est dolore enim non magna in et amet officia pariatur labore incididunt dolore laborum exercitation labore et sint ad exercitation quis ex sunt fugiat occaecat laboris Excepteur dolore consectetur Excepteur velit non Duis est non do commodo velit cillum dolor Excepteur velit aute dolore mollit consectetur esse reprehenderit elit dolore Ut commodo cillum pariatur in Duis consectetur in incididunt amet Excepteur occaecat ex do exercitation ut non cupidatat nisi sed aliqua eu culpa aliquip cupidatat eiusmod sed nulla qui ullamco culpa Duis quis Ut cupidatat dolore tempor aliquip et esse in reprehenderit Duis aliquip sunt ad ut mollit id elit eu ut pariatur culpa consequat aliqua adipisicing non Duis culpa proident ullamco eiusmod culpa velit dolore ex do fugiat cupidatat aliqua sit.
-                            </div>
-                        </paper-material>
-                        <paper-material elevation="1" class="material">
-                            <div class="author">
-                                <div class="avatar-ctn">
-                                    <iron-image class="avatar" src="http://placehold.it/64/ffffff/000000" preload sizing="cover" style="background-color: lightgray;"></iron-image>
-                                </div>
-                                <div class="author-ctn">
-                                    <div class="autor-name">Par <a href="#" title="George R.R Martins">George R. R. Martin</a>,</div>
-                                    <div class="published">il y a 20 minutes</div>
-                                </div>
-                            </div>
-                            <div class="comment">
-                                Lorem ipsum Deserunt laboris do laboris cillum nostrud laborum Duis aute amet magna laborum dolore quis exercitation eu exercitation eiusmod fugiat nisi veniam velit consectetur dolor elit mollit sit occaecat non dolore enim laboris laboris est et consequat ut ad tempor ullamco ut consectetur dolore esse amet cupidatat est Duis mollit veniam sed commodo aliqua laboris sint tempor tempor ex laborum aliqua esse non culpa culpa Duis aliqua magna commodo culpa magna nostrud sunt in minim cillum nostrud culpa amet in sint dolore in nulla cupidatat amet Ut irure officia ut in amet eiusmod est in ea tempor anim id ut nisi deserunt nulla elit do anim sed eu et fugiat non deserunt sed incididunt reprehenderit nisi sint et culpa dolor incididunt ullamco culpa ex commodo ullamco ullamco nostrud proident quis qui laborum magna ex fugiat officia occaecat sint consectetur velit irure est dolore enim non magna in et amet officia pariatur labore incididunt dolore laborum exercitation labore et sint ad exercitation quis ex sunt fugiat occaecat laboris Excepteur dolore consectetur Excepteur velit non Duis est non do commodo velit cillum dolor Excepteur velit aute dolore mollit consectetur esse reprehenderit elit dolore Ut commodo cillum pariatur in Duis consectetur in incididunt amet Excepteur occaecat ex do exercitation ut non cupidatat nisi sed aliqua eu culpa aliquip cupidatat eiusmod sed nulla qui ullamco culpa Duis quis Ut cupidatat dolore tempor aliquip et esse in reprehenderit Duis aliquip sunt ad ut mollit id elit eu ut pariatur culpa consequat aliqua adipisicing non Duis culpa proident ullamco eiusmod culpa velit dolore ex do fugiat cupidatat aliqua sit.
-                            </div>
-                        </paper-material>
+                            </paper-material>
+                        </template>
                     </div>
                 </div>
             </div>
         </div>
+        <paper-toast id="stateMessage" horizontal-align="left" always-on-top duration="5000" text="" on-iron-overlay-closed="_toastClosed">
+            <iron-icon id="toastIcon" class="validate-icon" icon$="[[stateMessageIcon]]"></iron-icon>
+        </paper-toast>
     </template>
     <script>
         Polymer({
@@ -441,6 +494,14 @@
             properties: {
                 article: {
                     type: Object
+                },
+              
+                _article: {
+                    type: Object
+                },
+
+                editData: {
+                    type: Object,
                 },
 
                 isAdmin: {
@@ -454,7 +515,35 @@
                     observer: '_editModeChanged'
                 },
 
-                origin: String
+                origin: String,
+
+                stateMessage: {
+                    type: Object,
+                    value: function () {
+                        return {
+                            'success': {
+                                icon: "check-circle",
+                                text: "Vos modifications ont été sauvegardées!",
+                            },
+                            'errorExist': {
+                                icon: "warning",
+                                text: "Erreur! Un article avec ce titre existe déjà!",
+                            },
+                            'errorEmpty': {
+                                icon: "warning",
+                                text: "Erreur! Vous devez donner un titre à votre article!",
+                            },
+                            'errorCategory': {
+                                icon: "warning",
+                                text: "Erreur! Vous devez attribuer une catégorie à votre article!",
+                            },
+                            'errorRight': {
+                                icon: "warning",
+                                text: "Erreur! Vous n'avez pas les droits!",
+                            },
+                        } 
+                    }
+                },
             },
 
             observers: [
@@ -473,27 +562,19 @@
                 this.editMode = false;
             },
 
-            fileUploaded: function (e, detail) {
-                console.log(detail.xhr.response);
-            },
-
             _articleChanged: function (content) {
-                this.editData = {};
                 this.$.content.innerHTML = content || '';
 
                 if (typeof content != 'undefined') {
-                    // Set edito value
-                    this.set('editData', {
-                        title: this.editData.title || '',
-                        content: content || '',
-                    });
-                    this.$.editor.setContent(this.editData.content);
+                    this._article = this.article;
+                    this.date = moment(this._article.edited).fromNow();
+                    this.$.editor.setContent(this._article.content);
                 }
             },
 
             _editModeChanged: function (e) {
                 if (e) {
-                    this.$.editor.setContent(this.editData.content);
+                    this.$.editor.setContent(this._article.content);
                 }
             },
 
@@ -502,6 +583,98 @@
                     return string.charAt(0).toUpperCase() + string.slice(1);
                 }
                 return '';
+            },
+
+
+            _lowerCase: function (string) {
+                if (string) {
+                    return string.toLowerCase();
+                }
+                return string;
+            },
+
+            // TO BE IN A PROPER BEHAVIOR
+            
+            updateArticle: function (e) {
+                this.isUpdate = false;
+                if (this.article.title != "" && typeof this.article.category != "undefined") {
+                    var _this = this;
+                    this.$.article.ref.update({
+                        slug: this._article.slug,
+                        slugTs: this._article.slug + '-' + Date.now(),
+                        title: this._article.title,
+                        category: this._lowerCase(this._article.category),
+                        cover: this._article.cover,
+                        tags: this._article.tags || "",
+                        content: this.$.editor.getContent() || "",
+                        created: this._article.created,
+                        edited: Date.now(),
+                        author: this._article.author,
+                        authorID: this._article.authorID,
+                        comments: this._article.comments || [],
+                        published: this._article.published,
+                        trash: false,
+                        'category_published_trash': this._computeCombinedIndex()
+                    }).then(function (value) {
+                        _this.stateMessageIcon = _this.stateMessage.success.icon;
+                        _this.$.stateMessage.text = _this.stateMessage.success.text;
+                        _this.$.stateMessage.open();
+                        _this.isUpdate = true;
+                    }).catch(function (error) {
+                        _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
+                        _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
+                        _this.$.stateMessage.open();
+                    });
+                } else {
+                    // this.stateMessageIcon = this.stateMessage.errorRight.icon;
+                    // this.$.stateMessage.text = this.stateMessage.errorRight.text;
+                    this.$.stateMessage.open();
+                }
+            },
+
+            fileUploaded: function (e, detail) {
+                var parsedResponse = JSON.parse(detail.xhr.response);
+                this.set("_article.cover", parsedResponse.name);
+            },
+
+            addTag: function (e) {
+                if (this.newTag) {
+                    this.$.tags.ref.push({
+                        slug: getSlug(this.newTag),
+                        name: this.newTag
+                    });
+                }
+                this.newTag = null;
+            },
+
+            addCategory: function (e) {
+                if (this.newCategory) {
+                    this.$.categories.ref.push({
+                        slug: getSlug(this.newCategory),
+                        name: this.newCategory
+                    });
+                }
+                this.newCategory = null;
+            },
+
+            _titleChanged: function (title) {
+                this.slug = getSlug(title);
+            },
+
+            _categoriesChanged: function (categories) {
+                
+            },
+
+            _toastClosed: function (e) {
+                if (this.isUpdate) {
+                    this.editMode = false;
+                }
+            },
+
+            _computeCombinedIndex: function () {
+                return this._lowerCase(this._article.category)
+                    + "~" + this._article.published
+                    + "~" + "false";
             },
         });
     </script>

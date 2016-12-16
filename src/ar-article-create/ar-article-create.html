@@ -583,6 +583,7 @@
                     var _this = this;
                     this.$.article.ref.set({
                         slug: this.slug,
+                        slugTs: this.slug + '-' + Date.now(),
                         title: this.title || "",
                         category: this._lowerCase(this.category) || "",
                         cover: this.cover || "",
@@ -592,7 +593,7 @@
                         edited: Date.now(),
                         author: this.userData.basicInfo.name,
                         authorID: this.user.uid,
-                        comments: {},
+                        comments: [],
                         published: this.published,
                         trash: false,
                         'category_published_trash': this._computeCombinedIndex()

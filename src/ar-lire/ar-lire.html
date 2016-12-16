@@ -1,4 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 
 <link rel="import" href="../ar-article/ar-article.html">
 <dom-module id="ar-lire">
@@ -6,6 +7,22 @@
         <style>
             :host {
                 display: block;
+                min-height: 100vh;
+                width: 100%;
+            }
+
+            iron-pages {
+                min-height: 100vh;
+            }
+
+            iron-pages section {
+                min-height: 50vh;
+            }
+
+            [name=spinner] {
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
         </style>
         <app-route
@@ -13,8 +30,15 @@
             pattern="/:category/:article"
             data="{{routeData}}"
             tail="{{subroute}}"></app-route>
-        <!-- <h1>[[category]]/[[article]]</h1> -->
-        <ar-article view="read" category="[[category]]"></ar-article>
+        <iron-pages selected="[[view]]" attr-for-selected="name" fallback-selection="spinner">
+            <section name="read"><ar-article view="read" category="[[category]]" slug="[[article]]"></ar-article></section>
+            <section name="view404">
+                <h1>404</h1>
+            </section>
+            <section name="spinner">
+                <paper-spinner active alt="Chargement des contenu"></paper-spinner>
+            </section>
+        </iron-pages>
     </template>
     <script>
         Polymer({
@@ -27,17 +51,18 @@
             },
 
             observers: [
-                '_routePageChanged(routeData.category)',
-                '_routeSubPageChanged(routeData.article)',
+                '_routePageChanged(routeData.category, routeData.article)',
             ],
 
-            _routePageChanged: function (category) {
+            _routePageChanged: function (category, article) {
                 this.category = category;
-            },
-
-            _routeSubPageChanged: function (article) {
                 this.article = article;
-            }          
+                if (category && article) {
+                    this.view = "read";
+                } else {
+                    this.view = "view404";
+                }
+            },        
         });
     </script>
 </dom-module>

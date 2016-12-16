@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 
 <link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
 <link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
@@ -14,8 +15,25 @@
             :host {
                 display: block;
 
+                min-height: 100vh;
+                width: 100%;
+
                 --app-grid-columns: 3;
                 --app-grid-item-height: 200px;
+            }
+
+            iron-pages {
+                min-height: 100vh;
+            }
+
+            iron-pages section {
+                min-height: 50vh;
+            }
+
+            [name=spinner] {
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
 
             .material {
@@ -69,15 +87,21 @@
                 }
             }
         </style>
-        <iron-pages selected="[[view]]" attr-for-selected="name">
+        <firebase-query
+            id="query"
+            path="/articles"
+            order-by-child="category_published_trash"
+            equal-to="[[combinedFilters]]"
+            data="{{data}}">
+        </firebase-query>
+
+        <firebase-document
+            id="query"
+            path="/articles/[[slug]]"
+            data="{{article}}">
+        </firebase-document>
+        <iron-pages selected="[[view]]" attr-for-selected="name" fallback-selection="spinner">
             <section name="list">
-                <firebase-query
-                    id="query"
-                    path="/articles"
-                    order-by-child="category_published_trash"
-                    equal-to="[[combinedFilters]]"
-                    data="{{data}}">
-                </firebase-query>
                 <div class="material">
                     <div class="section-header">
                         <h1>[[_ucfirst(category)]]</h1>
@@ -105,6 +129,12 @@
             <section name="read">
                 <ar-article-page article="[[article]]"></ar-article-page>
             </section>
+            <section name="spinner">
+                <paper-spinner active alt="Chargement des contenu"></paper-spinner>
+            </section>
+            <section name="view404">
+                <h1>404</h1>
+            </section>
         </iron-pages>
     </template>
     <script>
@@ -118,6 +148,16 @@
 
                 category: {
                     type: String,
+                },
+
+                data: {
+                    type: Array,
+                    observer: '_contentChange'
+                },
+
+                article: {
+                    type: Object,
+                    observer: '_contentChange'
                 },
 
                 isAdmin: {
@@ -146,6 +186,18 @@
 
             ready: function () {
 
+            },
+
+            _contentChange: function (e) {
+                if (typeof this.attempt == "undefined") {
+                    this.attempt = this.view;
+                }
+                this.view = "spinner";
+                if (this.article && this.article.title && this.attempt == "read") {
+                    this.view = "read";
+                } else if (this.data && this.attempt == "list") {
+                    this.view = "list";
+                }
             },
 
             _computeCombinedIndex: function (category, published, trash) {
