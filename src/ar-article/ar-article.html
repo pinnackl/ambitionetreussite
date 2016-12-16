@@ -62,6 +62,8 @@
                 <firebase-query
                     id="query"
                     path="/articles"
+                    order-by-child="category"
+                    equal-to="[[category]]"
                     data="{{data}}">
                 </firebase-query>
                 <div class="material">

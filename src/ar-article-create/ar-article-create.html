@@ -566,7 +566,7 @@
                     this.$.article.ref.set({
                         slug: this.slug,
                         title: this.title || "",
-                        category: this.category || "",
+                        category: this._lowerCase(this.category) || "",
                         cover: this.cover || "",
                         tags: this.selectedTags || "",
                         content: this.$.editor.getContent() || "",
@@ -651,6 +651,13 @@
                 }
                 return '';
             },
+
+            _lowerCase: function (string) {
+                if (string) {
+                    return string.toLowerCase();
+                }
+                return string;
+            }
         });
     </script>
 </dom-module>
