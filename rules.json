@@ -22,9 +22,10 @@
     },
     "articles": {
       ".read": true,
+      ".indexOn": "category_published_trash",
       "$article": {
         ".read": true,
-        ".write": "(!root.child('articles').hasChild(newData.child('slug').val()) && auth != null && (root.child('editors').hasChild(auth.uid) || root.child('moderators').hasChild(auth.uid) || root.child('adminisrators').hasChild(auth.uid)))"
+        ".write": "(!root.child('articles').hasChild(newData.child('slugTs').val()) && auth != null && (root.child('editors').hasChild(auth.uid) || root.child('moderators').hasChild(auth.uid) || root.child('adminisrators').hasChild(auth.uid)))"
       }
     },
     "categories": {
