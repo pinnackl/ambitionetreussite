@@ -27,6 +27,14 @@
         ".write": "(!root.child('articles').hasChild(newData.child('slug').val()) && auth != null && (root.child('editors').hasChild(auth.uid) || root.child('moderators').hasChild(auth.uid) || root.child('adminisrators').hasChild(auth.uid)))"
       }
     },
+    "categories": {
+      ".read": true,
+      ".write": "(auth != null && (root.child('editors').hasChild(auth.uid) || root.child('moderators').hasChild(auth.uid) || root.child('adminisrators').hasChild(auth.uid)))"
+    },
+    "tags": {
+      ".read": true,
+      ".write": "(auth != null && (root.child('editors').hasChild(auth.uid) || root.child('moderators').hasChild(auth.uid) || root.child('adminisrators').hasChild(auth.uid)))"
+    },
     "menu": {
       ".read": true
     },
@@ -45,6 +53,7 @@
     "editors": {
       ".read": true,
       "$users": {
+        ".read": true,
         ".write": "(auth.uid == $users || root.child('adminisrators').hasChild(auth.uid) || root.child('moderators').hasChild(auth.uid))"
       }
     },
