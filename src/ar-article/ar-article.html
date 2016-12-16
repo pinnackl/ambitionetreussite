@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
 
 <link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
 <link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
@@ -28,6 +29,11 @@
                 color: #56585c;
             }
 
+            .material h2 {
+                text-align: center;
+                color: #757575;
+            }
+
             .material .section-header {
                 margin: 0 8px;
             }
@@ -42,33 +48,43 @@
                 padding: 0 0.5em 1em 0.5em;
             }
 
+            .sub-align {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: #737373;
+            }
+            
+            .sub-align span {
+                margin-right: 8px;
+            }
+            
+            .sub-align paper-toggle-button {
+                --paper-toggle-button-checked-button-color: #3eb7e9;
+            }
+
             @media (max-width: 799px) {
                 :host {
                     --app-grid-columns: 1;
                 }
             }
         </style>
-        <!-- <app-route
-            route="{{route}}"
-            pattern="/:page"
-            data="{{routeData}}"
-            tail="{{subroute}}"></app-route>
-        <app-route 
-            route="{{subroute}}"
-            pattern="/:article"
-            data="{{subRouteData}}"></app-route> -->
         <iron-pages selected="[[view]]" attr-for-selected="name">
             <section name="list">
                 <firebase-query
                     id="query"
                     path="/articles"
-                    order-by-child="category"
-                    equal-to="[[category]]"
+                    order-by-child="category_published_trash"
+                    equal-to="[[combinedFilters]]"
                     data="{{data}}">
                 </firebase-query>
                 <div class="material">
                     <div class="section-header">
                         <h1>[[_ucfirst(category)]]</h1>
+                        <div class="sub-align"><span>Publier</span>
+                            <paper-toggle-button checked="{{published}}"></paper-toggle-button></div>
+                        <div class="sub-align"><span>Corbeil</span>
+                            <paper-toggle-button checked="{{trash}}"></paper-toggle-button></div>
                         <template is="dom-if" if={{!isAdmin}}>
                             <a href="/nouveau/article" title="Créer un article">
                                 <paper-icon-button class="" icon="add"></paper-icon-button>
@@ -81,6 +97,9 @@
                             <ar-article-card class="item" article="{{item}}"></ar-article-card>
                         </template>
                     </div>
+                    <template is="dom-if" if={{!data.length}}>
+                        <h2>Oups ¯\_(ツ)_/¯, aucun article trouver!</h2>
+                    </template>
                 </div>
             </section>
             <section name="read">
@@ -98,22 +117,39 @@
                 },
 
                 category: {
-                    type: String
+                    type: String,
                 },
 
                 isAdmin: {
                     type: Boolean,
                     value: false,
+                },
+
+                draft: {
+                    type: String
+                },
+
+                published: {
+                    type: String,
+                    value: true,
+                },
+
+                trash: {
+                    type: Boolean,
+                    value: false
                 }
             },
 
+            observers: [
+                '_computeCombinedIndex(category, published, trash)',
+            ],
+
             ready: function () {
-                this.articles = [
-                    {name: 'plop1'}, {name: 'plop2'}, {name: 'plop3'},
-                    {name: 'plop4'}, {name: 'plop5'}, {name: 'plop6'},
-                    {name: 'plop7'}, {name: 'plop8'}, {name: 'plop9'},
-                    {name: 'plop10'}, {name: 'plop11'}, {name: 'plop12'},
-                ];
+
+            },
+
+            _computeCombinedIndex: function (category, published, trash) {
+                this.combinedFilters = category + "~" + this.published + "~" + this.trash;
             },
 
             _ucfirst: function (string) {

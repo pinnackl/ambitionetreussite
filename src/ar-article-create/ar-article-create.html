@@ -7,6 +7,7 @@
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
 
 <link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
 <link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
@@ -184,6 +185,21 @@
             .post .footer .comment .author .avatar-ctn iron-image.avatar {
                 width: 64px;
                 height: 64px;
+            }
+
+            .sub-align {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: #737373;
+            }
+            
+            .sub-align span {
+                margin-right: 8px;
+            }
+            
+            .sub-align paper-toggle-button {
+                --paper-toggle-button-checked-button-color: #3eb7e9;
             }
 
             .post .material.content {
@@ -395,6 +411,8 @@
                                 id="articleTitle"
                                 label="Titre"
                                 value="{{title}}"></paper-input>
+                            <div class="sub-align"><span>Publier</span>
+                                <paper-toggle-button checked="{{published}}"></paper-toggle-button></div>
                             <paper-button
                                 class="save-button"
                                 raised
@@ -575,8 +593,9 @@
                         author: this.userData.basicInfo.name,
                         authorID: this.user.uid,
                         comments: {},
-                        published: false,
+                        published: this.published,
                         trash: false,
+                        'category_published_trash': this._computeCombinedIndex()
                     }).then(function (value) {
                         _this.stateMessageIcon = _this.stateMessage.success.icon;
                         _this.$.stateMessage.text = _this.stateMessage.success.text;
@@ -643,6 +662,12 @@
                 if (this.isUpdate) {
                     window.location.href = "/lire/" + getSlug(this.category) + "/" + this.slug;
                 }
+            },
+
+            _computeCombinedIndex: function () {
+                return this._lowerCase(this.category)
+                    + "~" + this.published
+                    + "~" + "false";
             },
 
             _ucfirst: function (string) {

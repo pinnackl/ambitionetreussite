@@ -13,7 +13,7 @@
             pattern="/:category"
             data="{{routeData}}"
             tail="{{subroute}}"></app-route>
-        <ar-article view="list" category="[[category]]"></ar-article>
+        <ar-article view="list" category="[[category]]" route="{{subroute}}"></ar-article>
     </template>
     <script>
         Polymer({
