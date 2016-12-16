@@ -3,6 +3,7 @@
 <link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 
+<link rel="import" href="../imports/imports-moment.html">
 <link rel="import" href="../shared-styles.html">
 <dom-module id="ar-article-card">
     <template>
@@ -157,41 +158,52 @@
             article .social .circle > paper-badge {
             }
         </style>
+        <firebase-document
+            id="users"
+            path="/users/[[article.authorID]]"
+            data="{{user}}">
+        </firebase-document>
         <article class="item">
             <paper-material elevation="1">
-                <a class="article" href="/lire/[[article.name]]/[[article.name]]" title="[[article.name]]">
+                <a class="article" href="/lire/[[_lowerCase(article.category)]]/[[article.slug]]" title="[[article.title]]">
                     <div class="filter">
                         <div class="avatar-ctn">
-                            <iron-image class="avatar" src="http://placehold.it/64/ffffff/000000" preload sizing="cover" style="background-color: lightgray;"></iron-image>
+                            <iron-image class="avatar"
+                                style="background-color: lightgray;"
+                                src="https://cdn.pinnackl.com/avatar/[[user.basicInfo.avatar]]"
+                                fade preload sizing="cover"></iron-image>
                         </div>
-                        <div class="autor-name">Par R.R.Martins,</div>
-                        <div class="published">il y a 20 minutes</div>
+                        <div class="autor-name">Par [[article.author]],</div>
+                        <div class="published">[[date]]</div>
                     </div>
-                    <iron-image class="thumbnail" src="/images/pexels-photo-30732.jpg" preload sizing="cover"></iron-image>
+                    <iron-image class="thumbnail"
+                        style="background: #3eb7e9;"
+                        src="https://cdn.pinnackl.com/images/[[article.cover]]"
+                        preload fade sizing="cover"></iron-image>
                     <div class="description">
                         <h1>[[article.title]]</h1>
                     </div>
                 </a>
                 <footer>
                     <div class="tags">
-                        <a class="tag" href="#">StarCraft2</a>
-                        <a class="tag" href="#">eSport</a>
+                        <template is="dom-repeat" items={{_limiteTags(article.tags)}} 
+                            as=item index-as=index>
+                            <a class="tag" href="#">[[item]]</a>
+                        </template>
                         <paper-icon-button class="add" icon$="[[expand]]" on-tap="expandTags"></paper-icon-button>
                         <iron-collapse id="collapse" opened="{{opened}}">
                             <div class="collapse-content">
-                                <a class="tag" href="#">Google</a>
-                                <a class="tag" href="#">Facebook</a>
-                                <a class="tag" href="#">Twitter</a>
-                                <a class="tag" href="#">Microsoft</a>
-                                <a class="tag" href="#">Amazon</a>
-                                <a class="tag" href="#">Apple</a>
+                                <template is="dom-repeat" items={{moreTags}} 
+                                    as=item index-as=index>
+                                    <a class="tag" href="#">[[item]]</a>
+                                </template>
                             </div>
                         </iron-collapse>
                     </div>
                     <div class="social">
                         <span class="circle">
                             <iron-icon icon="question-answer"></iron-icon>
-                            <paper-badge label="3"></paper-badge></span>
+                            <paper-badge label="0"></paper-badge></span>
                     </div>
                 </footer>
             </paper-material>
@@ -214,7 +226,20 @@
                 opened: {
                     type: Boolean,
                     observer: "_openedChanged"
+                },
+
+                user: {
+                    type: Object,
                 }
+            },
+
+            ready: function () {
+                this.date = moment(this.article.edited).fromNow();
+            },
+
+            _limiteTags: function (tags) {
+                this.moreTags = tags.slice(2);
+                return tags.slice(0, 2);
             },
 
             expandTags: function (e) {
@@ -226,6 +251,13 @@
                 if (opened) {
                     this.expand = "expand-less";
                 }
+            },
+
+            _lowerCase: function (string) {
+                if (string) {
+                    return string.toLowerCase();
+                }
+                return string;
             },
         });
     </script>
