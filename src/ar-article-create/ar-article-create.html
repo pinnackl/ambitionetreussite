@@ -346,6 +346,10 @@
             path="/articles/{{slug}}"
             data="{{article}}">
         </firebase-document>
+        <firebase-document
+            path="/users/[[user.uid]]"
+            data="{{userData}}">
+        </firebase-document>
         <firebase-query
             id="categories"
             path="/categories"
@@ -367,7 +371,7 @@
                             <iron-image class="avatar" src="http://placehold.it/64/ffffff/000000" preload sizing="cover" style="background-color: lightgray;"></iron-image>
                         </div>
                         <div class="author-ctn">
-                            <div class="autor-name">Par <a href="#" title="George R.R Martins">George R. R. Martin</a>,</div>
+                            <div class="autor-name">Par <a href="/user/[[user.uid]]" title="[[userData.basicInfo.name]]">[[userData.basicInfo.name]]</a>,</div>
                             <div class="published">il y a 20 minutes</div>
                         </div>
                         <div class="category">
@@ -564,12 +568,13 @@
                         title: this.title || "",
                         category: this.category || "",
                         cover: this.cover || "",
-                        tags: this.tags || "",
+                        tags: this.selectedTags || "",
                         content: this.$.editor.getContent() || "",
                         created: Date.now()/1000,
                         edited: Date.now()/1000,
-                        author: "",
-                        authorID: "",
+                        author: this.userData.basicInfo.name,
+                        authorID: this.user.uid,
+                        comments: {},
                         published: false,
                         trash: false,
                     }).then(function (value) {
