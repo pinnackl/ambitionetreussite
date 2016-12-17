@@ -39,16 +39,16 @@
             path="/articles"
             order-by-child="published_trash"
             equal-to="[[combinedFilters]]"
-            data="{{data}}">
+            data="[[data]]">
         </firebase-query>
         <div class="material">
             <div class="app-grid">
-                <template is="dom-repeat" items={{data}} 
+                <template is="dom-repeat" items=[[data]] 
                     as=item index-as=index>
-                    <ar-article-card class="item" article="{{item}}"></ar-article-card>
+                    <ar-article-card class="item" article="[[item]]"></ar-article-card>
                 </template>
             </div>
-            <template is="dom-if" if={{!data.length}}>
+            <template is="dom-if" if=[[!data.length]]>
                 <h2>Oups ¯\_(ツ)_/¯, aucun article trouvé!</h2>
             </template>
         </div>

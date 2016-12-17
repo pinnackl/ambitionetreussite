@@ -100,6 +100,7 @@
             path="/articles"
             order-by-child="slug"
             equal-to="[[slug]]"
+            limit-to-first="1"
             data="{{matchedArticle}}"
         ></firebase-query>
 

@@ -359,8 +359,7 @@
 
         <firebase-document
             id="article"
-            path="/articles"
-            data="{{article}}">
+            path="/articles">
         </firebase-document>
         <firebase-document
             path="/users/[[user.uid]]"
@@ -573,7 +572,7 @@
 
             create: function (e) {
                 this.isUpdate = false;
-                if (this.slug != "" && typeof this.category != "undefined" && this.article.slug != this.slug) {
+                if (this.slug != "" && typeof this.category != "undefined") {
                     var _this = this;
                     this.$.article.ref.push({
                         slug: this.slug,
@@ -601,10 +600,6 @@
                         _this.$.stateMessage.text = _this.stateMessage.errorExist.text;
                         _this.$.stateMessage.open();
                     });
-                } else if (this.slug != "" && this.article.slug == this.slug) {
-                    this.stateMessageIcon = this.stateMessage.errorExist.icon;
-                    this.$.stateMessage.text = this.stateMessage.errorExist.text;
-                    this.$.stateMessage.open();
                 } else if (this.slug != "" && this.category != "undefined") {
                     this.stateMessageIcon = this.stateMessage.errorCategory.icon;
                     this.$.stateMessage.text = this.stateMessage.errorCategory.text;
