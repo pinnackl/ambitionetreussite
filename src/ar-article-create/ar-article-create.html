@@ -590,8 +590,8 @@
                         comments: [],
                         published: this.published,
                         trash: false,
-                        'published_trash': this._computeCombinedIndexPt()
-                        'category_published_trash': this._computeCombinedIndexCpt()
+                        'published_trash': this._computeCombinedIndexPt(),
+                        'category_published_trash': this._computeCombinedIndexCpt(),
                     }).then(function (value) {
                         _this.stateMessageIcon = _this.stateMessage.success.icon;
                         _this.$.stateMessage.text = _this.stateMessage.success.text;
