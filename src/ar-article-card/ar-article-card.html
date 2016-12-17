@@ -244,8 +244,11 @@
             },
 
             _limiteTags: function (tags) {
-                this.moreTags = tags.slice(2);
-                return tags.slice(0, 2);
+                if (tags) {
+                    this.moreTags = tags.slice(2);
+                    return tags.slice(0, 2);
+                }
+                return tags;
             },
 
             expandTags: function (e) {

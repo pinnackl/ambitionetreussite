@@ -580,7 +580,7 @@
                         title: this.title || "",
                         category: this._lowerCase(this.category) || "",
                         cover: this.cover || "",
-                        tags: this.selectedTags || "",
+                        tags: this.selectedTags || [],
                         content: this.$.editor.getContent() || "",
                         created: Date.now(),
                         edited: Date.now(),
