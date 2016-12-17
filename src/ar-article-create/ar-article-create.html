@@ -590,7 +590,8 @@
                         comments: [],
                         published: this.published,
                         trash: false,
-                        'category_published_trash': this._computeCombinedIndex()
+                        'published_trash': this._computeCombinedIndexPt()
+                        'category_published_trash': this._computeCombinedIndexCpt()
                     }).then(function (value) {
                         _this.stateMessageIcon = _this.stateMessage.success.icon;
                         _this.$.stateMessage.text = _this.stateMessage.success.text;
@@ -659,9 +660,14 @@
                 }
             },
 
-            _computeCombinedIndex: function () {
+            _computeCombinedIndexCpt: function () {
                 return this._lowerCase(this.category)
                     + "~" + this.published
+                    + "~" + "false";
+            },
+
+            _computeCombinedIndexPt: function () {
+                return this.published
                     + "~" + "false";
             },
 
