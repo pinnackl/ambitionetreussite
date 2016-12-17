@@ -36,13 +36,13 @@
 
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="spinner">
             <section name="article">
-                <ar-article-create edit-mode="true" user="{{user}}"></ar-article-create>
+                <ar-article-create edit-mode="true" user="{{user}}" is-admin="{{isAdmin}}"></ar-article-create>
             </section>
             <section name="categorie">
-                <ar-category-create user="{{user}}"></ar-category-create>
+                <ar-category-create user="{{user}}" is-admin="{{isAdmin}}"></ar-category-create>
             </section>
             <section name="tag">
-                <ar-tag-create user="{{user}}"></ar-tag-create>
+                <ar-tag-create user="{{user}}" is-admin="{{isAdmin}}"></ar-tag-create>
             </section>
             <section name="page">
                 

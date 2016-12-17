@@ -70,6 +70,11 @@
                     type: Object
                 },
 
+                isAdmin: {
+                    type: Boolean,
+                    value: false,
+                },
+
                 stateMessage: {
                     type: Object,
                     value: function () {
@@ -100,7 +105,7 @@
             },
 
             addtag: function (e) {
-                if (this.newtag) {
+                if (this.newtag && this.isAdmin) {
                     var _this = this;
                     this.$.tags.ref.push({
                         slug: getSlug(this.newtag),

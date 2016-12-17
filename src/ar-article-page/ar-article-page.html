@@ -520,7 +520,7 @@
 
                 isAdmin: {
                     type: Boolean,
-                    value: true,
+                    value: false,
                 },
 
                 editMode: {
@@ -576,44 +576,9 @@
                 this.editMode = false;
             },
 
-            _articleChanged: function (content) {
-                this.$.content.innerHTML = content || '';
-
-                if (typeof content != 'undefined') {
-                    if (this.pastSlug == null) {
-                        this.pastSlug = this.article.slug;
-                    }
-                    this.date = moment(this.article.edited).fromNow();
-                    this.$.editor.setContent(this.article.content);
-                }
-            },
-
-            _editModeChanged: function (e) {
-                if (e) {
-                    this.$.editor.setContent(this.article.content);
-                }
-            },
-
-            _ucfirst: function (string) {
-                if (string) {
-                    return string.charAt(0).toUpperCase() + string.slice(1);
-                }
-                return '';
-            },
-
-
-            _lowerCase: function (string) {
-                if (string) {
-                    return string.toLowerCase();
-                }
-                return string;
-            },
-
-            // TO BE IN A PROPER BEHAVIOR
-            
             updateArticle: function (e) {
                 this.isUpdate = false;
-                if (this.article.title != "" && typeof this.article.category != "undefined") {
+                if (this.article.title != "" && typeof this.article.category != "undefined" && this.isAdmin) {
                     var _this = this;
                     this.$.article.ref.update({
                         slug: this.article.slug,
@@ -654,7 +619,7 @@
             },
 
             addTag: function (e) {
-                if (this.newTag) {
+                if (this.newTag && this.isAdmin) {
                     this.$.tags.ref.push({
                         slug: getSlug(this.newTag),
                         name: this.newTag
@@ -664,7 +629,7 @@
             },
 
             addCategory: function (e) {
-                if (this.newCategory) {
+                if (this.newCategory && this.isAdmin) {
                     this.$.categories.ref.push({
                         slug: getSlug(this.newCategory),
                         name: this.newCategory
@@ -701,6 +666,39 @@
                         this.pastSlug = null;
                     }
                 }
+            },
+
+            _articleChanged: function (content) {
+                this.$.content.innerHTML = content || '';
+
+                if (typeof content != 'undefined') {
+                    if (this.pastSlug == null) {
+                        this.pastSlug = this.article.slug;
+                    }
+                    this.date = moment(this.article.edited).fromNow();
+                    this.$.editor.setContent(this.article.content);
+                }
+            },
+
+            _editModeChanged: function (e) {
+                if (e) {
+                    this.$.editor.setContent(this.article.content);
+                }
+            },
+
+            _ucfirst: function (string) {
+                if (string) {
+                    return string.charAt(0).toUpperCase() + string.slice(1);
+                }
+                return '';
+            },
+
+
+            _lowerCase: function (string) {
+                if (string) {
+                    return string.toLowerCase();
+                }
+                return string;
             },
         });
     </script>

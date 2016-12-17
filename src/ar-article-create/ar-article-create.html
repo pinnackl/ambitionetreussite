@@ -495,7 +495,7 @@
 
                 isAdmin: {
                     type: Boolean,
-                    value: true,
+                    value: false,
                 },
 
                 isUpdate: {
@@ -572,7 +572,7 @@
 
             create: function (e) {
                 this.isUpdate = false;
-                if (this.slug != "" && typeof this.category != "undefined") {
+                if (this.slug != "" && typeof this.category != "undefined" && this.isAdmin) {
                     var _this = this;
                     this.$.article.ref.push({
                         slug: this.slug,
@@ -621,21 +621,29 @@
             },
 
             addTag: function (e) {
-                if (this.newTag) {
+                if (this.newTag && this.isAdmin) {
                     this.$.tags.ref.push({
                         slug: getSlug(this.newTag),
                         name: this.newTag
                     });
+                } else {
+                    this.stateMessageIcon = this.stateMessage.errorRight.icon;
+                    this.$.stateMessage.text = this.stateMessage.errorRight.text;
+                    this.$.stateMessage.open();
                 }
                 this.newTag = null;
             },
 
             addCategory: function (e) {
-                if (this.newCategory) {
+                if (this.newCategory && this.isAdmin) {
                     this.$.categories.ref.push({
                         slug: getSlug(this.newCategory),
                         name: this.newCategory
                     });
+                } else {
+                    this.stateMessageIcon = this.stateMessage.errorRight.icon;
+                    this.$.stateMessage.text = this.stateMessage.errorRight.text;
+                    this.$.stateMessage.open();
                 }
                 this.newCategory = null;
             },

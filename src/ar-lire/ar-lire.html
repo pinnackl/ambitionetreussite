@@ -32,7 +32,7 @@
             tail="{{subroute}}"></app-route>
         <iron-pages selected="[[view]]" attr-for-selected="name" fallback-selection="spinner">
             <section name="read">
-                <ar-article view="read" category="[[category]]" slug="[[article]]"></ar-article>
+                <ar-article view="read" category="[[category]]" slug="[[article]]" is-admin="{{isAdmin}}"></ar-article>
             </section>
             <section name="view404">
                 <h1>404</h1>
@@ -49,11 +49,21 @@
             properties: {
                 route: {
                     type: Object
-                }
+                },
+
+                rights: {
+                    type: Object,
+                },
+
+                isAdmin: {
+                    type: Boolean,
+                    value: false,
+                },
             },
 
             observers: [
                 '_routePageChanged(routeData.category, routeData.article)',
+                '_rightsChanged(rights.ts)',
             ],
 
             _routePageChanged: function (category, article) {
@@ -64,7 +74,19 @@
                 } else {
                     this.view = "view404";
                 }
-            },        
+            },
+
+            checkRights: function (role) {
+                if (this.rights[role]) {
+                    this.isAdmin = true;
+                } else {
+                    this.isAdmin = false;
+                }
+            },
+
+            _rightsChanged: function (ts) {
+                this.checkRights('editors');
+            },       
         });
     </script>
 </dom-module>
