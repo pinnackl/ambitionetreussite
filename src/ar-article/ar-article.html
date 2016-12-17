@@ -116,11 +116,11 @@
                 <div class="material">
                     <div class="section-header">
                         <h1>[[_ucfirst(category)]]</h1>
-                        <div class="sub-align"><span>Publiés</span>
-                            <paper-toggle-button checked="{{published}}"></paper-toggle-button></div>
-                        <div class="sub-align"><span>Corbeille</span>
-                            <paper-toggle-button checked="{{trash}}"></paper-toggle-button></div>
-                        <template is="dom-if" if={{!isAdmin}}>
+                        <template is="dom-if" if={{isAdmin}}>
+                            <div class="sub-align"><span>Publiés</span>
+                                <paper-toggle-button checked="{{published}}"></paper-toggle-button></div>
+                            <div class="sub-align"><span>Corbeille</span>
+                                <paper-toggle-button checked="{{trash}}"></paper-toggle-button></div>
                             <a href="/nouveau/article" title="Créer un article">
                                 <paper-icon-button class="" icon="add"></paper-icon-button>
                             </a>

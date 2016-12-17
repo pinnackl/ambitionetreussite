@@ -233,7 +233,8 @@
     -->
     <ar-data id="arData"
       signed-in="{{signedIn}}"
-      mode="{{mode}}"></ar-data>
+      rights="{{rights}}">
+    </ar-data>
 
     <firebase-auth
       id="auth"
@@ -328,15 +329,15 @@
 
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name" fallback-selection="404">
           <!-- Home view -->
-          <ar-accueil name="accueil"></ar-accueil>
+          <ar-accueil name="accueil" rights="[[rights]]"></ar-accueil>
           <!-- Category view -->
-          <ar-categorie name="categorie" route="{{subroute}}"></ar-categorie>
+          <ar-categorie name="categorie" rights="[[rights]]" route="{{subroute}}"></ar-categorie>
           <!-- Read view -->
-          <ar-lire name="lire" route="{{subroute}}"></ar-lire>
+          <ar-lire name="lire" rights="[[rights]]" route="{{subroute}}"></ar-lire>
           <!-- About view -->
-          <ar-a-propos name="a-propos"></ar-a-propos>
+          <ar-a-propos name="a-propos" rights="[[rights]]"></ar-a-propos>
           <!-- New view -->
-          <ar-nouveau name="nouveau" route="{{subroute}}" user="{{fireUser}}"></ar-nouveau>
+          <ar-nouveau name="nouveau" rights="{{rights}}" route="{{subroute}}" user="{{fireUser}}"></ar-nouveau>
           <!-- User view -->
           <div name="user">User</div>
 

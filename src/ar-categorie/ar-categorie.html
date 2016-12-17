@@ -13,7 +13,13 @@
             pattern="/:category"
             data="{{routeData}}"
             tail="{{subroute}}"></app-route>
-        <ar-article view="list" category="[[category]]" route="{{subroute}}"></ar-article>
+        <template is="dom-if" if={{category}}>
+            <ar-article view="list" category="[[category]]" route="{{subroute}}" is-admin="{{isAdmin}}"></ar-article>
+        </template>
+
+        <template is="dom-if" if={{!category}}>
+            <h1>404</h1>
+        </template>
     </template>
     <script>
         Polymer({
@@ -22,23 +28,37 @@
             properties: {
                 route: {
                     type: Object
-                }
+                },
+
+                rights: {
+                    type: Object,
+                },
+
+                isAdmin: {
+                    type: Boolean,
+                    value: false,
+                },
             },
 
             observers: [
                 '_routePageChanged(routeData.category)',
+                '_rightsChanged(rights.ts)',
             ],
 
             _routePageChanged: function (category) {
-                this.category = category;
-                // this.editData = {
-                // };
-                // if (this.user != null) {
-                //     // this.checkRights(this.user.uid, this.rights);
-                // }
-                // if (this.isAdmin && this.page == 'create') {
-                //     // this.editMode = true;
-                // }
+                this.category = category || '';
+            },
+
+            checkRights: function (role) {
+                if (this.rights[role]) {
+                    this.isAdmin = true;
+                } else {
+                    this.isAdmin = false;
+                }
+            },
+
+            _rightsChanged: function (ts) {
+                this.checkRights('editors');
             },
         });
     </script>

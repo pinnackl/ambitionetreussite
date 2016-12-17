@@ -34,19 +34,6 @@
             data="{{routeData}}"
             tail="{{subroute}}"></app-route>
 
-        <firebase-document
-          path="/editors"
-          data="{{editors}}">
-        </firebase-document>
-        <firebase-document
-          path="/moderators"
-          data="{{moderators}}">
-        </firebase-document>
-        <firebase-document
-          path="/adminisrators"
-          data="{{adminisrators}}">
-        </firebase-document>
-
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="spinner">
             <section name="article">
                 <ar-article-create edit-mode="true" user="{{user}}"></ar-article-create>
@@ -70,8 +57,13 @@
             is: 'ar-nouveau',
 
             properties: {
+
                 route: {
                     type: Object
+                },
+
+                rights: {
+                    type: Object,
                 },
 
                 isAdmin: {
@@ -87,12 +79,11 @@
 
             observers: [
                 '_routePageChanged(routeData.page)',
-                'checkRights(user.uid, editors, moderators, adminisrators)',
+                '_rightsChanged(rights.ts)',
             ],
 
-
-            checkRights: function (uid, editors, moderators, adminisrators) {
-                if ((editors && editors[uid] || moderators && moderators[uid] || adminisrators && adminisrators[uid])) {
+            checkRights: function (role) {
+                if (this.rights[role]) {
                     this.isAdmin = true;
                     this.page = this.tempPage;
                 } else {
@@ -108,13 +99,8 @@
                 }
             },
 
-            _userChanged: function (user) {
-                if (user == null) {
-                    this.isAdmin = false;
-                    this.editMode = false;
-                } else {
-                    this.checkRights(user.uid, this.editors, this.moderators, this.adminisrators);
-                }
+            _rightsChanged: function (ts) {
+                this.checkRights('editors');
             },
         });
     </script>

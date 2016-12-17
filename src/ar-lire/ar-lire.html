@@ -31,7 +31,9 @@
             data="{{routeData}}"
             tail="{{subroute}}"></app-route>
         <iron-pages selected="[[view]]" attr-for-selected="name" fallback-selection="spinner">
-            <section name="read"><ar-article view="read" category="[[category]]" slug="[[article]]"></ar-article></section>
+            <section name="read">
+                <ar-article view="read" category="[[category]]" slug="[[article]]"></ar-article>
+            </section>
             <section name="view404">
                 <h1>404</h1>
             </section>

@@ -1,17 +1,8 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/polymerfire/polymerfire.html">
-<link rel="import" href="../../bower_components/app-route/app-location.html">
-<link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../ar-firebase/ar-firebase.html">
 <dom-module id="ar-data">
     <template>
-
-        <app-location route="{{route}}"></app-location>
-        <app-route
-            route="{{route}}"
-            pattern="/:page"
-            data="{{routeData}}"
-            tail="{{subroute}}"></app-route>
-
         <ar-firebase></ar-firebase>
         <firebase-auth
             id="auth"
@@ -20,23 +11,19 @@
             on-error="_handleError"
         >
         </firebase-auth>
-        <!-- Users -->
+
         <firebase-document
-              path="/users"
-              data="{{users}}">
+          path="/editors"
+          data="{{editors}}">
         </firebase-document>
-        <!-- Profiles rights-->
         <firebase-document
-              path$="/{{profiles}}"
-              data="{{roles}}">
+          path="/moderators"
+          data="{{moderators}}">
         </firebase-document>
-        <!--  -->
-        <!-- <template is="dom-if" if={{user}}> -->
         <firebase-document
-            path="/editors"
-            data="{{rights}}">
+          path="/adminisrators"
+          data="{{adminisrators}}">
         </firebase-document>
-        <!-- </template> -->
     </template>
     <script>
         Polymer({
@@ -60,43 +47,23 @@
                     notify: true,
                 },
 
-                users: {
-                    type: Object
-                },
-
-                profiles: {
-                    type: String,
-                    value: 'viewers'
-                },
-
-                mode: {
-                    type: String,
-                    value: "app",
-                    notify: true
-                },
-
-                accessGranted: {
-                    type: Boolean,
-                    value: false
-                },
-
-                page: {
-                    type: String,
-                    reflectToAttribute: true
-                },
-
-                adminPage: {
-                    type: String,
-                    value: 'nimda'
-                },
-
                 rights: {
+                    type: Object,
+                    value: function () {
+                        return {
+                            editors: false,
+                            moderators: false,
+                            adminisrators: false,
+                            viewers: true,
+                            ts: Date.now(),
+                        };
+                    },
+                    notify: true,
                 }
             },
 
             observers: [
-                'checkRights(user.uid, rights)',
-                '_routePageChanged(routeData.page)'
+                'checkRights(user.uid, editors, moderators, adminisrators)',
             ],
 
             listeners: {
@@ -135,6 +102,11 @@
                 });
             },
 
+            /**
+             * [loginUser description]
+             * @param  {[type]} userObject [description]
+             * @return {[type]}            [description]
+             */
             loginUser: function (userObject) {
                 console.info("Login");
                 var _this = this;
@@ -145,26 +117,39 @@
 
                 auth.then(function (e) {
                     // console.log(e);
+                    // toast ...
                 }).catch(function (e) {
                     console.error(e);
                 });
             },
 
+            /**
+             * [logoutUser description]
+             * @return {[type]} [description]
+             */
             logoutUser: function () {
                 var auth = this.$.auth.signOut();
 
                 auth.then(function (e) {
-                    // body...
+                    // toast ...
                 }).catch(function (e) {
                     console.error(e);
                 });
             },
 
-            checkRights: function (uid, profile) {
-                if (profile[uid]) {
-                    this.accessGranted = true;
-                    this._routePageChanged(this.page);
+            checkRights: function (uid, editors, moderators, adminisrators) {
+                if (uid || editors || moderators || adminisrators) {
+                    if (editors[uid]) {
+                        this.rights.editors = true;
+                    }
+                    if (moderators[uid]) {
+                        this.rights.moderators = true;
+                    }
+                    if (adminisrators[uid]) {
+                        this.rights.adminisrators = true;
+                    }
                 }
+                this.set('rights.ts', Date.now());
             },
 
             _handleError: function (e) {
@@ -173,14 +158,6 @@
 
             _signedInChanged: function (signed) {
                 // console.info('The user is signed in: ', signed);
-            },
-
-            _routePageChanged: function (page) {
-                this.page = page;
-                if (this.page == this.adminPage && this.accessGranted) {
-                // if (this.page == this.adminPage) {
-                    this.mode = this.adminPage;
-                }
             },
 
         });
