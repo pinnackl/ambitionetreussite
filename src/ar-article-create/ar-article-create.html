@@ -384,7 +384,7 @@
                     <h1 class="title">[[title]]</h1> 
                     <div class="article-info">
                         <div class="avatar-ctn">
-                            <iron-image class="avatar" src="http://placehold.it/64/ffffff/000000" preload sizing="cover" style="background-color: lightgray;"></iron-image>
+                            <iron-image class="avatar" src="https://cdn.pinnackl.com/avatar/[[userData.basicInfo.avatar]]" preload sizing="cover" style="background-color: lightgray;"></iron-image>
                         </div>
                         <div class="author-ctn">
                             <div class="autor-name">Par <a href="/user/[[user.uid]]" title="[[userData.basicInfo.name]]">[[userData.basicInfo.name]]</a>,</div>
@@ -402,7 +402,7 @@
                 </div>
             </div>
             <div class="material content">
-                <h1>Créer un nouvelle article</h1>
+                <h1>Créer un nouvel article</h1>
                 <!-- Edit content -->
                 <template is="dom-if" if={{editMode}}>
                     <div class="edit">
@@ -428,11 +428,7 @@
                                 method="POST"
                                 file-data-name="cover"
                                 target="https://cdn.pinnackl.com/api/images/upload"
-                                on-success="fileUploaded">Choisir un fichier</file-upload>
-                            <paper-input
-                                label="Ajouter un catégorie"
-                                value="{{newCategory}}"></paper-input>
-                            <paper-button raised class="save-button" on-tap="addCategory">Ajouer</paper-button>
+                                on-success="fileUploaded">Choisir une couverture</file-upload>
                             <paper-dropdown-menu label="Choisir une catégorie" value="{{category}}">
                                 <paper-listbox class="dropdown-content">
                                     <template is="dom-repeat" items={{categories}} 
@@ -441,6 +437,10 @@
                                     </template>
                                 </paper-listbox>
                             </paper-dropdown-menu>
+                            <paper-input
+                                label="Créer une nouvelle catégorie"
+                                value="{{newCategory}}"></paper-input>
+                            <paper-button raised class="save-button" on-tap="addCategory">Ajouer</paper-button>
                         </div>
                     </div>
                 </template>
@@ -456,7 +456,7 @@
                     <div class="material">
                         <h3>Choisir des tags</h3>
                         <div class="section-header">
-                            <paper-input label="Ajouter un tag" value="{{newTag}}"></paper-input>
+                            <paper-input label="Créer un nouveau tag" value="{{newTag}}"></paper-input>
                             <paper-button raised class="save-button" on-tap="addTag">Ajouter</paper-button>
                         </div>
                         <paper-menu multi attr-for-selected="name" selected-values="{{selectedTags}}">

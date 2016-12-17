@@ -12,6 +12,10 @@
                 display: block;
             }
 
+            .material {
+                background-color: #ffffff;
+            }
+
             .categories {
                 height: 291px;
                 overflow-y: scroll;
@@ -35,9 +39,9 @@
             <h1>Gérer les catégories</h1>
             <div class="section-header">
                 <paper-input
-                    label="Ajouter un catégorie"
+                    label="Créer une nouvelle catégorie"
                     value="{{newCategory}}"></paper-input>
-                <paper-button raised class="save-button" on-tap="addCategory">Ajouer</paper-button>
+                <paper-button raised class="save-button" on-tap="addCategory">Ajouter</paper-button>
             </div>
             <ul class="categories">
                 <template is="dom-repeat" items={{categories}} 
