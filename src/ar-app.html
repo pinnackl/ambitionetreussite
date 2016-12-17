@@ -22,6 +22,7 @@
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
@@ -110,7 +111,7 @@
         --paper-tabs-selection-bar-color: #3eb7e9;
       }
 
-      paper-tab[link] a {
+      paper-tab[link] a, .submenu paper-item a {
         /* These mixins (from iron-flex-layout) center the link text. */
         @apply(--layout-horizontal);
         @apply(--layout-center-center);
@@ -124,6 +125,17 @@
 
       paper-tab[aria-selected=true] a {
         color: #3eb7e9;
+      }
+
+      .submenu {
+        display: flex;
+        align-items: center;
+      }
+
+      .submenu paper-item a {
+        display: inline-block;
+        line-height: 48px;
+        width: 100%;
       }
 
       .profileBtn {
@@ -256,7 +268,19 @@
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
           <template is="dom-repeat" items={{menu}} 
             as=item index-as=index>
-            <a href="[[item.path]]" name="[[item.name]]" title="[[_ucFirst(item.label)]]">[[_ucFirst(item.label)]]</a>
+            <template is="dom-if" if={{!item.submenu}}>
+              <a href="[[item.path]]" name="[[item.name]]" title="[[_ucFirst(item.label)]]">[[_ucFirst(item.label)]]</a>
+            </template>
+            <template is="dom-if" if={{item.submenu}}>
+              <a class="dropdown-trigger" item="[[item]]" on-tap="expandTags">
+                [[_ucFirst(item.label)]]<iron-icon item="[[item]]" icon$="[[item.icon]]"></iron-icon></a>
+              <iron-collapse opened="[[item.opened]]">
+                <template is="dom-repeat" items={{item.submenu}}
+                  as=item index-as=index>
+                  <paper-item><a href="[[item.path]]" label="[[item.label]]">[[item.name]]</a></paper-item>
+                </template>
+              </iron-collapse>
+            </template>
           </template>
         </iron-selector>
       </app-drawer>
@@ -319,11 +343,32 @@
               <paper-tabs attr-for-selected="name" selected="[[page]]" bottom-item spacer$="[[condensed]]">
                 <template is="dom-repeat" items={{menu}} 
                   as=item index-as=index>
-                  <paper-tab link name="[[item.name]]"><a href="[[item.path]]" title="Accueil" tabindex="-1">[[_ucFirst(item.label)]]</a></paper-tab>
+                  <paper-tab link name="[[item.name]]">
+                    <template is="dom-if" if={{!item.submenu}}>
+                      <a href="[[item.path]]" title="Accueil" tabindex="-1">[[_ucFirst(item.label)]]</a>
+                    </template>
+                    <template is="dom-if" if={{item.submenu}}>
+                      <span on-tap="expandTags" item="[[item]]">
+                      [[_ucFirst(item.label)]]<iron-icon item="[[item]]" icon$="[[item.icon]]"></iron-icon>
+                      </span>
+                    </template>
+                  </paper-tab>
                 </template>
               </paper-tabs>
               <div title></div>
             </app-toolbar>
+            <!-- Submenu -->
+            <template is="dom-repeat" items={{menu}} 
+              as=item index-as=index>
+              <template is="dom-if" if={{item.submenu}}>
+                <iron-collapse id="collapse" class="submenu" opened="[[item.opened]]">
+                  <template is="dom-repeat" items={{item.submenu}}
+                    as=item index-as=index>
+                    <paper-item><a href="[[item.path]]" label="[[item.label]]">[[item.name]]</a></paper-item>
+                  </template>
+                </iron-collapse>
+              </template>
+            </template>
           </template>
         </app-header>
 
@@ -418,21 +463,21 @@
           notify: true
         },
 
-        /**
-         * Represent the app mode : App | Admin
-         */
-        mode: {
-          type: String,
-          notify: true,
-          reflectToAttribute: true,
-          observer: 'modeChanged'
-        },
-
         menu: {
           type: Object,
           value: function () {
             return this._getMenu();
           }
+        },
+
+        opened: {
+            type: Boolean,
+            observer: "_openedChanged"
+        },
+
+        expand: {
+            type: String,
+            value: "expand-more"
         },
 
         year: {
@@ -486,7 +531,24 @@
         this.$.arData.logoutUser();
       },
 
-      modeChanged: function (e) {
+      _openedChanged: function (opened) {
+          this.expand = "expand-more";
+          if (opened) {
+              this.expand = "expand-less";
+          }
+      },
+
+      expandTags: function (e) {
+        for (var i = 0; i < this.menu.length; i++) {
+          if (this.menu[i].name == e.target.item.name) {
+            this.set('menu.'+i+'.opened', !this.menu[i].opened);
+            this.set('menu.'+i+'.icon', "expand-more");
+            if (this.menu[i].opened) {
+              this.set('menu.'+i+'.icon', "expand-less");
+            }
+          }
+        }
+        // this.$$('#collapse').toggle();
       },
 
       _signIn: function (e) {
@@ -541,13 +603,16 @@
         return [
           {
             name: 'accueil',
-            path: 'accueil',
+            path: '/accueil',
             label: 'accueil'
           },
           {
             name: 'article',
-            path: 'article',
-            label: 'article'
+            path: '#',
+            label: 'article',
+            opened: false,
+            icon: "expand-more",
+            submenu: [{name:"plop", path: "/", label: "Plop"},{name:"plop"},{name:"plop"},],
           },
           {
             name: 'a-propos',
