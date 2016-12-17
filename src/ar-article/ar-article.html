@@ -95,11 +95,22 @@
             data="{{data}}">
         </firebase-query>
 
-        <firebase-document
-            id="query"
-            path="/articles/[[slug]]"
-            data="{{article}}">
-        </firebase-document>
+        <firebase-query
+            id="plop"
+            path="/articles"
+            order-by-child="slug"
+            equal-to="[[slug]]"
+            data="{{matchedArticle}}"
+        ></firebase-query>
+
+        <template is="dom-repeat" items={{matchedArticle}} 
+            as=item index-as=index filter="isHandler">
+            <firebase-document
+                id="query"
+                path="/articles/[[item.$key]]"
+                data="{{article}}">
+            </firebase-document>
+        </template>
         <iron-pages selected="[[view]]" attr-for-selected="name" fallback-selection="spinner">
             <section name="list">
                 <div class="material">
@@ -127,7 +138,7 @@
                 </div>
             </section>
             <section name="read">
-                <ar-article-page article="[[article]]"></ar-article-page>
+                <ar-article-page article="[[article]]" uid="[[uid]]"></ar-article-page>
             </section>
             <section name="spinner">
                 <paper-spinner active alt="Chargement des contenu"></paper-spinner>
@@ -155,6 +166,10 @@
                     observer: '_contentChange'
                 },
 
+                matchedArticle: {
+                    type: Object
+                },
+
                 article: {
                     type: Object,
                     observer: '_contentChange'
@@ -163,6 +178,10 @@
                 isAdmin: {
                     type: Boolean,
                     value: false,
+                },
+
+                slug: {
+                    type: String,
                 },
 
                 draft: {
@@ -186,6 +205,13 @@
 
             ready: function () {
 
+            },
+
+            isHandler: function (item) {
+                if (item) {
+                    this.uid = item.$key;
+                }
+                return true;
             },
 
             _contentChange: function (e) {

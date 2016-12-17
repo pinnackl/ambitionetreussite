@@ -359,7 +359,7 @@
 
         <firebase-document
             id="article"
-            path="/articles/{{slug}}"
+            path="/articles"
             data="{{article}}">
         </firebase-document>
         <firebase-document
@@ -434,7 +434,7 @@
                             <paper-input
                                 label="Créer une nouvelle catégorie"
                                 value="{{newCategory}}"></paper-input>
-                            <paper-button raised class="save-button" on-tap="addCategory">Ajouer</paper-button>
+                            <paper-button raised class="save-button" on-tap="addCategory">Ajouter</paper-button>
                         </div>
                     </div>
                 </template>
@@ -575,9 +575,8 @@
                 this.isUpdate = false;
                 if (this.slug != "" && typeof this.category != "undefined" && this.article.slug != this.slug) {
                     var _this = this;
-                    this.$.article.ref.set({
+                    this.$.article.ref.push({
                         slug: this.slug,
-                        slugTs: this.slug + '-' + Date.now(),
                         title: this.title || "",
                         category: this._lowerCase(this.category) || "",
                         cover: this.cover || "",
