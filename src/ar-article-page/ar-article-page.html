@@ -595,6 +595,7 @@
                         published: this.article.published,
                         trash: false,
                         'published_trash': this._computeCombinedIndexPt(),
+                        'slug_published': this._computeCombinedIndexSp(),
                         'category_published_trash': this._computeCombinedIndexCpt(),
                     }).then(function (value) {
                         _this.stateMessageIcon = _this.stateMessage.success.icon;
@@ -651,6 +652,11 @@
             _computeCombinedIndexPt: function () {
                 return this.article.published
                     + "~" + "false";
+            },
+
+            _computeCombinedIndexSp: function () {
+                return this.article.slug
+                    + "~" + this.article.published;
             },
 
             _categoriesChanged: function (categories) {

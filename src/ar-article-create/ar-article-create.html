@@ -589,6 +589,7 @@
                         published: this.published,
                         trash: false,
                         'published_trash': this._computeCombinedIndexPt(),
+                        'slug_published': this._computeCombinedIndexSp(),
                         'category_published_trash': this._computeCombinedIndexCpt(),
                     }).then(function (value) {
                         _this.stateMessageIcon = _this.stateMessage.success.icon;
@@ -672,6 +673,11 @@
                 return this.published
                     + "~" + "false";
             },
+
+            _computeCombinedIndexSp: function () {
+                return this.slug
+                    + "~" + this.published;
+            }
 
             _ucfirst: function (string) {
                 if (string) {

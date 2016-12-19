@@ -281,6 +281,7 @@
                         published: this.page.published,
                         trash: false,
                         'published_trash': this._computeCombinedIndexPt(),
+                        'slug_published': this._computeCombinedIndexSp(),
                     }).then(function (value) {
                         _this.stateMessageIcon = _this.stateMessage.success.icon;
                         _this.$.stateMessage.text = _this.stateMessage.success.text;
@@ -315,6 +316,11 @@
             _computeCombinedIndexPt: function () {
                 return this.page.published
                     + "~" + "false";
+            },
+
+            _computeCombinedIndexSp: function () {
+                return this.page.slug
+                    + "~" + this.page.published;
             },
 
             expandPages: function () {

@@ -128,12 +128,13 @@
                         slug: this.slug || "",
                         content: this.$.editor.getContent() || "",
                         created: Date.now(),
-                        updated: Date.nows(),
+                        updated: Date.now(),
                         author: this.userData.basicInfo.name,
                         authorID: this.user.uid,
                         published: this.published,
-                        published_trash: this._computeCombinedIndexPt(),
                         trash: false
+                        'published_trash': this._computeCombinedIndexPt(),
+                        'slug_published': this._computeCombinedIndexSp(),
                     }).then(function (value) {
                         _this.stateMessageIcon = _this.stateMessage.success.icon;
                         _this.$.stateMessage.text = _this.stateMessage.success.text;
@@ -157,13 +158,18 @@
 
             _toastClosed: function (e) {
                 if (this.isUpdate) {
-                    window.location.href = "/page/" + "/" + this.slug;
+                    window.location.href = "/page/" + this.slug;
                 }
             },
 
             _computeCombinedIndexPt: function () {
                 return this.published
                     + "~" + "false";
+            },
+
+            _computeCombinedIndexSp: function () {
+                return this.slug
+                    + "~" + this.published;
             },
         });
     </script>
