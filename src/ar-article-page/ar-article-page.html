@@ -435,7 +435,7 @@
                 <!-- </template> -->
                 <polymer-tinymce id="editor"
                     base-url="[[origin]]/bower_components/tinymce"
-                    hidden$="[[!editMode]]"
+
                     tinytoolbar="insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image" 
                     tinyplugins='["advlist autolink lists link image charmap print preview anchor","searchreplace visualblocks code fullscreen","insertdatetime media table contextmenu paste"]'
                 ></polymer-tinymce>
@@ -581,7 +581,7 @@
                 if (this.article.title != "" && typeof this.article.category != "undefined" && this.isAdmin) {
                     var _this = this;
                     this.$.article.ref.update({
-                        slug: this.article.slug,
+                        slug: getSlug(this.article.slug),
                         title: this.article.title,
                         category: this._lowerCase(this.article.category),
                         cover: this.article.cover,
