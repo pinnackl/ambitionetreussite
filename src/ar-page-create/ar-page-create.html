@@ -1,0 +1,170 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
+
+<link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
+<link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
+
+<link rel="import" href="../imports/imports-speakingurl.html">
+<link rel="import" href="../shared-styles.html">
+<dom-module id="ar-page-create">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+
+            .material {
+                background-color: #ffffff;
+                color: #757575;
+            }
+
+            paper-input {
+                width: 30%
+            }
+        </style>
+
+        <firebase-query
+            id="pages"
+            path="/pages">
+        </firebase-query>
+        <firebase-document
+            path="/users/[[user.uid]]"
+            data="{{userData}}">
+        </firebase-document>
+        <div class="material">
+            <h1>Créer une nouvelle page</h1>
+            <div class="section-header">
+                <paper-input label="Titre de la page" value="{{title}}"></paper-input>
+                <div class="sub-align"><span>Publier</span>
+                    <paper-toggle-button checked="{{published}}"></paper-toggle-button></div>
+                <paper-button
+                    class="save-button"
+                    raised
+                    on-tap="create">
+                    <iron-icon icon="done"></iron-icon>Ajouter</paper-button>
+            </div>
+            <polymer-tinymce id="editor"
+                base-url="[[origin]]/bower_components/tinymce"
+                hidden$="[[!editMode]]"
+                tinytoolbar="insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image" 
+                tinyplugins='["advlist autolink lists link image charmap print preview anchor","searchreplace visualblocks code fullscreen","insertdatetime media table contextmenu paste"]'
+            ></polymer-tinymce>
+        </div>
+      <paper-toast id="stateMessage" horizontal-align="left" always-on-top duration="5000" text="" on-iron-overlay-closed="_toastClosed">
+            <iron-icon id="toastIcon" class="validate-icon" icon$="[[stateMessageIcon]]"></iron-icon>
+        </paper-toast>
+    </template>
+    <script>
+        Polymer({
+            is: 'ar-page-create',
+
+            properties: {
+                title: {
+                    type: String,
+                    observer: '_titleChanged',
+                },
+                published: {
+                    type: Boolean,
+                },
+                content: {
+                    type: String,
+                },
+
+                user: {
+                    type: Object
+                },
+
+                userData: {
+                    type: Object
+                },
+
+                isAdmin: {
+                    type: Boolean,
+                    value: false,
+                },
+
+                editMode: {
+                    type: Boolean,
+                    value: true,
+                },
+
+                stateMessage: {
+                    type: Object,
+                    value: function () {
+                        return {
+                            'success': {
+                                icon: "check-circle",
+                                text: "Vos modifications ont été sauvegardées!",
+                            },
+                            'errorExist': {
+                                icon: "warning",
+                                text: "Erreur! Un article avec ce titre existe déjà!",
+                            },
+                            'errorEmpty': {
+                                icon: "warning",
+                                text: "Erreur! Vous devez donner un titre à votre article!",
+                            },
+                            'errorCategory': {
+                                icon: "warning",
+                                text: "Erreur! Vous devez attribuer une catégorie à votre article!",
+                            },
+                            'errorRight': {
+                                icon: "warning",
+                                text: "Erreur! Vous n'avez pas les droits!",
+                            },
+                        } 
+                    }
+                },
+            },
+
+            create: function (e) {
+                if (this.title && this.slug && this.isAdmin) {
+                    var _this = this;
+                    this.$.pages.ref.push({
+                        title: this.title || "",
+                        slug: this.slug || "",
+                        content: this.$.editor.getContent() || "",
+                        created: Date.now(),
+                        updated: Date.nows(),
+                        author: this.userData.basicInfo.name,
+                        authorID: this.user.uid,
+                        published: this.published,
+                        published_trash: this._computeCombinedIndexPt(),
+                        trash: false
+                    }).then(function (value) {
+                        _this.stateMessageIcon = _this.stateMessage.success.icon;
+                        _this.$.stateMessage.text = _this.stateMessage.success.text;
+                        _this.$.stateMessage.open();
+                        _this.isUpdate = true;
+                    }).catch(function (error) {
+                        _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
+                        _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
+                        _this.$.stateMessage.open();
+                    });
+                } else {
+                    _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
+                    _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
+                    _this.$.stateMessage.open();
+                }
+            },
+
+            _titleChanged: function (title) {
+                this.slug = getSlug(title);
+            },
+
+            _toastClosed: function (e) {
+                if (this.isUpdate) {
+                    window.location.href = "/page/" + "/" + this.slug;
+                }
+            },
+
+            _computeCombinedIndexPt: function () {
+                return this.published
+                    + "~" + "false";
+            },
+        });
+    </script>
+</dom-module>

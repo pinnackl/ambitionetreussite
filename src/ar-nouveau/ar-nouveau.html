@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 
 <link rel="import" href="../ar-article-create/ar-article-create.html">
+<link rel="import" href="../ar-page-create/ar-page-create.html">
 <link rel="import" href="../ar-category-create/ar-category-create.html">
 <link rel="import" href="../ar-tag-create/ar-tag-create.html">
 
@@ -45,7 +46,7 @@
                 <ar-tag-create user="{{user}}" is-admin="{{isAdmin}}"></ar-tag-create>
             </section>
             <section name="page">
-                
+                <ar-page-create user="{{user}}" is-admin="{{isAdmin}}"></ar-page-create>
             </section>
             <section name="spinner">
                 <paper-spinner active alt="Chargement des contenu"></paper-spinner>
