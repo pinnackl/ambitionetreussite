@@ -268,7 +268,7 @@
             },
 
             updatePage: function () {
-                if (this._page.title) {
+                if (this._page.title && this.$.editor.getContent() != "") {
                     var _this = this;
                     this.$.page.ref.update({
                         slug: getSlug(this.page.slug),

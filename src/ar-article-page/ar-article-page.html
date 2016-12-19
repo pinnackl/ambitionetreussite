@@ -578,7 +578,7 @@
 
             updateArticle: function (e) {
                 this.isUpdate = false;
-                if (this.article.title != "" && typeof this.article.category != "undefined" && this.isAdmin) {
+                if (this.article.title != "" && typeof this.article.category != "undefined" && this.$.editor.getContent() != "" && this.isAdmin) {
                     var _this = this;
                     this.$.article.ref.update({
                         slug: getSlug(this.article.slug),

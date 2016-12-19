@@ -121,7 +121,7 @@
             },
 
             create: function (e) {
-                if (this.title && this.slug && this.isAdmin) {
+                if (this.title && this.slug && this.$.editor.getContent() != "" && this.isAdmin) {
                     var _this = this;
                     this.$.pages.ref.push({
                         title: this.title || "",

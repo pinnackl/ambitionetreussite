@@ -572,7 +572,7 @@
 
             create: function (e) {
                 this.isUpdate = false;
-                if (this.slug != "" && typeof this.category != "undefined" && this.isAdmin) {
+                if (this.slug != "" && typeof this.category != "undefined" && this.$.editor.getContent() != "" && this.isAdmin) {
                     var _this = this;
                     this.$.article.ref.push({
                         slug: this.slug,
