@@ -585,6 +585,13 @@
         Polymer.AppLayout.scroll({ top: 0, behavior: 'silent' });
         // Force the drawer to close
         this.$.appDrawer.opened = false;
+        // Force the submenu to close
+        for (var i = 0; i < this.menu.length; i++) {
+          if (this.menu[i].opened) {
+            this.set('menu.' + i + '.opened', false);
+            this.set('menu.' + i + '.icon', "expand-more");
+          }
+        }
       },
 
       _pageChanged: function(page) {
