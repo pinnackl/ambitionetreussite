@@ -40,13 +40,23 @@
             data="{{routeData}}"
             tail="{{subroute}}"></app-route>
 
-        <firebase-query
-            path="/pages"
-            order-by-child="slug"
-            equal-to="[[page]]"
-            limit-to-first="1"
-            data="{{matchedPage}}"
-        ></firebase-query>
+            <firebase-query
+                path="/pages"
+                disabled$="{{!isAdmin}}"
+                order-by-child="slug"
+                equal-to$="[[page]]"
+                limit-to-first="1"
+                data="{{matchedPage}}"
+            ></firebase-query>
+
+            <firebase-query
+                path="/pages"
+                disabled$="{{isAdmin}}"
+                order-by-child="slug_published"
+                equal-to$="[[page]]~true"
+                limit-to-first="1"
+                data="{{matchedPage}}"
+            ></firebase-query>
 
         <template is="dom-repeat" items={{matchedPage}} 
             as=item index-as=index filter="isHandler">
@@ -101,7 +111,7 @@
 
                 view: {
                     type: String,
-                    value: "read"
+                    value: "spinner"
                 }
             },
 
@@ -127,7 +137,7 @@
                     this.attempt = this.view;
                 }
                 this.view = "spinner";
-                if (this.staticPage && this.staticPage.title && this.attempt == "read") {
+                if (this.staticPage && this.staticPage.title) {
                     this.view = "read";
                 }
             },

@@ -97,8 +97,18 @@
 
         <firebase-query
             path="/articles"
+            disabled$="{{!isAdmin}}"
             order-by-child="slug"
             equal-to="[[slug]]"
+            limit-to-first="1"
+            data="{{matchedArticle}}"
+        ></firebase-query>
+
+        <firebase-query
+            path="/articles"
+            disabled$="{{isAdmin}}"
+            order-by-child="slug_published"
+            equal-to="[[slug]]~true"
             limit-to-first="1"
             data="{{matchedArticle}}"
         ></firebase-query>
