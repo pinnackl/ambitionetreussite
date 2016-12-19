@@ -111,7 +111,7 @@
         --paper-tabs-selection-bar-color: #3eb7e9;
       }
 
-      paper-tab[link] a, .submenu paper-item a {
+      paper-tab[link] a, paper-tab[link] span, .submenu paper-item a {
         /* These mixins (from iron-flex-layout) center the link text. */
         @apply(--layout-horizontal);
         @apply(--layout-center-center);
@@ -619,10 +619,10 @@
             label: 'article',
             opened: false,
             icon: "expand-more",
-            submenu: [{name:"plop", path: "/", label: "Plop"},{name:"plop"},{name:"plop"},],
+            submenu: [{name:"Sciences", path: "/categorie/sciences"},],
           },
           {
-            name: 'a-propos',
+            name: 'page',
             path: '/page/a-propos',
             label: 'a propos'
           },
