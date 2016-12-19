@@ -127,6 +127,14 @@
         color: #3eb7e9;
       }
 
+      .submenu-tab {
+        display: block;
+        height: 100%;
+        width: 100%;
+        text-align: center;
+        line-height: 64px;
+      }
+
       .submenu {
         display: flex;
         align-items: center;
@@ -348,7 +356,7 @@
                       <a href="[[item.path]]" title="Accueil" tabindex="-1">[[_ucFirst(item.label)]]</a>
                     </template>
                     <template is="dom-if" if={{item.submenu}}>
-                      <span on-tap="expandTags" item="[[item]]">
+                      <span class="submenu-tab" on-tap="expandTags" item="[[item]]">
                       [[_ucFirst(item.label)]]<iron-icon item="[[item]]" icon$="[[item.icon]]"></iron-icon>
                       </span>
                     </template>
@@ -379,8 +387,8 @@
           <ar-categorie name="categorie" rights="[[rights]]" route="{{subroute}}"></ar-categorie>
           <!-- Read view -->
           <ar-lire name="lire" rights="[[rights]]" route="{{subroute}}"></ar-lire>
-          <!-- About view -->
-          <ar-a-propos name="a-propos" rights="[[rights]]"></ar-a-propos>
+          <!-- Page view -->
+          <ar-page name="page" rights="[[rights]]" route="{{subroute}}"></ar-page>
           <!-- New view -->
           <ar-nouveau name="nouveau" rights="{{rights}}" route="{{subroute}}" user="{{fireUser}}"></ar-nouveau>
           <!-- User view -->
@@ -548,7 +556,6 @@
             }
           }
         }
-        // this.$$('#collapse').toggle();
       },
 
       _signIn: function (e) {
@@ -616,7 +623,7 @@
           },
           {
             name: 'a-propos',
-            path: 'a-propos',
+            path: '/page/a-propos',
             label: 'a propos'
           },
         ];
