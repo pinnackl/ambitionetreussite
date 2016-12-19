@@ -128,7 +128,6 @@
                 var _this = this;
                 this.$.categories.ref.child(key).remove().then(
                 function (value) {
-                    console.log(value);
                     _this.stateMessageIcon = _this.stateMessage.success.icon;
                     _this.$.stateMessage.text = _this.stateMessage.success.text;
                     _this.$.stateMessage.open();
