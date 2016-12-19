@@ -18,7 +18,7 @@
     },
     "pages": {
       ".read": true,
-      ".indexOn": ["published_trash", "slug"],
+      ".indexOn": ["published_trash", "slug", "slug_published"],
       "$page": {
         ".read": true,
         ".write": "(auth != null && (root.child('administrators').hasChild(auth.uid)))"
@@ -26,7 +26,7 @@
     },
     "articles": {
       ".read": true,
-      ".indexOn": ["category_published_trash", "published_trash", "slug"],
+      ".indexOn": ["category_published_trash", "published_trash", "slug", "slug_published"],
       "$article": {
         ".read": true,
         ".write": "(auth != null && (root.child('editors').hasChild(auth.uid) || root.child('moderators').hasChild(auth.uid) || root.child('administrators').hasChild(auth.uid)))"
