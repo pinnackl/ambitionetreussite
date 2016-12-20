@@ -167,6 +167,10 @@
                     type: String
                 },
 
+                slug: {
+                    type: String,
+                },
+
                 category: {
                     type: String,
                 },
@@ -206,15 +210,21 @@
                 trash: {
                     type: Boolean,
                     value: false
+                },
+
+                loading: {
+                    type: Boolean,
+                    value: false,
+                    notify: true
                 }
             },
 
             observers: [
                 '_computeCombinedIndex(category, published, trash)',
+                '_loading(loading)',
             ],
 
             ready: function () {
-
             },
 
             isHandler: function (item) {
@@ -224,7 +234,14 @@
                 return true;
             },
 
+            _loading: function (loading) {
+                if (loading) {
+                    this.view = "spinner";
+                }
+            },
+
             _contentChange: function (e) {
+                this.set('loading', false);
                 if (typeof this.attempt == "undefined") {
                     this.attempt = this.view;
                 }
