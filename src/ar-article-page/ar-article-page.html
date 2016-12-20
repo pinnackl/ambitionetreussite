@@ -1,17 +1,18 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/iron-icons/social-icons.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-icons/social-icons.html" async>
+<link rel="import" href="../../bower_components/iron-icons/editor-icons.html" async>
+<link rel="import" href="../../bower_components/paper-button/paper-button.html" async>
 <link rel="import" href="../../bower_components/social-media-icons/social-media-icons.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
-<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html" async>
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 
 <link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
 <link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
-<link rel="import" href="../../bower_components/file-upload/file-upload.html">
+<link rel="import" href="../../bower_components/file-upload/file-upload.html" async>
 
-<link rel="import" href="../imports/imports-speakingurl.html">
+<link rel="import" href="../imports/imports-speakingurl.html" async>
 <link rel="import" href="../shared-styles.html">
 <dom-module id="ar-article-page">
     <template>
@@ -123,6 +124,14 @@
                 -webkit-align-self: auto;
                 -ms-flex-item-align: auto;
                 align-self: auto;
+            }
+
+            .post .cover-position {
+                position: absolute;
+                top: 0;
+                color: #ffffff;
+                z-index: 4;
+                width: 98%;
             }
 
             .post .secton-header {
@@ -344,7 +353,8 @@
                 <iron-image
                     style="background: #3eb7e9;"
                     src$="https://cdn.pinnackl.com/images/[[article.cover]]"
-                    preload  fade sizing="cover"></iron-image>
+                    position="{{article.position}}"
+                    preload fade sizing="cover"></iron-image>
                 <div id="filter" class="filter">
                     <h1 class="title">[[article.title]]</h1>
                     <div class="article-info">
@@ -370,6 +380,24 @@
                         </div>
                     </div>
                 </div>
+                <template is="dom-if" if={{editMode}}>
+                    <div class="cover-position">
+                        <div class="section-header">
+                            <span></span>
+                            <div>
+                                <span>Position de la couverture <iron-icon icon="editor:vertical-align-[[article.position]]"></iron-icon></span>
+                                <paper-menu-button horizontal-align="right">
+                                    <paper-icon-button icon="open-with" class="dropdown-trigger"></paper-icon-button>
+                                    <paper-menu class="dropdown-content" selected="{{article.position}}" attr-for-selected="value">
+                                        <paper-item value="top"><iron-icon icon="editor:vertical-align-top"></iron-icon>Haut</paper-item>
+                                        <paper-item value="center"><iron-icon icon="editor:vertical-align-center"></iron-icon>Centre</paper-item>
+                                        <paper-item value="bottom"><iron-icon icon="editor:vertical-align-bottom"></iron-icon>Bas</paper-item>
+                                    </paper-menu>
+                                </paper-menu-button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
             </div>
             <div class="material content">
                 <div class="section-header">
@@ -585,6 +613,7 @@
                         title: this.article.title,
                         category: this._lowerCase(this.article.category),
                         cover: this.article.cover,
+                        position: this.article.position || "center",
                         tags: this.article.tags || "",
                         content: this.$.editor.getContent() || "",
                         created: this.article.created,
@@ -613,6 +642,8 @@
                     this.$.stateMessage.open();
                 }
             },
+
+
 
             fileUploaded: function (e, detail) {
                 var parsedResponse = JSON.parse(detail.xhr.response);

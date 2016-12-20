@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/social-media-icons/social-media-icons.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
@@ -127,6 +128,14 @@
                 -webkit-align-self: auto;
                 -ms-flex-item-align: auto;
                 align-self: auto;
+            }
+
+            .post .cover-position {
+                position: absolute;
+                top: 0;
+                color: #ffffff;
+                z-index: 4;
+                width: 98%;
             }
 
             .post .secton-header {
@@ -378,7 +387,7 @@
 
         <div class="post">
             <div class="cover">
-                <iron-image src$="https://cdn.pinnackl.com/images/[[cover]]" preload style="background: #3eb7e9;" fade sizing="cover"></iron-image>
+                <iron-image src="/images/pexels-photo-30732.jpg" preload style="background: #3eb7e9;" fade  sizing="cover" position="{{position}}"></iron-image>
                 <div class="filter">
                     <h1 class="title">[[title]]</h1> 
                     <div class="article-info">
@@ -393,6 +402,24 @@
                         </div>
                     </div>
                 </div>
+                <template is="dom-if" if={{editMode}}>
+                    <div class="cover-position">
+                        <div class="section-header">
+                            <span></span>
+                            <div>
+                                <span>Position de la couverture <iron-icon icon="editor:vertical-align-[[position]]"></iron-icon></span>
+                                <paper-menu-button horizontal-align="right">
+                                    <paper-icon-button icon="open-with" class="dropdown-trigger"></paper-icon-button>
+                                    <paper-menu class="dropdown-content" selected="{{position}}" attr-for-selected="value">
+                                        <paper-item value="top"><iron-icon icon="editor:vertical-align-top"></iron-icon>Haut</paper-item>
+                                        <paper-item value="center"><iron-icon icon="editor:vertical-align-center"></iron-icon>Centre</paper-item>
+                                        <paper-item value="bottom"><iron-icon icon="editor:vertical-align-bottom"></iron-icon>Bas</paper-item>
+                                    </paper-menu>
+                                </paper-menu-button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
             </div>
             <div class="material content">
                 <h1>Créer un nouvel article</h1>
@@ -552,6 +579,11 @@
                     type: String,
                 },
 
+                position: {
+                    type: String,
+                    value: "center"
+                },
+
                 category: {
                     type: String
                 },
@@ -579,6 +611,7 @@
                         title: this.title || "",
                         category: this._lowerCase(this.category) || "",
                         cover: this.cover || "",
+                        position: this.position || "center",
                         tags: this.selectedTags || [],
                         content: this.$.editor.getContent() || "",
                         created: Date.now(),
@@ -677,7 +710,7 @@
             _computeCombinedIndexSp: function () {
                 return this.slug
                     + "~" + this.published;
-            }
+            },
 
             _ucfirst: function (string) {
                 if (string) {
