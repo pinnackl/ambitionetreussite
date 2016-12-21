@@ -267,7 +267,9 @@
     -->
     <ar-data id="arData"
       signed-in="{{signedIn}}"
-      rights="{{rights}}">
+      rights="{{rights}}"
+      firebase-error="{{fireError}}"
+      firebase-success="{{fireSuccess}}">
     </ar-data>
 
     <firebase-auth
@@ -447,7 +449,7 @@
             <div class="item end right">Ambition &amp; Réussite<iron-icon icon="copyright"></iron-icon>{{year}}</div>
           </div>
         </div>
-        <ar-forms id="formDialog" name="signIn"></ar-forms>
+        <ar-forms id="formDialog" name="signIn" firebase-error="{{fireError}}" firebase-success="{{fireSuccess}}"></ar-forms>
       </app-header-layout>
 
     </app-drawer-layout>
@@ -476,6 +478,14 @@
         fireUser: {
           type: Object,
           notify: true
+        },
+
+        fireError: {
+          notify: true,
+        },
+
+        fireSuccess: {
+          notify: true,
         },
 
         signedIn: {

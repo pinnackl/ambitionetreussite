@@ -30,6 +30,12 @@
           path="/administrators"
           data="{{administrators}}">
         </firebase-document>
+
+        <firebase-query
+            id="users"
+            path="/users/[[uid]]">
+        </firebase-query>
+
         <paper-toast id="dataToast" horizontal-align="left" always-on-top duration="5000" text=""></paper-toast>
     </template>
     <script>
@@ -65,6 +71,16 @@
                             ts: Date.now(),
                         };
                     },
+                    notify: true,
+                },
+
+                firebaseError: {
+                    type: String,
+                    notify: true,
+                },
+
+                firebaseSuccess: {
+                    type: Number,
                     notify: true,
                 },
 
@@ -113,30 +129,33 @@
             createUser: function (userObject) {
                 console.info("Register");
                 var _this = this;
+                var name = typeof userObject.name ? userObject.name : "";
                 var email = typeof userObject.email ? userObject.email : "";
                 var password = typeof userObject.password ? userObject.password : "";
+
+                this.set('firebaseError', "");
 
                 var auth = this.$.auth.createUserWithEmailAndPassword(email, password);
 
                 auth.then(function (e) {
                     console.info('Registration succed', e.uid);
-                    // _this.set('users.' + e.uid, {
-                    //     basicInfo: {
-                    //         name: email
-                    //     },
-                    //     advancedInfo: {
-                    //         name: email
-                    //     }
-                    // });
+                    _this.uid = e.uid;
 
-                    // // Set up default role for the users
-                    // _this.set('prfiles', 'viewers');
+                    _this.$.users.ref.set({
+                        basicInfo: {
+                            name: name,
+                            avatar: "",
+                        },
+                        advancedInfo: {
+                            email: email
+                        }
+                    });
 
-                    // _this.set('roles.' + e.uid, {email: email});
-                    
-                    _this.$.dataToast.text = this.stateMessage.registerSuccess.text;
+                    _this.set('firebaseSuccess', Date.now());
+                    _this.$.dataToast.text = _this.stateMessage.registerSuccess.text;
                 }).catch(function (e) {
                     console.error(e);
+                    _this.set('firebaseError', e);
                 });
             },
 
@@ -157,6 +176,7 @@
                     // _this.$.dataToast.text = this.stateMessage.userLoggedIn.text;
                 }).catch(function (e) {
                     console.error(e);
+                    _this.set('firebaseError', e);
                 });
             },
 

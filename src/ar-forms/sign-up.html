@@ -1,31 +1,35 @@
-<!--
-A comment describing this element
-
-Example:
-
-    <my-elem></my-elem>
-
-Example:
-
-    <my-elem>
-      <h2>Hello my-elem</h2>
-    </my-elem>
-
-@demo demo/index.html
--->
-
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+
+<link rel="import" href="../shared-styles.html">
 <dom-module id="sign-up">
     <template>
-        <style>
+        <style include="shared-styles">
             :host {
                 display: block;
             }
+
+            .form {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .form-error {
+                color: #ff5252;
+            }
+
         </style>
-        <form action="sign-up_submit" method="get" accept-charset="utf-8">
-            <paper-input label="Email" value="{{user.email}}"></paper-input>
-            <paper-input type="password" label="Mod de passe" value="{{user.password}}"></paper-input>
+        <form class="form" action="sign-up_submit" method="get" accept-charset="utf-8">
+            <template is="dom-if" if={{formError}}>
+                <div class="form-error">Tout les champs de sont pas correctement remplis</div>
+            </template>
+            <div class="form-error">[[errorMsg]]</div>
+            <paper-input label="Nom" value="{{user.name}}"></paper-input>
+            <paper-input label="Email" type="email" value="{{user.email}}"></paper-input>
+            <paper-input type="password" label="Mod de passe" value="{{user.password}}" invalid$="{{invalid}}" error-message="Mots de passe sont différent"></paper-input>
+            <paper-input type="password" label="Confirmation mod de passe" value="{{user.passwordConfirm}}" invalid$="{{invalid}}" error-message="Mots de passe sont différent"></paper-input>
         </form>
     </template>
     <script>
@@ -37,11 +41,28 @@ Example:
                     type: Object,
                     value: function () {
                         return {
+                            name: null,
                             email: null,
-                            password: null
+                            password: null,
+                            passwordConfirm: null
                         }
                     }
+                },
+
+                invalid: {
+                    type: Boolean,
+                    vaule: false,
                 }
+            },
+
+            observers: [
+                '_confirmChanged(user.passwordConfirm)',
+                'computeFormErr(nameErr, emailErr, passwordErr, passwordConfirmErr)',
+            ],
+
+            computeFormErr: function (nameErr, emailErr, passwordErr, passwordConfirmErr) {
+                this.formError = nameErr || emailErr || passwordErr || passwordConfirmErr;
+                this._confirmChanged(this.user.passwordConfirm);
             },
 
             clear: function () {
@@ -49,6 +70,13 @@ Example:
                 for (var i = inputs.length - 1; i >= 0; i--) {
                     inputs[i].value = null;
                 };
+            },
+
+            _confirmChanged: function (passwordConfirm) {
+                this.invalid = false;
+                if (passwordConfirm != "" && this.user.password != "" && passwordConfirm != this.user.password) {
+                    this.invalid = true;
+                }
             }
         });
     </script>
