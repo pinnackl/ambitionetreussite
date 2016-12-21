@@ -8,6 +8,9 @@
                 display: block;
             }
         </style>
+
+        <page-title base-title="A&R" title="[[_ucfirst(category)]]" direction="reversed"></page-title>
+
         <app-route
             route="{{route}}"
             pattern="/:category"
@@ -65,6 +68,13 @@
 
             _rightsChanged: function (ts) {
                 this.checkRights('editors');
+            },
+
+            _ucfirst: function (string) {
+                if (string) {
+                    return string.charAt(0).toUpperCase() + string.slice(1);
+                }
+                return '';
             },
         });
     </script>

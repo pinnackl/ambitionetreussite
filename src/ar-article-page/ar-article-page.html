@@ -330,7 +330,9 @@
             }
         </style>
 
-        <page-title base-title="A&R" title="[[article.title]] - [[_ucfirst(article.category)]]" direction="reversed"></page-title>
+        <template is="dom-if" if={{article.title}}>
+            <page-title base-title="A&R" title="[[article.title]] - [[_ucfirst(article.category)]]" direction="reversed"></page-title>
+        </template>
 
         <firebase-document
             id="article"
