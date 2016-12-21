@@ -40,6 +40,8 @@
             data="{{routeData}}"
             tail="{{subroute}}"></app-route>
 
+        <page-title base-title="A&R" title="[[_ucfirst(staticPage.title)]]" direction="reversed"></page-title>
+
             <firebase-query
                 path="/pages"
                 disabled$="{{!isAdmin}}"

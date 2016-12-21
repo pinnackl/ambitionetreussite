@@ -35,6 +35,10 @@
             data="{{routeData}}"
             tail="{{subroute}}"></app-route>
 
+        <template is="dom-if" if={{isAdmin}}>
+            <page-title base-title="A&R" title="Nouvel(le) [[page]]" direction="reversed"></page-title>
+        </template>
+
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="spinner">
             <section name="article">
                 <ar-article-create edit-mode="true" user="{{user}}" is-admin="{{isAdmin}}"></ar-article-create>
@@ -103,6 +107,13 @@
             _rightsChanged: function (ts) {
                 this.checkRights('editors');
             },
+
+            _ucfirst: function (string) {
+                if (string) {
+                    return string.charAt(0).toUpperCase() + string.slice(1);
+                }
+                return '';
+            }
         });
     </script>
 </dom-module>

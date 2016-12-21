@@ -87,6 +87,9 @@
                 }
             }
         </style>
+
+        <page-title base-title="A&R" title="[[_ucfirst(category)]]" direction="reversed"></page-title>
+
         <firebase-query
             id="query"
             path="/articles"
@@ -121,6 +124,7 @@
                 data="{{article}}">
             </firebase-document>
         </template>
+
         <iron-pages selected="[[view]]" attr-for-selected="name" fallback-selection="spinner">
             <section name="list">
                 <div class="material">
@@ -196,6 +200,7 @@
 
                 slug: {
                     type: String,
+                    value: "null",
                 },
 
                 draft: {
