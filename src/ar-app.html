@@ -125,7 +125,7 @@
         --paper-tabs-selection-bar-color: #3eb7e9;
       }
 
-      paper-tab[link] a, paper-tab[link] span, .submenu paper-item a {
+      paper-tab[link] a, paper-tab[link] span, .submenu a {
         /* These mixins (from iron-flex-layout) center the link text. */
         @apply(--layout-horizontal);
         @apply(--layout-center-center);
@@ -294,12 +294,12 @@
               <a href="[[item.path]]" name="[[item.name]]" title="[[_ucFirst(item.label)]]">[[_ucFirst(item.label)]]</a>
             </template>
             <template is="dom-if" if={{item.submenu}}>
-              <a class="dropdown-trigger" item="[[item]]" on-tap="expandTags">
+              <a href="#" class="dropdown-trigger" item="[[item]]" on-tap="expandTags">
                 [[_ucFirst(item.label)]]<iron-icon item="[[item]]" icon$="[[item.icon]]"></iron-icon></a>
               <iron-collapse opened="[[item.opened]]">
                 <template is="dom-repeat" items={{item.submenu}}
                   as=item index-as=index>
-                  <paper-item><a href="[[item.path]]" label="[[item.label]]">[[item.name]]</a></paper-item>
+                  <a href="[[item.path]]" label="[[item.label]]"><paper-item>[[item.name]]</paper-item></a>
                 </template>
               </iron-collapse>
             </template>
@@ -368,14 +368,14 @@
               <paper-tabs attr-for-selected="name" selected="[[page]]" bottom-item spacer$="[[condensed]]">
                 <template is="dom-repeat" items={{menu}} 
                   as=item index-as=index>
-                  <paper-tab link name="[[item.name]]">
+                  <paper-tab link name="[[item.name]]" tabindex="-1">
                     <template is="dom-if" if={{!item.submenu}}>
-                      <a href="[[item.path]]" title="Accueil" tabindex="-1">[[_ucFirst(item.label)]]</a>
+                      <a href="[[item.path]]" title="Accueil" tabindex="0">[[_ucFirst(item.label)]]</a>
                     </template>
                     <template is="dom-if" if={{item.submenu}}>
-                      <span class="submenu-tab" on-tap="expandTags" item="[[item]]">
+                      <a href="" class="submenu-tab" on-tap="expandTags" item="[[item]]" tabindex="0">
                       [[_ucFirst(item.label)]]<iron-icon item="[[item]]" icon$="[[item.icon]]"></iron-icon>
-                      </span>
+                      </a>
                     </template>
                   </paper-tab>
                 </template>
@@ -389,7 +389,7 @@
                 <iron-collapse id="collapse" class="submenu" opened="[[item.opened]]">
                   <template is="dom-repeat" items={{item.submenu}}
                     as=item index-as=index>
-                    <paper-item><a href="[[item.path]]" label="[[item.label]]">[[item.name]]</a></paper-item>
+                    <a href="[[item.path]]" label="[[item.label]]" tabindex="0"><paper-item>[[item.name]]</paper-item></a>
                   </template>
                 </iron-collapse>
               </template>
