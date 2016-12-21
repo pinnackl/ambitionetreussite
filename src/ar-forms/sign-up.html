@@ -1,6 +1,8 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 
+<link rel="import" href="../../bower_components/file-upload/file-upload.html" async>
+
 <link rel="import" href="../shared-styles.html">
 <dom-module id="sign-up">
     <template>
@@ -26,6 +28,31 @@
                 <div class="form-error">Tout les champs de sont pas correctement remplis</div>
             </template>
             <div class="form-error">[[errorMsg]]</div>
+            <div class="section-header">
+                <template is="dom-if" if={{user.avatar}}>
+                    <iron-image
+                        style="width: 100px; height: 100px; border: solid 1px #3eb7e9;"
+                        src="http://localhost:9000/avatars/[[user.avatar]]"
+                        preload
+                        sizing="contain"></iron-image>
+                </template>
+                <file-upload
+                    droppable="true"
+                    raised="true"
+                    accept="image/*"
+                    method="POST"
+                    file-data-name="avatar"
+                    target="http://localhost:9000/api/avatars/upload"
+                    on-success="fileUploaded">Choisir une photo de profile</file-upload><!-- 
+                <file-upload
+                    droppable="true"
+                    raised="true"
+                    accept="image/*"
+                    method="POST"
+                    file-data-name="avatar"
+                    target="https://cdn.pinnackl.com/api/avatars/upload"
+                    on-success="fileUploaded">Choisir une photo de profile</file-upload> -->
+            </div>
             <paper-input label="Nom" value="{{user.name}}"></paper-input>
             <paper-input label="Email" type="email" value="{{user.email}}"></paper-input>
             <paper-input type="password" label="Mot de passe" value="{{user.password}}" invalid$="{{invalid}}" error-message="Mots de passe sont différent"></paper-input>
@@ -70,6 +97,12 @@
                 for (var i = inputs.length - 1; i >= 0; i--) {
                     inputs[i].value = null;
                 };
+            },
+
+            fileUploaded: function (e, detail) {
+                var parsedResponse = JSON.parse(detail.xhr.response);
+                this.set('user.avatar', parsedResponse.name);
+
             },
 
             _confirmChanged: function (passwordConfirm) {

@@ -330,16 +330,15 @@
             <span>
               <span class="user-pseudo" hidden$="[[!displayUserName]]">[[user.name]]</span>
               <paper-menu-button id="userMenu" allow-outside-scroll horizontal-align="right">
-                <paper-icon-button
-                  class="dropdown-trigger profileBtn"
-                  condensed$="[[_computeCondensed(largeScreen, condensed)]]"
-                  icon="account-circle">
-                </paper-icon-button>
 
                 <!-- User not authenticated -->
                 <template is="dom-if" if={{!signedIn}}>
+                  <paper-icon-button
+                    class="dropdown-trigger profileBtn"
+                    condensed$="[[_computeCondensed(largeScreen, condensed)]]"
+                    icon="account-circle">
+                  </paper-icon-button>
                   <paper-menu class="dropdown-content user-menu">
-
                     <paper-item>
                       <paper-button on-tap="_signIn">
                         <iron-icon icon="lock-open"></iron-icon>Se connecter</paper-button></paper-item>
@@ -352,6 +351,13 @@
 
                 <!-- User authenticated -->
                 <template is="dom-if" if={{signedIn}}>
+                  <template is="dom-if" if={{user.avatar}}>
+                    <paper-icon-button
+                      class="dropdown-trigger profileBtn"
+                      condensed$="[[_computeCondensed(largeScreen, condensed)]]"
+                      src="https://cdn.pinnackl.com/avatars/[[user.avatar]]">
+                    </paper-icon-button>
+                  </template>
                   <div class="dropdown-content user-menu user-card">
                     <iron-icon icon="account-box"></iron-icon>
                     <div>

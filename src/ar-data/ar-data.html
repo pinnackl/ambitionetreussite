@@ -131,6 +131,7 @@
                 var _this = this;
                 var name = typeof userObject.name ? userObject.name : "";
                 var email = typeof userObject.email ? userObject.email : "";
+                var avatar = typeof userObject.avatar ? userObject.avatar : "";
                 var password = typeof userObject.password ? userObject.password : "";
 
                 this.set('firebaseError', "");
@@ -144,7 +145,7 @@
                     _this.$.users.ref.set({
                         basicInfo: {
                             name: name,
-                            avatar: "",
+                            avatar: avatar,
                         },
                         advancedInfo: {
                             email: email
