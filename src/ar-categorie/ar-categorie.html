@@ -30,6 +30,11 @@
                     type: Object
                 },
 
+                subpage: {
+                    type: String,
+                    notify: true
+                },
+
                 rights: {
                     type: Object,
                 },
@@ -47,6 +52,7 @@
 
             _routePageChanged: function (category) {
                 this.category = category || '';
+                this.subpage = this.category;
             },
 
             checkRights: function (role) {

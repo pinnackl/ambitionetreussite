@@ -51,6 +51,12 @@
                     type: Object
                 },
 
+                subpage: {
+                    type: String,
+                    notify: true
+                },
+
+
                 view: {
                     type: String,
                     value: "spinner",
@@ -92,6 +98,7 @@
             ],
 
             _routePageChanged: function (change) {
+                this.subpage = change.value.category;
                 if (!change.value.category || !change.value.article) {
                     this.view = "view404";
                     return;

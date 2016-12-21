@@ -88,6 +88,19 @@
         height: 75px;
       }
 
+      app-toolbar a {
+        color: #ffffff;
+      }
+
+      :host(:not([page=lire])) .back-btn
+      {
+        display: none;
+      }
+      :host([page=lire]) [drawer-toggle]
+      {
+        display: none;
+      }
+
       .drawer-list {
         margin: 0 20px;
       }
@@ -298,10 +311,13 @@
       <app-header-layout>
 
         <!-- Main header -->
-        <app-header condenses reveals effects="parallax-background" fixed$="[[!_computeHidden(largeScreen)]]">
+        <app-header condenses reveals effects="parallax-background" fixed$="[[_computeHidden(largeScreen)]]">
           <app-toolbar>
             <!-- Left menu button -->
             <paper-icon-button icon="menu" drawer-toggle hidden$="[[_computeHidden(largeScreen)]]"></paper-icon-button>
+            <a class="back-btn" href="/categorie/[[subpage]]" tabindex="-1" hidden$="[[_computeHidden(largeScreen)]]">
+              <paper-icon-button icon="arrow-back" aria-label="Go back"></paper-icon-button>
+            </a>
             <!-- left / centered (minified)logo -->
             <div class="logo" main-title condensed$="[[_computeCondensed(largeScreen, condensed)]]">
               <ar-logo center$="[[!_computeHidden(largeScreen)]]" condensed$="[[_computeCondensed(largeScreen, condensed)]]">
@@ -385,19 +401,15 @@
           <!-- Home view -->
           <ar-accueil name="accueil" rights="[[rights]]"></ar-accueil>
           <!-- Category view -->
-          <ar-categorie name="categorie" rights="[[rights]]" route="{{subroute}}"></ar-categorie>
+          <ar-categorie name="categorie" rights="[[rights]]" route="{{subroute}}" subpage="{{subpage}}"></ar-categorie>
           <!-- Read view -->
-          <ar-lire name="lire" rights="[[rights]]" route="{{subroute}}"></ar-lire>
+          <ar-lire name="lire" rights="[[rights]]" route="{{subroute}}" subpage="{{subpage}}"></ar-lire>
           <!-- Page view -->
-          <ar-page name="page" rights="[[rights]]" route="{{subroute}}"></ar-page>
+          <ar-page name="page" rights="[[rights]]" route="{{subroute}}" subpage="{{subpage}}"></ar-page>
           <!-- New view -->
-          <ar-nouveau name="nouveau" rights="{{rights}}" route="{{subroute}}" user="{{fireUser}}"></ar-nouveau>
+          <ar-nouveau name="nouveau" rights="{{rights}}" route="{{subroute}}" subpage="{{subpage}}" user="{{fireUser}}"></ar-nouveau>
           <!-- User view -->
           <div name="user">User</div>
-
-          <!-- <div name="nimda">
-            <paper-spinner active></paper-spinner>
-          </div> -->
 
           <div name="404">
             <h1>404</h1>
@@ -454,6 +466,11 @@
           type: String,
           reflectToAttribute: true,
           observer: '_pageChanged'
+        },
+
+        subpage: {
+          type: String,
+          reflectToAttribute: true
         },
 
         fireUser: {
@@ -580,8 +597,8 @@
       },
 
       _routePageChanged: function(page) {
-        // FIXME : Get the defaulpage from database
         this.page = page || 'accueil';
+        this.subpage = '';
 
         Polymer.AppLayout.scroll({ top: 0, behavior: 'silent' });
         // Force the drawer to close

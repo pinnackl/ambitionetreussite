@@ -88,6 +88,11 @@
                     type: String,
                 },
 
+                subpage: {
+                    type: String,
+                    notify: true
+                },
+
                 uid: {
                     type: String
                 },
@@ -132,6 +137,7 @@
 
             _routePageChanged: function (page) {
                 this.page = page || '';
+                this.subpage = this.page;
             },
 
             _contentChanged: function (e) {

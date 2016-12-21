@@ -67,6 +67,11 @@
                     type: Object
                 },
 
+                subpage: {
+                    type: String,
+                    notify: true
+                },
+
                 rights: {
                     type: Object,
                 },
@@ -99,6 +104,7 @@
             _routePageChanged: function (page) {
                 if (this.isAdmin) {
                     this.page = page || '';
+                    this.subpage = this.page;
                 } else {
                     this.tempPage = page;
                 }
