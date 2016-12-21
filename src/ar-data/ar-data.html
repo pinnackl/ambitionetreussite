@@ -206,13 +206,13 @@
             checkRights: function (uid, editors, moderators, administrators) {
                 if (uid || editors || moderators || administrators) {
                     if (editors[uid]) {
-                        this.rights.editors = true;
+                        this.set('rights.editors', true);
                     }
                     if (moderators[uid]) {
-                        this.rights.moderators = true;
+                        this.set('rights.moderators', true);
                     }
                     if (administrators[uid]) {
-                        this.rights.administrators = true;
+                        this.set('rights.administrators', true);
                     }
                 }
                 this.set('rights.ts', Date.now());

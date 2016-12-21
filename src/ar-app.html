@@ -27,6 +27,9 @@
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-fab-speed-dial/paper-fab-speed-dial.html">
+<link rel="import" href="../bower_components/paper-fab-speed-dial/paper-fab-speed-dial-action.html">
 
 <!-- Custom element -->
 <link rel="import" href="ar-data/ar-data.html">
@@ -275,6 +278,14 @@
       [hidden] {
         display: none !important;
       }
+
+      paper-fab-speed-dial {
+        --paper-fab-speed-dial-background: #3eb7e9;
+      }
+
+      paper-fab-speed-dial-action {
+        --paper-fab-speed-dial-action-background: #3eb7e9;
+      }
     </style>
 
     <app-location route="{{route}}"></app-location>
@@ -493,6 +504,19 @@
 
     </app-drawer-layout>
 
+    <template is="dom-if" if={{rights.editors}}>
+      <paper-fab-speed-dial icon="add" id="fab">
+        <a style="display: block;" href="/nouveau/article"><paper-fab-speed-dial-action icon="create">Nouvel Article</paper-fab-speed-dial-action></a>
+        <template is="dom-if" if={{rights.administrators}}>
+          <a style="display: block;" href="/nouveau/page"><paper-fab-speed-dial-action icon="description">Nouvelle Page</paper-fab-speed-dial-action></a>
+          <!-- Menu -->
+          <!-- Footer -->
+        </template>
+        <a style="display: block;" href="/nouveau/categorie"><paper-fab-speed-dial-action icon="label">Nouvelle Catégorie</paper-fab-speed-dial-action></a>
+        <a style="display: block;" href="/nouveau/tag"><paper-fab-speed-dial-action icon="loyalty">Nouveau Tag</paper-fab-speed-dial-action></a>
+      </paper-fab-speed-dial>
+    </template>
+
   </template>
 
   <script>
@@ -648,6 +672,9 @@
       _routePageChanged: function(page) {
         this.page = page || 'accueil';
         this.subpage = '';
+        if (this.$$('#fab')) {
+          this.$$('#fab').close();
+        }
 
         Polymer.AppLayout.scroll({ top: 0, behavior: 'silent' });
         // Force the drawer to close
