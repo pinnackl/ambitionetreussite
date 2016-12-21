@@ -6,8 +6,20 @@
             :host {
                 display: block;
             }
+
+            .form {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .form-error {
+                color: #ff5252;
+            }
         </style>
-        <form action="sign-in_submit" method="get" accept-charset="utf-8">
+        <form class="form" action="sign-in_submit" method="get" accept-charset="utf-8">
+            <div class="form-error">[[errorMsg]]</div>
             <paper-input label="Email" value="{{user.email}}"></paper-input>
             <paper-input type="password" label="Mod de passe" value="{{user.password}}"></paper-input>
         </form>

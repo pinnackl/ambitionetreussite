@@ -59,7 +59,7 @@
             </paper-dialog-scrollable>
             <div class="buttons">
                 <paper-button dialog-dismiss>Cancel</paper-button>
-                <paper-button on-tap="_confirm">[[dialogConfirm]]</paper-button>
+                <paper-button class="save-button" on-tap="_confirm">[[dialogConfirm]]</paper-button>
             </div>
         </paper-dialog>
     </template>
@@ -112,7 +112,22 @@
                             // ...
                     }
                 } else {
-                    
+                    switch(error.code) {
+                        case "auth/invalid-email":
+                            this.$.signIn.errorMsg = "L'adresse e-mail est mal formatée.";
+                            break;
+                        case "auth/weak-password":
+                            this.$.signIn.errorMsg = "Le mot de passe doit contenir au moins 6 caractères.";
+                            break;
+                        case "auth/email-already-in-use":
+                            this.$.signIn.errorMsg = "L'adresse e-mail est déjà utilisée par un autre compte.";
+                            break;
+                        case "auth/wrong-password":
+                            this.$.signIn.errorMsg = "Le mot de passe n'est pas valide ou l'utilisateur n'a pas de mot de passe.";
+                            break;
+                        default:
+                            // ...
+                    }
                 }
             },
 
@@ -132,7 +147,6 @@
             _confirm: function (e) {
                 if (this.name == 'signIn' && this.$.signIn.user.email) {
                     this.fire('ar-login-event', {user: this.$.signIn.user});
-                    this.$.formDialog.close();
                 }
 
                 if (this.name == 'signUp'
