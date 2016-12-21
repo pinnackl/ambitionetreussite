@@ -173,7 +173,7 @@
                 var auth = this.$.auth.signInWithEmailAndPassword(email, password);
 
                 auth.then(function (e) {
-                    // _this.$.dataToast.text = this.stateMessage.userLoggedIn.text;
+                    _this.set('firebaseSuccess', Date.now());
                 }).catch(function (e) {
                     console.error(e);
                     _this.set('firebaseError', e);
