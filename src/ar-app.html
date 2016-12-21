@@ -185,6 +185,34 @@
         margin-right: .4em;
       }
 
+      .user-menu.user-card {
+        padding: 16px;
+        color: #56585c;
+        font-size: 1em;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+
+      .user-menu.user-card .circle {
+        overflow: hidden;
+        width: 64px;
+        height: 64px;
+        display: block;
+        border-radius: 50%;
+      }
+
+      .user-menu.user-card img {
+        height: 64px;
+      }
+
+      .user-menu.user-card a {
+        color: #56585c;
+        text-decoration: none;
+      }
+
       iron-pages {
         min-height: 90vh;
       }
@@ -318,7 +346,7 @@
             <!-- Left menu button -->
             <paper-icon-button icon="menu" drawer-toggle hidden$="[[_computeHidden(largeScreen)]]"></paper-icon-button>
             <a class="back-btn" href="/categorie/[[subpage]]" tabindex="-1" hidden$="[[_computeHidden(largeScreen)]]">
-              <paper-icon-button icon="arrow-back" aria-label="Go back"></paper-icon-button>
+              <paper-icon-button icon="arrow-back" aria-label="Retour"></paper-icon-button>
             </a>
             <!-- left / centered (minified)logo -->
             <div class="logo" main-title condensed$="[[_computeCondensed(largeScreen, condensed)]]">
@@ -359,9 +387,14 @@
                     </paper-icon-button>
                   </template>
                   <div class="dropdown-content user-menu user-card">
-                    <iron-icon icon="account-box"></iron-icon>
                     <div>
-                      <div class="email">[[user.email]]</div>
+                      <a href="/users/" class="email user-menu user-card" title="Profile">
+                        <template is="dom-if" if={{user.avatar}}>
+                          <span class="circle"><img src="https://cdn.pinnackl.com/avatars/[[user.avatar]]"></span>
+                        </template>
+                        <span>[[user.name]]</span>
+                      </a>
+                      <hr>
                       <div class="signout"><a href="#" title="DÉCONEXION" on-tap="logout">DÉCONEXION</a></div>
                     </div>
                   </div>
