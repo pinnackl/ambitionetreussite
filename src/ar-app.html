@@ -209,6 +209,7 @@
 
       .user-menu.user-card img {
         height: 64px;
+        width: 64px;
       }
 
       .user-menu.user-card a {
@@ -399,7 +400,7 @@
                   </template>
                   <div class="dropdown-content user-menu user-card">
                     <div>
-                      <a href="/users/" class="email user-menu user-card" title="Profile">
+                      <a href="/user/[[fireUser.uid]]" class="email user-menu user-card" title="Profile">
                         <template is="dom-if" if={{user.avatar}}>
                           <span class="circle"><img src="https://cdn.pinnackl.com/avatars/[[user.avatar]]"></span>
                         </template>
@@ -461,7 +462,9 @@
           <!-- New view -->
           <ar-nouveau name="nouveau" rights="{{rights}}" route="{{subroute}}" subpage="{{subpage}}" user="{{fireUser}}"></ar-nouveau>
           <!-- User view -->
-          <div name="user">User</div>
+          <ar-user name="user" rights="{{rights}}" route="{{subroute}}" subpage="{{subpage}}" user="{{fireUser}}"></ar-user>
+          <!-- Author view -->
+          <div name="author">author</div>
 
           <div name="404">
             <h1>404</h1>
