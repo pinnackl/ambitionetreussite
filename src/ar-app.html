@@ -34,6 +34,7 @@
 <!-- Custom element -->
 <link rel="import" href="ar-data/ar-data.html">
 <link rel="import" href="ar-logo/ar-logo.html">
+<link rel="import" href="ar-footer/ar-footer.html">
 
 <link rel="import" href="ar-firebase/ar-firebase.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
@@ -470,38 +471,7 @@
             <h1>404</h1>
           </div>
         </iron-pages>
-        <div class="end footer">
-          <div class="app-grid">
-            <div class="item">
-              <ul>
-                <div class="footer-cln-header">Projets</div>
-                <!-- <li><a href="/projects/detail/pinnackl" title="Pinnackl Press">Pinnackl Press</a></li> -->
-                <!-- <li><a href="/projects/detail/backdrop" title="Backdrop">Backdrop</a></li> -->
-                <!-- <li><a href="/projects/detail/ok-mom2" title="OK Mom2">OK Mom2</a></li> -->
-              </ul>
-            </div>
-            <div class="item">
-              <ul>
-                <div class="footer-cln-header">A propos</div>
-                <!-- <li><a href="/about" title="About Pinnackl">About Pinnackl</a></li> -->
-              </ul>
-            </div>
-            <div class="item">
-              <ul>
-                <li>
-                  <div class="footer-cln-header">Retrouvez-nous</div>
-                  <div class="social">
-                    <!-- <a href="https://github.com/pinnackl" title="Github">
-                      <iron-image class="github" src="/images/github.svg" preload sizing="cover"></iron-image>
-                      <span>Github</span>
-                    </a> -->
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="item end right">Ambition &amp; Réussite<iron-icon icon="copyright"></iron-icon>{{year}}</div>
-          </div>
-        </div>
+        <ar-footer rights="[[rights]]" user="{{fireUser}}"></ar-footer>
         <ar-forms id="formDialog" name="signIn" firebase-error="{{fireError}}" firebase-success="{{fireSuccess}}"></ar-forms>
       </app-header-layout>
 

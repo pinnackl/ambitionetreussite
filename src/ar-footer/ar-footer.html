@@ -1,0 +1,337 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymer-dragula/polymer-dragula.html">
+<link rel="import" href="../../bower_components/app-layout/app-grid/app-grid-style.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-submenu.html">
+<link rel="import" href="../shared-styles.html">
+<dom-module id="ar-footer">
+    <template>
+        <style include="shared-styles app-grid-style">
+            :host {
+                display: block;
+
+                --app-grid-columns: 3;
+                --app-grid-item-height: 30vh;
+                --app-grid-expandible-item-columns: 1;
+            }
+
+            .app-grid {
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: row;
+                -webkit-flex-direction: row;
+                flex-direction: row;
+                -ms-flex-wrap: nowrap;
+                -webkit-flex-wrap: nowrap;
+                flex-wrap: nowrap;
+                padding-top: 0px;
+                padding-left: 0px;
+                box-sizing: border-box;
+            }
+
+            .end {
+                background-color: #f8f8f8;
+            }
+
+            .footer {
+                min-height: 30vh;
+            }
+
+            .item.edit {
+                padding: 3px;
+                min-height: 30vh;
+                background-color: #F1F1F1;
+                border: dotted 3px #fbc009;
+                margin: 0 3px;
+                cursor: pointer;
+
+                -webkit-user-select: none !important;
+                -moz-user-select: none !important;
+                -ms-user-select: none !important;
+                user-select: none !important;
+            }
+
+            .item:nth-child(4) {
+                @apply(--app-grid-expandible-item);
+                height: 24px;
+            }
+
+            .right {
+                text-align: center;
+                vertical-align: middle;
+                font-weight: bold;
+                font-size: 12px;
+                line-height: 24px;
+                color: #757575;
+            }
+
+            .right iron-icon {
+                height: 18px;
+                vertical-align: middle; 
+            }
+
+            .item .footer-cln-header {
+                font-weight: bold;
+                font-size: 12px;
+                line-height: 24px;
+                color: #179BD7;
+            }
+
+            .item ul, .item li {
+                    list-style: none;
+            }
+
+            .item li a {
+                color: #757575;
+                font-size: 12px;
+                text-decoration: none;
+                line-height: 24px;
+            }
+
+            .item li .github {
+                vertical-align: middle;
+                width: 2em;
+                height: 2em;
+            }
+
+            .item li .social {
+                line-height: 24px;
+            }
+
+            .gu-mirror {
+                position: fixed !important;
+                margin: 0 !important;
+                z-index: 9999 !important;
+                opacity: 0.8;
+                -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+                filter: alpha(opacity=80);
+                cursor: grabbing;
+                cursor: -moz-grabbing;
+                cursor: -webkit-grabbing;
+            }
+
+            .gu-hide {
+                display: none !important;
+            }
+
+            .gu-unselectable {
+                -webkit-user-select: none !important;
+                -moz-user-select: none !important;
+                -ms-user-select: none !important;
+                user-select: none !important;
+            }
+
+            .gu-transit {
+                background-color: rgba(23, 155, 215, 0.23)!important;
+                border: dotted 3px #757575!important;
+                opacity: 0.2;
+                -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+                filter: alpha(opacity=20);
+            }
+
+            .add-link-button {
+                --paper-menu-button-dropdown: {
+                    width: 400px;
+                    margin-bottom: 30px;
+                }
+            }
+
+            .sublist paper-item {
+              padding-left: 30px;
+            }
+        </style>
+
+        <div class="end footer">
+            <template is="dom-if" if={{isAdmin}}>
+                <div class="material section-header">
+                    <div class="section-header">
+                        <paper-input label="Ajouter une colonne" hidden$="[[!editMode]]" value="{{columnTitle}}"></paper-input>
+                        <paper-button class="save-button" raised hidden$="[[!editMode]]" on-tap="addColumn">Ajouter</paper-button>
+                    </div>
+                    <paper-icon-button icon="create" raised on-tap="edit"
+                        hidden$="[[editMode]]"></paper-icon-button>
+                    <paper-icon-button icon="close" raised on-tap="close"
+                        hidden$="[[!editMode]]"></paper-icon-button>
+                </div>
+            </template>
+
+            <firebase-query
+                id="query"
+                path="/pages"
+                data="{{pagesData}}">
+            </firebase-query>
+            <firebase-query
+                id="query"
+                path="/categories"
+                data="{{categoriesData}}">
+            </firebase-query>
+            <firebase-query
+                id="query"
+                path="/articles"
+                data="{{articlesData}}">
+            </firebase-query>
+            <polymer-dragula direction="horizontal" fn-moves="[[fnMovesInner]]">
+                <div class="app-grid">
+                    <template is="dom-repeat" items={{columns}} 
+                        as=column index-as=index>
+                        <div class$="item [[editClass]]" column="[[column]]" >
+                          <ul>
+                            <div class="footer-cln-header section-header">
+                                <div>
+                                    <template is="dom-if" if={{editMode}}>
+                                        <paper-icon-button style="color: red;" icon="close" idx="[[index]]" on-tap="removeFooter"></paper-icon-button>
+                                    </template>
+                                    <span>[[column.title]]</span>
+                                </div>
+                                <template is="dom-if" if={{isAdmin}}>
+                                    <template is="dom-if" if={{editMode}}>
+                                        <paper-menu-button class="add-link-button" horizontal-align="right" ignore-select
+                                            opened="[[opened]]">
+                                            <paper-icon-button icon="add" class="dropdown-trigger"></paper-icon-button>
+                                            <!-- Pages -->
+                                            <paper-submenu class="dropdown-content">
+                                                <paper-item class="menu-trigger">Pages</paper-item>
+                                                <paper-menu class="menu-content sublist">
+                                                    <template is="dom-repeat" items={{pagesData}} 
+                                                        as=item index-as=itemIdx>
+                                                        <paper-item class="section-header">[[item.title]]<paper-button raised class="save-button" path="page" item="[[item]]" idx="[[index]]" on-tap="addToFooter">ajouter</paper-button></paper-item>
+                                                    </template>
+                                                </paper-menu>
+                                            </paper-submenu>
+
+                                            <!-- Categories -->
+                                            <paper-submenu class="dropdown-content">
+                                                <paper-item class="menu-trigger">Categories</paper-item>
+                                                <paper-menu class="menu-content sublist">
+                                                    <template is="dom-repeat" items={{categoriesData}} 
+                                                        as=item index-as=itemIdx>
+                                                        <paper-item class="section-header">[[item.name]] <paper-button raised class="save-button" item="[[item]]" idx="[[index]]" path="categorie" on-tap="addToFooter">ajouter</paper-button></paper-item>
+                                                    </template>
+                                                </paper-menu>
+                                            </paper-submenu>
+
+                                            <!-- Articles -->
+                                            <paper-submenu class="dropdown-content">
+                                                <paper-item class="menu-trigger">Articles</paper-item>
+                                                <paper-menu class="menu-content sublist">
+                                                    <template is="dom-repeat" items={{articlesData}} 
+                                                        as=item index-as=itemIdx>
+                                                        <paper-item class="section-header">[[item.title]] <paper-button raised class="save-button" item="[[item]]" idx="[[index]]" path="lire/[[item.category]]" on-tap="addToFooter">ajouter</paper-button></paper-item>
+                                                    </template>
+                                                </paper-menu>
+                                            </paper-submenu>
+                                        </paper-menu-button>
+                                    </template>
+                                </template>
+                            </div>
+                            <template is="dom-repeat" items={{column.items}} 
+                                as=item index-as=index>
+                                <li><a href="[[item.slug]]" title="[[item.title]]">[[item.title]]</a></li>
+                            </template>
+                          </ul>
+                        </div>
+                    </template>
+                </div>
+            </polymer-dragula>
+            <div class="end right">Ambition &amp; Réussite<iron-icon icon="copyright"></iron-icon>{{year}}</div>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'ar-footer',
+
+            properties: {
+                rights: {
+                    type: Object,
+                },
+
+                isAdmin: {
+                    type: Boolean,
+                    value: false,
+                },
+
+                editMode: {
+                    type: Boolean,
+                    value: false,
+                },
+
+                fnMovesInner: {
+                    type: Function,
+                    value: function () {
+                        return function (el, container, handle) {
+                            return handle.classList.contains('edit');
+                        }
+                    }
+                },
+
+                columns: {
+                    type: Array,
+                    value: function () {
+                        return [
+                            {title: "Projet", items: []},
+                            {title: "A propos", items: []},
+                            {title: "Retrouver-nous", items: []},
+                        ]
+                    }
+                },
+            },
+
+            observers: [
+                '_rightsChanged(rights.ts)',
+            ],
+
+            edit: function (e) {
+                this.editMode = true;
+                this.editClass = "edit";
+            },
+
+            close: function (e) {
+                this.editMode = false;
+                this.editClass = "";
+            },
+
+            addColumn: function (e) {
+                if (this.columnTitle) {
+                    this.push('columns', {
+                        title: this.columnTitle
+                    });
+                }
+
+                this.columnTitle = null;
+            },
+
+            addToFooter: function (e) {
+                var idx = e.target.idx;
+                var item = e.target.item;
+                var path = e.target.getAttribute('path');
+                this.push('columns.' + idx + '.items', {
+                    title: item.title,
+                    slug: '/' + path + '/' + item.slug,
+                });
+                this.set('opened', false);
+            },
+
+            removeFooter: function (e) {
+                var idx = e.currentTarget.idx;
+                this.splice('columns', idx, 1);
+            },
+
+            checkRights: function (role) {
+                if (this.rights[role]) {
+                    this.isAdmin = true;
+                }
+            },
+
+            _rightsChanged: function (ts) {
+                this.checkRights('administrators');
+            },
+
+            _ucfirst: function (string) {
+                if (string) {
+                    return string.charAt(0).toUpperCase() + string.slice(1);
+                }
+                return '';
+            }
+        });
+    </script>
+</dom-module>
