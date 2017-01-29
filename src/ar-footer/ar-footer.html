@@ -107,7 +107,7 @@
                 align-self: auto
             }
 
-            .item.edit {
+            .item.iedit {
                 padding: 3px;
                 min-height: 30vh;
                 background-color: #F1F1F1;
@@ -119,6 +119,59 @@
                 -moz-user-select: none !important;
                 -ms-user-select: none !important;
                 user-select: none !important;
+
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -webkit-flex-direction: row;
+                -ms-flex-direction: row;
+                flex-direction: row;
+                -webkit-flex-wrap: nowrap;
+                -ms-flex-wrap: nowrap;
+                flex-wrap: nowrap;
+                -webkit-justify-content: flex-start;
+                -ms-flex-pack: start;
+                justify-content: flex-start;
+                -webkit-align-content: stretch;
+                -ms-flex-line-pack: stretch;
+                align-content: stretch;
+                -webkit-align-items: stretch;
+                -ms-flex-align: stretch;
+                align-items: stretch;
+            }
+
+            .item .handle {
+                display: none;
+            }
+
+            .item.iedit .handle {
+                color: #ffffff;
+                background-color: #179bd7;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                -webkit-order: 0;
+                -ms-flex-order: 0;
+                order: 0;
+                -webkit-flex: 0 1 auto;
+                -ms-flex: 0 1 auto;
+                flex: 0 1 auto;
+                -webkit-align-self: center;
+                -ms-flex-item-align: center;
+                align-self: auto;
+            }
+
+            .item.iedit .content {
+                -webkit-order: 0;
+                -ms-flex-order: 0;
+                order: 0;
+                -webkit-flex: 1 1 auto;
+                -ms-flex: 1 1 auto;
+                flex: 1 1 auto;
+                -webkit-align-self: auto;
+                -ms-flex-item-align: auto;
+                align-self: auto;
             }
 
             .right {
@@ -129,6 +182,8 @@
                 line-height: 24px;
                 color: #757575;
             }
+
+
 
             .right iron-icon {
                 height: 18px;
@@ -143,15 +198,31 @@
                 color: #179BD7;
             }
 
-            .item ul, .item li {
+            ul, li {
                 list-style: none;
             }
 
-            .item li a {
+            li a {
                 color: #757575;
                 font-size: 12px;
                 text-decoration: none;
                 line-height: 24px;
+            }
+
+            li.iedit {
+                border: dotted 3px #179BD7;
+                margin-bottom: 8px;
+                -webkit-user-select: none !important;
+                -moz-user-select: none !important;
+                -ms-user-select: none !important;
+                user-select: none !important;
+            }
+
+            .edit, .inneredit {
+                cursor: move;
+                cursor: grab;
+                cursor: -moz-grab;
+                cursor: -webkit-grab;
             }
 
             .item li .github {
@@ -228,6 +299,10 @@
             path="/footer"
             data="{{footer}}">
         </firebase-query>
+        <firebase-document
+            path="/footer"
+            data="{{footerDoc}}">
+        </firebase-document>
 
         <firebase-query
             path="/pages"
@@ -261,78 +336,81 @@
                         hidden$="[[!editMode]]"></paper-icon-button>
                 </div>
             </template>
-            <polymer-dragula direction="horizontal" fn-moves="[[fnMovesInner]]" copy-sort-source>
+            <polymer-dragula direction="horizontal" fn-moves="[[fnMoves]]" copy-sort-source>
                 <div class="app-grid">
                     <template is="dom-repeat" items=[[footer]] 
                         as=column index-as=index sort="_sortFooter">
-                        <div class$="item [[editClass]]" column="[[column]]" idx="[[index]]">
-                            <div class="footer-cln-header section-header">
-                                <div>
-                                    <template is="dom-if" if={{editMode}}>
-                                        <paper-icon-button style="color: red;" icon="close" idx="[[index]]" on-tap="removeFooter"></paper-icon-button>
-                                    </template>
-                                    <template is="dom-if" if={{!editColumns}}>
-                                        <span>[[column.title]]</span>
-                                    </template>
-                                    <template is="dom-if" if={{editColumns}}>
-                                        <paper-input label="Nom de la colonne" value="{{column.title}}"></paper-input>
+                        <div class$="item i[[editClass]]" column="[[column]]" idx="[[index]]">
+                            <div class$="handle [[editClass]]"><iron-icon icon="more-vert"></iron-icon></div>
+                            <div class="content">
+                                <div class="footer-cln-header section-header">
+                                    <div>
+                                        <template is="dom-if" if={{editMode}}>
+                                            <paper-icon-button style="color: red;" icon="close" idx="[[index]]" on-tap="removeFooter"></paper-icon-button>
+                                        </template>
+                                        <template is="dom-if" if={{!editColumns}}>
+                                            <span>[[column.title]]</span>
+                                        </template>
+                                        <template is="dom-if" if={{editColumns}}>
+                                            <paper-input label="Nom de la colonne" value="{{column.title}}"></paper-input>
+                                        </template>
+                                    </div>
+                                    <template is="dom-if" if={{isAdmin}}>
+                                        <template is="dom-if" if={{editMode}}>
+                                            <div>
+                                                <paper-icon-button icon="create" raised on-tap="editCol"
+                                                    hidden$="[[editColumns]]"></paper-icon-button>
+                                                <paper-icon-button icon="close" raised on-tap="closeCol"
+                                                    hidden$="[[!editColumns]]"></paper-icon-button>
+                                                <paper-menu-button class="add-link-button" horizontal-align="right" ignore-select
+                                                    opened="[[opened]]">
+                                                    <paper-icon-button icon="add" class="dropdown-trigger"></paper-icon-button>
+                                                    <!-- Pages -->
+                                                    <paper-submenu class="dropdown-content">
+                                                        <paper-item class="menu-trigger">Pages</paper-item>
+                                                        <paper-menu class="menu-content sublist" attr-for-selected="none">
+                                                            <template is="dom-repeat" items={{pagesData}} 
+                                                                as=item index-as=itemIdx>
+                                                                <paper-item class="section-header-nw">[[item.title]]<paper-button raised class="save-button" path="page" item="[[item]]" column="[[column]]" on-tap="addToFooter">ajouter</paper-button></paper-item>
+                                                            </template>
+                                                        </paper-menu>
+                                                    </paper-submenu>
+
+                                                    <!-- Categories -->
+                                                    <paper-submenu class="dropdown-content">
+                                                        <paper-item class="menu-trigger">Categories</paper-item>
+                                                        <paper-menu class="menu-content sublist" attr-for-selected="none">
+                                                            <template is="dom-repeat" items={{categoriesData}} 
+                                                                as=item index-as=itemIdx>
+                                                                <paper-item class="section-header-nw">[[item.name]] <paper-button raised class="save-button" item="[[item]]" column="[[column]]" path="categorie" on-tap="addToFooter">ajouter</paper-button></paper-item>
+                                                            </template>
+                                                        </paper-menu>
+                                                    </paper-submenu>
+
+                                                    <!-- Articles -->
+                                                    <paper-submenu class="dropdown-content">
+                                                        <paper-item class="menu-trigger">Articles</paper-item>
+                                                        <paper-menu class="menu-content sublist" attr-for-selected="none">
+                                                            <template is="dom-repeat" items={{articlesData}} 
+                                                                as=item index-as=itemIdx>
+                                                                <paper-item class="section-header-nw">[[item.title]] <paper-button raised class="save-button" item="[[item]]" column="[[column]]" path$="lire/[[item.category]]" on-tap="addToFooter">ajouter</paper-button></paper-item>
+                                                            </template>
+                                                        </paper-menu>
+                                                    </paper-submenu>
+                                                </paper-menu-button>
+                                            </div>
+                                        </template>
                                     </template>
                                 </div>
-                                <template is="dom-if" if={{isAdmin}}>
-                                    <template is="dom-if" if={{editMode}}>
-                                        <div>
-                                            <paper-icon-button icon="create" raised on-tap="editCol"
-                                                hidden$="[[editColumns]]"></paper-icon-button>
-                                            <paper-icon-button icon="close" raised on-tap="closeCol"
-                                                hidden$="[[!editColumns]]"></paper-icon-button>
-                                            <paper-menu-button class="add-link-button" horizontal-align="right" ignore-select
-                                                opened="[[opened]]">
-                                                <paper-icon-button icon="add" class="dropdown-trigger"></paper-icon-button>
-                                                <!-- Pages -->
-                                                <paper-submenu class="dropdown-content">
-                                                    <paper-item class="menu-trigger">Pages</paper-item>
-                                                    <paper-menu class="menu-content sublist" attr-for-selected="none">
-                                                        <template is="dom-repeat" items={{pagesData}} 
-                                                            as=item index-as=itemIdx>
-                                                            <paper-item class="section-header-nw">[[item.title]]<paper-button raised class="save-button" path="page" item="[[item]]" column="[[column]]" on-tap="addToFooter">ajouter</paper-button></paper-item>
-                                                        </template>
-                                                    </paper-menu>
-                                                </paper-submenu>
-
-                                                <!-- Categories -->
-                                                <paper-submenu class="dropdown-content">
-                                                    <paper-item class="menu-trigger">Categories</paper-item>
-                                                    <paper-menu class="menu-content sublist" attr-for-selected="none">
-                                                        <template is="dom-repeat" items={{categoriesData}} 
-                                                            as=item index-as=itemIdx>
-                                                            <paper-item class="section-header-nw">[[item.name]] <paper-button raised class="save-button" item="[[item]]" column="[[column]]" path="categorie" on-tap="addToFooter">ajouter</paper-button></paper-item>
-                                                        </template>
-                                                    </paper-menu>
-                                                </paper-submenu>
-
-                                                <!-- Articles -->
-                                                <paper-submenu class="dropdown-content">
-                                                    <paper-item class="menu-trigger">Articles</paper-item>
-                                                    <paper-menu class="menu-content sublist" attr-for-selected="none">
-                                                        <template is="dom-repeat" items={{articlesData}} 
-                                                            as=item index-as=itemIdx>
-                                                            <paper-item class="section-header-nw">[[item.title]] <paper-button raised class="save-button" item="[[item]]" column="[[column]]" path$="lire/[[item.category]]" on-tap="addToFooter">ajouter</paper-button></paper-item>
-                                                        </template>
-                                                    </paper-menu>
-                                                </paper-submenu>
-                                            </paper-menu-button>
-                                        </div>
-                                    </template>
-                                </template>
+                                <polymer-dragula fn-moves="[[fnMovesInner]]">
+                                    <ul>
+                                        <template is="dom-repeat" items={{column.items}} 
+                                        as=item>
+                                            <li class$="i[[editClass]] inner[[editClass]]"><a href="[[item.slug]]" title="[[item.title]]">[[item.title]]</a></li>
+                                        </template>
+                                    </ul>
+                                </polymer-dragula>
                             </div>
-                            <polymer-dragula>
-                                <ul>
-                                    <template is="dom-repeat" items={{column.items}} 
-                                    as=item>
-                                        <li><a href="[[item.slug]]" title="[[item.title]]">[[item.title]]</a></li>
-                                    </template>
-                                </ul>
-                            </polymer-dragula>
                         </div>
                     </template>
                 </div>
@@ -369,11 +447,20 @@
                     value: 0
                 },
 
+                fnMoves: {
+                    type: Function,
+                    value: function () {
+                        return function (el, container, handle) {
+                            return handle.classList.contains('edit') || handle.parentNode.classList.contains('edit');
+                        }
+                    }
+                },
+
                 fnMovesInner: {
                     type: Function,
                     value: function () {
                         return function (el, container, handle) {
-                            return handle.classList.contains('edit');
+                            return handle.classList.contains('inneredit');
                         }
                     }
                 },
@@ -394,6 +481,7 @@
 
             close: function (e) {
                 this.editMode = false;
+                this.editColumns = false;
                 this.editClass = "";
             },
 
@@ -409,8 +497,11 @@
                 var _this = this;
                 var items = this.$$('.app-grid').querySelectorAll('.item');
                 for (var i = 0; i < items.length; i++) {
-                    this.set('footer.' + items[i].idx + '.position', i);
-                    this.set('footer.' + items[i].idx + '.title', items[i].column.title);
+                    var key = items[i].column.$key;
+                    this.$.footer.ref.child(key).update({
+                        title: items[i].column.title,
+                        position: i,
+                    });
                 }
             },
 
@@ -440,7 +531,7 @@
                             }]);
                         } else {
                             this.push('footer.' + i + '.items', {
-                                title: item.title,
+                                title: item.title || item.name,
                                 slug: '/' + path + '/' + item.slug,
                             });
                         }
