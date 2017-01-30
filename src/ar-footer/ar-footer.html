@@ -2,6 +2,9 @@
 <link rel="import" href="../../bower_components/polymer-dragula/polymer-dragula.html">
 <link rel="import" href="../../bower_components/polymer-dragula/polymer-dragula-styles.html">
 <link rel="import" href="../../bower_components/paper-menu/paper-submenu.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+
+<link rel="import" href="ar-footer-item.html">
 <link rel="import" href="../shared-styles.html">
 <dom-module id="ar-footer">
     <template>
@@ -183,8 +186,6 @@
                 color: #757575;
             }
 
-
-
             .right iron-icon {
                 height: 18px;
                 vertical-align: middle; 
@@ -223,16 +224,6 @@
                 cursor: grab;
                 cursor: -moz-grab;
                 cursor: -webkit-grab;
-            }
-
-            .item li .github {
-                vertical-align: middle;
-                width: 2em;
-                height: 2em;
-            }
-
-            .item li .social {
-                line-height: 24px;
             }
 
             .gu-mirror {
@@ -346,7 +337,7 @@
                                 <div class="footer-cln-header section-header">
                                     <div>
                                         <template is="dom-if" if={{editMode}}>
-                                            <paper-icon-button style="color: red;" icon="close" idx="[[index]]" on-tap="removeFooter"></paper-icon-button>
+                                            <paper-icon-button style="color: red;" icon="close" column="[[column]]" on-tap="removeFooter"></paper-icon-button>
                                         </template>
                                         <template is="dom-if" if={{!editColumns}}>
                                             <span>[[column.title]]</span>
@@ -402,14 +393,12 @@
                                         </template>
                                     </template>
                                 </div>
-                                <polymer-dragula fn-moves="[[fnMovesInner]]">
-                                    <ul>
-                                        <template is="dom-repeat" items={{column.items}} 
-                                        as=item>
-                                            <li class$="i[[editClass]] inner[[editClass]]"><a href="[[item.slug]]" title="[[item.title]]">[[item.title]]</a></li>
-                                        </template>
-                                    </ul>
-                                </polymer-dragula>
+                                <ar-footer-item
+                                    edit-mode="[[editMode]]"
+                                    edit-class="[[editClass]]"
+                                    column="[[column]]"
+                                    on-reorder="reorderItem"
+                                ></ar-footer-item>
                             </div>
                         </div>
                     </template>
@@ -417,6 +406,9 @@
             </polymer-dragula>
             <div class="end right">Ambition &amp; Réussite<iron-icon icon="copyright"></iron-icon>{{year}}</div>
         </div>
+        <paper-toast id="stateMessage" horizontal-align="left" always-on-top duration="5000" text="" on-iron-overlay-closed="_toastClosed">
+            <iron-icon id="toastIcon" class="validate-icon" icon$="[[stateMessageIcon]]"></iron-icon>
+        </paper-toast>
     </template>
     <script>
         Polymer({
@@ -447,6 +439,11 @@
                     value: 0
                 },
 
+                itemPostionCounter: {
+                    type: Number,
+                    value: 0
+                },
+
                 fnMoves: {
                     type: Function,
                     value: function () {
@@ -467,6 +464,49 @@
 
                 columns: {
                     type: Array
+                },
+
+                itemOrder: {
+                    type: Object,
+                    value: function () {
+                        return {};
+                    },
+                },
+
+                year: {
+                    type: String,
+                    value: function () {
+                        var d = new Date();
+                        return d.getFullYear();
+                    }
+                },
+
+                stateMessage: {
+                    type: Object,
+                    value: function () {
+                        return {
+                            'success': {
+                                icon: "check-circle",
+                                text: "Vos modifications ont été sauvegardées!",
+                            },
+                            'errorExist': {
+                                icon: "warning",
+                                text: "Erreur! Un article avec ce titre existe déjà!",
+                            },
+                            'errorEmpty': {
+                                icon: "warning",
+                                text: "Erreur! Vous devez donner un titre à votre article!",
+                            },
+                            'errorCategory': {
+                                icon: "warning",
+                                text: "Erreur! Vous devez attribuer une catégorie à votre article!",
+                            },
+                            'errorRight': {
+                                icon: "warning",
+                                text: "Erreur! Vous n'avez pas les droits!",
+                            },
+                        } 
+                    }
                 },
             },
 
@@ -498,11 +538,31 @@
                 var items = this.$$('.app-grid').querySelectorAll('.item');
                 for (var i = 0; i < items.length; i++) {
                     var key = items[i].column.$key;
+                    for (j in items[i].column.items) {
+                        if (this.itemOrder[key] && typeof this.itemOrder[key][j] != 'undefined') {
+                            this.$.footer.ref.child(key).child('items').child(j).update({
+                                position: this.itemOrder[key][j]
+                            });
+                        }
+                    }
+
                     this.$.footer.ref.child(key).update({
                         title: items[i].column.title,
                         position: i,
+                    }).catch(function (error) {
+                        _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
+                        _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
+                        _this.$.stateMessage.open();
                     });
                 }
+
+                this.stateMessageIcon = _this.stateMessage.success.icon;
+                this.$.stateMessage.text = _this.stateMessage.success.text;
+                this.$.stateMessage.open();
+            },
+
+            reorderItem: function (e, detail) {
+                this.itemOrder[detail.column] = detail.order;
             },
 
             addColumn: function (e) {
@@ -519,24 +579,14 @@
 
             addToFooter: function (e) {
                 var column = e.target.column;
+                var key = column.$key;
                 var item = e.target.item;
                 var path = e.target.getAttribute('path');
-
-                for (var i = 0; i < this.footer.length; i++) {
-                    if (this.footer[i].$key == column.$key) {
-                        if (!this.footer[i].items) {
-                            this.set('footer.' + i + '.items', [{
-                                title: item.title || item.name,
-                                slug: '/' + path + '/' + item.slug,
-                            }]);
-                        } else {
-                            this.push('footer.' + i + '.items', {
-                                title: item.title || item.name,
-                                slug: '/' + path + '/' + item.slug,
-                            });
-                        }
-                    }
-                }
+                this.$.footer.ref.child(key).child('items').push({
+                    title: item.title || item.name,
+                    slug: '/' + path + '/' + item.slug,
+                    position: column.items ? Object.keys(column.items).length : this.itemPostionCounter++
+                });
 
                 var menuBtn = Polymer.dom(this.root).querySelectorAll('.add-link-button');
                 for (var i = menuBtn.length - 1; i >= 0; i--) {
@@ -545,14 +595,20 @@
             },
 
             removeFooter: function (e) {
-                var idx = e.currentTarget.idx;
-                this.splice('columns', idx, 1);
+                var column = e.currentTarget.column;
+                var key = column.$key;
+                this.$.footer.ref.child(key).remove();
             },
 
             checkRights: function (role) {
                 if (this.rights[role]) {
                     this.isAdmin = true;
                 }
+            },
+
+            _toastClosed: function (e) {
+                this.close();
+                this.columnTitle = null;
             },
 
             _sortFooter: function (a, b) {
