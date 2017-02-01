@@ -42,25 +42,15 @@
 
         <page-title base-title="A&R" title="[[_ucfirst(staticPage.title)]]" direction="reversed"></page-title>
 
-            <firebase-query
-                path="/pages"
-                disabled$="{{!isAdmin}}"
-                order-by-child="slug"
-                equal-to$="[[page]]"
-                limit-to-first="1"
-                data="{{matchedPage}}"
-            ></firebase-query>
+        <firebase-query
+            path="/pages"
+            order-by-child="[[pageindex]]"
+            equal-to="[[page]][[pagefilter]]"
+            limit-to-first="1"
+            data="{{matchedPage}}"
+        ></firebase-query>
 
-            <firebase-query
-                path="/pages"
-                disabled$="{{isAdmin}}"
-                order-by-child="slug_published"
-                equal-to$="[[page]]~true"
-                limit-to-first="1"
-                data="{{matchedPage}}"
-            ></firebase-query>
-
-        <template is="dom-repeat" items={{matchedPage}} 
+        <template is="dom-repeat" items={{matchedPage}}
             as=item index-as=index filter="isHandler">
             <firebase-document
                 id="query"
@@ -91,6 +81,16 @@
                 subpage: {
                     type: String,
                     notify: true
+                },
+
+                pageindex: {
+                    type: String,
+                    value: "slug_published"
+                },
+                
+                pagefilter: {
+                    type: String,
+                    value: "~true"
                 },
 
                 uid: {
@@ -153,8 +153,12 @@
             checkRights: function (role) {
                 if (this.rights[role]) {
                     this.isAdmin = true;
+                    this.pageindex = "slug";
+                    this.pagefilter = "";
                 } else {
                     this.isAdmin = false;
+                    this.pageindex = "slug_published";
+                    this.pagefilter = "~true";
                 }
             },
 
