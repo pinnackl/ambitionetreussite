@@ -45,7 +45,11 @@
                     </div>
                 </span>
                 <paper-button raised on-tap="signalComment">Signaler</paper-button>
-                <!-- FIXME : Not quite sure about that one -->
+
+                <template is="dom-if" if={{isAuthor}}>
+                    <paper-icon-button icon="trash" on-tap="trashComment"></paper-icon-button>
+                </template>
+
                 <template is="dom-if" if="{{_computeEditRight(isAdmin, isAuthor)}}">
                     <template is="dom-if" if={{editMode}}>
                         <!-- FIXME : Proper styling -->
@@ -114,6 +118,13 @@
                 this.comment.published = false;
                 this.comment.signaled = true;
                 this.fire('signal-comment', {comment: this.comment});
+            },
+
+            trashComment: function (e) {
+                this.comment.published = false;
+                this.comment.signaled = false;
+                this.comment.trash = true;
+                this.fire('trash-comment', {comment: this.comment});
             },
 
             _computeEditRight: function (isAdmin, isAuthor) {

@@ -563,7 +563,8 @@
                                 is-admin="[[isAdmin]]"
                                 comment="[[comment]]"
                                 on-update-comment="updateComment"
-                                on-signal-comment="signalComment"></ar-comment-card>
+                                on-signal-comment="signalComment"
+                                on-trash-comment="trashComment"></ar-comment-card>
                         </template>
                     </div>
                 </div>
@@ -661,6 +662,10 @@
                             'signaled': {
                                 icon: "check-circle",
                                 text: "Ce commentaire à bien été signalé!",
+                            },
+                            'trash': {
+                                icon: "check-circle",
+                                text: "Ce commentaire à bien été supprimé!",
                             },
                         } 
                     }
@@ -809,10 +814,30 @@
                 });
             },
 
+            trashComment: function (e, detail) {
+                var comment = detail.comment;
+                var _this = this;
+                this.$.comments.ref.child(comment.$key).update({
+                    edited: Date.now(),
+                    published: comment.published,
+                    signaled: comment.signaled,
+                    trash: comment.trash,
+                    'published_signaled_trash': this._computeCombinedIndexPst(comment)
+                }).then(function (value) {
+                    _this.stateMessageIcon = _this.stateMessage.trash.icon;
+                    _this.$.stateMessage.text = _this.stateMessage.trash.text;
+                    _this.$.stateMessage.open();
+                    _this.isUpdate = true;
+                }).catch(function (error) {
+                    this.stateMessageIcon = this.stateMessage.errorRight.icon;
+                    this.$.stateMessage.text = this.stateMessage.errorRight.text;
+                    this.$.stateMessage.open();
+                });
+            },
+
             _titleChanged: function (title) {
                 this.slug = getSlug(title);
             },
-
 
             // article
             _computeCombinedIndexCpt: function () {
