@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 
 <link rel="import" href="../shared-styles.html">
 <link rel="import" href="../article-styles.html">
@@ -47,7 +48,7 @@
                 <paper-button raised on-tap="signalComment">Signaler</paper-button>
 
                 <template is="dom-if" if={{isAuthor}}>
-                    <paper-icon-button icon="trash" on-tap="trashComment"></paper-icon-button>
+                    <paper-icon-button icon="delete" on-tap="trashComment"></paper-icon-button>
                 </template>
 
                 <template is="dom-if" if="{{_computeEditRight(isAdmin, isAuthor)}}">
@@ -110,6 +111,10 @@
             },
 
             updateComment: function (e) {
+                if (this.comment.published) {
+                    this.comment.signaled = false;
+                    this.comment.trash = false;
+                }
                 this.fire('update-comment', {comment: this.comment});
                 this.close();
             },

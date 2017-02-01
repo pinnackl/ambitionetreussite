@@ -659,6 +659,10 @@
                                 icon: "warning",
                                 text: "Erreur! Vous n'avez pas les droits!",
                             },
+                            'comment': {
+                                icon: "check-circle",
+                                text: "Votre commentaire à bien été envoyé",
+                            },
                             'signaled': {
                                 icon: "check-circle",
                                 text: "Ce commentaire à bien été signalé!",
@@ -755,6 +759,7 @@
             addComment: function (e) {
                 // Check if there is a use logged
                 if (this.commentContent) {
+                    var _this = this;
                     this.$.comments.ref.push({
                         content: this.commentContent,
                         article: this.uid,
@@ -766,12 +771,18 @@
                         signaled: false,
                         trash: false,
                         'published_signaled_trash': "true~false~false"
-                    });
+                    }).then(function (value) {
+                        _this.stateMessageIcon = _this.stateMessage.success.icon;
+                        _this.$.stateMessage.text = _this.stateMessage.success.text;
+                        _this.$.stateMessage.open();
+                        _this.isUpdate = true; 
+                    })
                 }
             },
 
             updateComment: function (e, detail) {
                 var comment = detail.comment;
+                var _this = this;
                 if (comment.content) {
                     this.$.comments.ref.child(comment.$key).update({
                         content: comment.content,
@@ -786,9 +797,9 @@
                         _this.$.stateMessage.open();
                         _this.isUpdate = true;
                     }).catch(function (error) {
-                        this.stateMessageIcon = this.stateMessage.errorRight.icon;
-                        this.$.stateMessage.text = this.stateMessage.errorRight.text;
-                        this.$.stateMessage.open();
+                        _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
+                        _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
+                        _this.$.stateMessage.open();
                     });
                 }
             },
@@ -808,9 +819,9 @@
                     _this.$.stateMessage.open();
                     _this.isUpdate = true;
                 }).catch(function (error) {
-                    this.stateMessageIcon = this.stateMessage.errorRight.icon;
-                    this.$.stateMessage.text = this.stateMessage.errorRight.text;
-                    this.$.stateMessage.open();
+                    _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
+                    _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
+                    _this.$.stateMessage.open();
                 });
             },
 
