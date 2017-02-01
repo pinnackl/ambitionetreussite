@@ -11,8 +11,10 @@
 <link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
 <link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
 <link rel="import" href="../../bower_components/file-upload/file-upload.html" async>
+<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 
 <link rel="import" href="../imports/imports-speakingurl.html" async>
+<link rel="import" href="../ar-comment-card/ar-comment-card.html">
 <link rel="import" href="../shared-styles.html">
 <dom-module id="ar-article-page">
     <template>
@@ -310,6 +312,14 @@
                 color: #FFFFFF;
             }
 
+            .comment .commentEditor {
+                margin-bottom: 1em;
+            }
+
+            .comment .commentEditor .commentButton {
+                text-align: right;
+            }
+
             /* Mobil */
             @media (max-width: 799px) {
                 .post .material {
@@ -341,7 +351,7 @@
         <firebase-document
             id="users"
             path="/users/[[article.authorID]]"
-            data="{{user}}">
+            data="{{author}}">
         </firebase-document>
         <firebase-query
             id="categories"
@@ -353,6 +363,23 @@
             path="/tags"
             data="{{tags}}">
         </firebase-query>
+        <firebase-query
+            id="comments"
+            order-by-child="published_signaled_trash"
+            equal-to="[[published]]~[[signaled]]~[[trash]]"
+            path="/comments/[[uid]]"
+            data="{{comments}}"
+        ></firebase-query>
+
+        <firebase-auth
+            user="{{fireUser}}"
+            signed-in="{{signedIn}}">
+        </firebase-auth>
+        <!-- User data -->
+        <firebase-document
+            path="/users/[[fireUser.uid]]/basicInfo"
+            data="{{user}}">
+        </firebase-document>
         <div class="post">
             <div class="cover">
                 <iron-image
@@ -366,7 +393,7 @@
                         <div class="avatar-ctn">
                             <iron-image class="avatar"
                                 style="background-color: lightgray;"
-                                src="https://cdn.pinnackl.com/avatars/[[user.basicInfo.avatar]]"
+                                src="https://cdn.pinnackl.com/avatars/[[author.basicInfo.avatar]]"
                                 preload fade sizing="cover"></iron-image>
                         </div>
                         <div class="author-ctn">
@@ -380,7 +407,7 @@
                             <template is="dom-if" if={{date}}>
                                 <span class="circle">
                                     <iron-icon icon="question-answer"></iron-icon>
-                                    <paper-badge label="0"></paper-badge></span>
+                                    <paper-badge label="[[comments.length]]"></paper-badge></span>
                             </template>
                         </div>
                     </div>
@@ -503,23 +530,40 @@
                     </div>
                     <div class="comment">
                         <h2><span class="icon"><iron-icon icon="question-answer"></iron-icon></span>COMMENTAIRE</h2>
-                        <template is="dom-repeat" items={{article.comments}} 
-                            as=item index-as=index>
-                            <!-- FIXME : todo -->
-                            <paper-material elevation="1" class="material">
+                        <template is="dom-if" if={{isAdmin}}>
+                            <div class="section-header">
+                                <div class="sub-align"><span>Publiés</span>
+                                    <paper-toggle-button checked="{{published}}"></paper-toggle-button></div>
+                                <div class="sub-align"><span>Signalés</span>
+                                    <paper-toggle-button checked="{{signaled}}"></paper-toggle-button></div>
+                                <div class="sub-align"><span>Corbeille</span>
+                                    <paper-toggle-button checked="{{trash}}"></paper-toggle-button></div>
+                            </div>
+                        </template>
+                        <template is="dom-if" if={{signedIn}}>
+                            <h3>Commenter en tant que [[user.name]]</h3>
+                            <div class="commentEditor">
                                 <div class="author">
                                     <div class="avatar-ctn">
-                                        <iron-image class="avatar" src="http://placehold.it/64/ffffff/000000" preload sizing="cover" style="background-color: lightgray;"></iron-image>
+                                        <iron-image class="avatar"
+                                            style="background-color: lightgray;"
+                                            src="https://cdn.pinnackl.com/avatars/[[user.avatar]]"
+                                            preload fade sizing="cover"></iron-image>
                                     </div>
-                                    <div class="author-ctn">
-                                        <div class="autor-name">Par <a href="#" title="George R.R Martins">George R. R. Martin</a>,</div>
-                                        <div class="published">il y a 20 minutes</div>
-                                    </div>
+                                    <paper-textarea label="Rédiger un commentaire" value="{{commentContent}}"></paper-textarea>
                                 </div>
-                                <div class="comment">
-                                    Lorem ipsum Deserunt laboris do laboris cillum nostrud laborum Duis aute amet magna laborum dolore quis exercitation eu exercitation eiusmod fugiat nisi veniam velit consectetur dolor elit mollit sit occaecat non dolore enim laboris laboris est et consequat ut ad tempor ullamco ut consectetur dolore esse amet cupidatat est Duis mollit veniam sed commodo aliqua laboris sint tempor tempor ex laborum aliqua esse non culpa culpa Duis aliqua magna commodo culpa magna nostrud sunt in minim cillum nostrud culpa amet in sint dolore in nulla cupidatat amet Ut irure officia ut in amet eiusmod est in ea tempor anim id ut nisi deserunt nulla elit do anim sed eu et fugiat non deserunt sed incididunt reprehenderit nisi sint et culpa dolor incididunt ullamco culpa ex commodo ullamco ullamco nostrud proident quis qui laborum magna ex fugiat officia occaecat sint consectetur velit irure est dolore enim non magna in et amet officia pariatur labore incididunt dolore laborum exercitation labore et sint ad exercitation quis ex sunt fugiat occaecat laboris Excepteur dolore consectetur Excepteur velit non Duis est non do commodo velit cillum dolor Excepteur velit aute dolore mollit consectetur esse reprehenderit elit dolore Ut commodo cillum pariatur in Duis consectetur in incididunt amet Excepteur occaecat ex do exercitation ut non cupidatat nisi sed aliqua eu culpa aliquip cupidatat eiusmod sed nulla qui ullamco culpa Duis quis Ut cupidatat dolore tempor aliquip et esse in reprehenderit Duis aliquip sunt ad ut mollit id elit eu ut pariatur culpa consequat aliqua adipisicing non Duis culpa proident ullamco eiusmod culpa velit dolore ex do fugiat cupidatat aliqua sit.
+                                <div class="commentButton">
+                                    <paper-button class="save-button" raised on-tap="addComment">Envoyer</paper-button>
                                 </div>
-                            </paper-material>
+                            </div>
+                        </template>
+                        <template is="dom-repeat" items={{comments}} 
+                            as=comment index-as=index>
+                            <ar-comment-card
+                                is-admin="[[isAdmin]]"
+                                comment="[[comment]]"
+                                on-update-comment="updateComment"
+                                on-signal-comment="signalComment"></ar-comment-card>
                         </template>
                     </div>
                 </div>
@@ -547,8 +591,28 @@
                     value: null
                 },
 
+
+                published: {
+                    type: Boolean,
+                    value: true,
+                },
+
+                signaled: {
+                    type: Boolean,
+                    value: false,
+                },
+
+                trash: {
+                    type: Boolean,
+                    value: false
+                },
+
                 editData: {
                     type: Object,
+                },
+
+                commentContent: {
+                    type: String,
                 },
 
                 isAdmin: {
@@ -563,6 +627,12 @@
                 },
 
                 origin: String,
+
+                author: Object,
+
+                user: Object,
+
+                fireUser: Object,
 
                 stateMessage: {
                     type: Object,
@@ -587,6 +657,10 @@
                             'errorRight': {
                                 icon: "warning",
                                 text: "Erreur! Vous n'avez pas les droits!",
+                            },
+                            'signaled': {
+                                icon: "check-circle",
+                                text: "Ce commentaire à bien été signalé!",
                             },
                         } 
                     }
@@ -648,8 +722,6 @@
                 }
             },
 
-
-
             fileUploaded: function (e, detail) {
                 var parsedResponse = JSON.parse(detail.xhr.response);
                 this.set("article.cover", parsedResponse.name);
@@ -675,10 +747,74 @@
                 this.newCategory = null;
             },
 
+            addComment: function (e) {
+                // Check if there is a use logged
+                if (this.commentContent) {
+                    this.$.comments.ref.push({
+                        content: this.commentContent,
+                        article: this.uid,
+                        created: Date.now(),
+                        edited: Date.now(),
+                        author: this.user.name,
+                        authorID: this.fireUser.uid,
+                        published: true,
+                        signaled: false,
+                        trash: false,
+                        'published_signaled_trash': "true~false~false"
+                    });
+                }
+            },
+
+            updateComment: function (e, detail) {
+                var comment = detail.comment;
+                if (comment.content) {
+                    this.$.comments.ref.child(comment.$key).update({
+                        content: comment.content,
+                        edited: Date.now(),
+                        published: comment.published,
+                        signaled: comment.signaled,
+                        trash: comment.trash,
+                        'published_signaled_trash': this._computeCombinedIndexPst(comment)
+                    }).then(function (value) {
+                        _this.stateMessageIcon = _this.stateMessage.success.icon;
+                        _this.$.stateMessage.text = _this.stateMessage.success.text;
+                        _this.$.stateMessage.open();
+                        _this.isUpdate = true;
+                    }).catch(function (error) {
+                        this.stateMessageIcon = this.stateMessage.errorRight.icon;
+                        this.$.stateMessage.text = this.stateMessage.errorRight.text;
+                        this.$.stateMessage.open();
+                    });
+                }
+            },
+
+            signalComment: function (e, detail) {
+                var comment = detail.comment;
+                var _this = this;
+                this.$.comments.ref.child(comment.$key).update({
+                    edited: Date.now(),
+                    published: comment.published,
+                    signaled: comment.signaled,
+                    trash: comment.trash,
+                    'published_signaled_trash': this._computeCombinedIndexPst(comment)
+                }).then(function (value) {
+                    _this.stateMessageIcon = _this.stateMessage.signaled.icon;
+                    _this.$.stateMessage.text = _this.stateMessage.signaled.text;
+                    _this.$.stateMessage.open();
+                    _this.isUpdate = true;
+                }).catch(function (error) {
+                    this.stateMessageIcon = this.stateMessage.errorRight.icon;
+                    this.$.stateMessage.text = this.stateMessage.errorRight.text;
+                    this.$.stateMessage.open();
+                });
+            },
+
             _titleChanged: function (title) {
                 this.slug = getSlug(title);
             },
 
+
+            // article
             _computeCombinedIndexCpt: function () {
                 return this._lowerCase(this.article.category)
                     + "~" + this.article.published
@@ -693,6 +829,19 @@
             _computeCombinedIndexSp: function () {
                 return this.article.slug
                     + "~" + this.article.published;
+            },
+
+            // comment
+            _computeCombinedIndexPst: function (comment) {
+                return comment.published
+                    + "~" + comment.signaled
+                    + "~" + comment.trash;
+            },
+
+            _mirrorPublished: function (e) {
+            },
+
+            _mirrorSignaled: function (e) {
             },
 
             _categoriesChanged: function (categories) {
