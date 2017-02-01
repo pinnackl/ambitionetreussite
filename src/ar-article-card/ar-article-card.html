@@ -169,6 +169,13 @@
             path="/users/[[article.authorID]]"
             data="{{user}}">
         </firebase-document>
+        <firebase-query
+            id="comments"
+            order-by-child="published_signaled_trash"
+            equal-to="true~false~false"
+            path="/comments/[[article.$key]]"
+            data="{{comments}}"
+        ></firebase-query>
         <article class="item">
             <paper-material elevation="1">
                 <a class="article" href="/lire/[[_lowerCase(article.category)]]/[[article.slug]]" title="[[article.title]]">
@@ -209,7 +216,7 @@
                     <div class="social">
                         <span class="circle">
                             <iron-icon icon="question-answer"></iron-icon>
-                            <paper-badge label="0"></paper-badge></span>
+                            <paper-badge label="[[comments.length]]"></paper-badge></span>
                     </div>
                 </footer>
             </paper-material>
