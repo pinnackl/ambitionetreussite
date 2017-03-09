@@ -96,6 +96,7 @@
             data="{{data}}">
         </firebase-query>
 
+        <!-- FIXME : Bind filter to isAdmin property event -->
         <firebase-query
             path="/articles"
             disabled$="{{!isAdmin}}"
@@ -114,14 +115,11 @@
             data="{{matchedArticle}}"
         ></firebase-query>
 
-        <template is="dom-repeat" items={{matchedArticle}} 
-            as=item index-as=index filter="isHandler">
-            <firebase-document
-                id="query"
-                path="/articles/[[item.$key]]"
-                data="{{article}}">
-            </firebase-document>
-        </template>
+        <firebase-document
+            id="query"
+            path="/articles/[[match.0.$key]]"
+            data="{{article}}">
+        </firebase-document>
 
         <iron-pages selected="[[view]]" attr-for-selected="name" fallback-selection="spinner">
             <section name="list">
@@ -150,7 +148,9 @@
                 </div>
             </section>
             <section name="read">
-                <ar-article-page article="[[article]]" uid="[[uid]]" is-admin="{{isAdmin}}"></ar-article-page>
+                <template is="dom-if" if={{match.0.$key}}>
+                    <ar-article-page article="[[article]]" uid="[[match.0.$key]]" is-admin="{{isAdmin}}"></ar-article-page>
+                </template>
             </section>
             <section name="spinner">
                 <paper-spinner active alt="Chargement des contenu"></paper-spinner>
@@ -191,6 +191,10 @@
                     observer: '_contentChange'
                 },
 
+                comments: {
+                    type: Object,
+                },
+
                 isAdmin: {
                     type: Boolean,
                     value: false,
@@ -225,6 +229,7 @@
             observers: [
                 '_computeCombinedIndex(category, published, trash)',
                 '_loading(loading)',
+                '_matchChanged(matchedArticle.length)',
             ],
 
             ready: function () {
@@ -240,6 +245,12 @@
             _loading: function (loading) {
                 if (loading) {
                     this.view = "spinner";
+                }
+            },
+
+            _matchChanged: function (l) {
+                if (l) {
+                    this.match = this.matchedArticle;
                 }
             },
 
