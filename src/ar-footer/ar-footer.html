@@ -603,6 +603,8 @@
             checkRights: function (role) {
                 if (this.rights[role]) {
                     this.isAdmin = true;
+                } else {
+                    this.isAdmin = false;
                 }
             },
 
