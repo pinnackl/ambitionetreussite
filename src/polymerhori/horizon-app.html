@@ -1,0 +1,66 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="horizon.html">
+<dom-module id="horizon-app">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        
+    </template>
+    <script>
+        Polymer({
+            is: 'horizon-app',
+
+            properties: {
+            /**
+            * The name of your app. Optional.
+            */
+                name: {
+                    type: String,
+                    value: ''
+                },
+
+                /**
+                * Your API key. Optional.
+                */
+                apiKey: {
+                    type: String,
+                    value: ''
+                },
+
+                /**
+                * The domain name to authenticate with. Optional.
+                */
+                authDomain: {
+                    type: String,
+                    value: ''
+                },
+
+                /**
+                * The URL of your database.
+                */
+                databaseUrl: {
+                    type: String,
+                    value: ''
+                },
+
+                /**
+                * The Horizon app object constructed from the other fields of
+                * this element.
+                */
+                app: {
+                    type: Object,
+                    notify: true,
+                    computed: '__computeApp(name, apiKey, authDomain, databaseUrl)'
+                }
+            },
+
+            __computeApp: function(name, apiKey, authDomain, databaseUrl) {
+                const horizon = Horizon({host: 'localhost:8181'});
+                return horizon.app(name);
+            }
+        });
+    </script>
+</dom-module>

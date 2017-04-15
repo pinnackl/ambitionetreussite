@@ -45,7 +45,8 @@
     "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.2.1",
     "paper-fab-speed-dial": "Collaborne/paper-fab-speed-dial#^1.0.16",
     "paper-fab": "^1.2.1",
-    "polymer-dragula": "ergo/polymer-dragula#^0.1.1"
+    "polymer-dragula": "ergo/polymer-dragula#^0.1.1",
+    "horizon-client": "https://github.com/syu93/horizon-client"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
