@@ -1,4 +1,4 @@
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="/bower_components/polymer/polymer.html">
 <link rel="import" href="horizon.html">
 <dom-module id="horizon-app">
     <template>
@@ -56,10 +56,15 @@
                     computed: '__computeApp(name, apiKey, authDomain, databaseUrl)'
                 }
             },
-
             __computeApp: function(name, apiKey, authDomain, databaseUrl) {
-                const horizon = Horizon({host: 'localhost:8181'});
-                return horizon.app(name);
+                
+                var hz = new Horizon({
+                    host: 'localhost:8181',
+                    authType: 'unauthenticated'
+                });
+
+                window.horizon = hz;
+                return hz;
             }
         });
     </script>

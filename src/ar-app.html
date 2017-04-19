@@ -32,15 +32,18 @@
 <link rel="import" href="../bower_components/paper-fab-speed-dial/paper-fab-speed-dial-action.html">
 
 <!-- Custom element -->
-<link rel="import" href="ar-data/ar-data.html">
+<!--<link rel="import" href="ar-data/ar-data.html">-->
 <link rel="import" href="ar-logo/ar-logo.html">
 <link rel="import" href="ar-footer/ar-footer.html">
 
-<link rel="import" href="ar-firebase/ar-firebase.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="polymerhori/horizon-app.html">
+<link rel="import" href="ar-horizon/ar-horizon.html">
+<link rel="import" href="polymerhori/horizon-query.html">
+
+<!--<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">-->
 
 <link rel="import" href="ar-forms/ar-forms.html">
 
@@ -289,7 +292,9 @@
         --paper-fab-speed-dial-action-background: #3eb7e9;
       }
     </style>
-
+    <ar-horizon>
+      
+    </ar-horizon>
     <app-location route="{{route}}"></app-location>
     <app-route
         route="{{route}}"
