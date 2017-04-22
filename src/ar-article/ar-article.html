@@ -88,13 +88,13 @@
             }
         </style>
 
-        <firebase-query
+        <horizon-query
             id="query"
             path="/articles"
             order-by-child="category_published_trash"
             equal-to="[[combinedFilters]]"
             data="{{data}}">
-        </firebase-query>
+        </horizon-query>
 
         <!-- FIXME : Bind filter to isAdmin property event -->
         <firebase-query
