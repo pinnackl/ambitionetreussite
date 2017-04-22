@@ -1,0 +1,238 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../everest-firebase/everest-firebase.html">
+<dom-module id="everest-data">
+    <template>
+        <everest-firebase></everest-firebase>
+        <firebase-auth
+            id="auth"
+            user="{{user}}"
+            signed-in="{{signedIn}}"
+            on-error="_handleError"
+        >
+        </firebase-auth>
+
+        <firebase-document
+          path$="/users/[[user.uid]]/basicInfo"
+          data="{{userData}}">
+        </firebase-document>
+
+        <firebase-document
+          path="/editors"
+          data="{{editors}}">
+        </firebase-document>
+        <firebase-document
+          path="/moderators"
+          data="{{moderators}}">
+        </firebase-document>
+        <firebase-document
+          path="/administrators"
+          data="{{administrators}}">
+        </firebase-document>
+
+        <firebase-query
+            id="users"
+            path="/users/[[uid]]">
+        </firebase-query>
+
+        <paper-toast id="dataToast" horizontal-align="left" always-on-top duration="5000" text=""></paper-toast>
+    </template>
+    <script>
+        Polymer({
+            is: 'everest-data',
+
+            properties: {
+
+                name: {
+                },
+
+                online: {
+                },
+
+                signedIn: {
+                    observer: '_signedInChanged',
+                    notify: true
+                },
+
+                user: {
+                    type: Object,
+                    notify: true,
+                },
+
+                rights: {
+                    type: Object,
+                    value: function () {
+                        return {
+                            editors: false,
+                            moderators: false,
+                            administrators: false,
+                            viewers: true,
+                            ts: Date.now(),
+                        };
+                    },
+                    notify: true,
+                },
+
+                firebaseError: {
+                    type: String,
+                    notify: true,
+                },
+
+                firebaseSuccess: {
+                    type: Number,
+                    notify: true,
+                },
+
+                stateMessage: {
+                    type: Object,
+                    value: function () {
+                        return {
+                            'userLoggedIn': {
+                                icon: "check-circle",
+                                text: "Connected as ",
+                            },
+                            'userLoggedOut': {
+                                icon: "warning",
+                                text: "You are logged out!",
+                            },
+                            'registerSuccess': {
+                                icon: "warning",
+                                text: "User created successfully!",
+                            },
+                            'errorCategory': {
+                                icon: "warning",
+                                text: "Error! You must assign a category to your article!",
+                            },
+                            'errorRight': {
+                                icon: "warning",
+                                text: "Error! You do not have the rights!",
+                            },
+                        }
+                    }
+                },
+            },
+
+            observers: [
+                'checkRights(user.uid, editors, moderators, administrators)',
+                'userChange(user.*, userData.*)',
+            ],
+
+            listeners: {
+            },
+
+            /**
+             * Create user
+             * @param  {Object} userObject
+             * @return void
+             */
+            createUser: function (userObject) {
+                console.info("Register");
+                var _this = this;
+                var name = typeof userObject.name ? userObject.name : "";
+                var email = typeof userObject.email ? userObject.email : "";
+                var avatar = typeof userObject.avatar ? userObject.avatar : "";
+                var password = typeof userObject.password ? userObject.password : "";
+
+                this.set('firebaseError', "");
+
+                var auth = this.$.auth.createUserWithEmailAndPassword(email, password);
+
+                auth.then(function (e) {
+                    console.info('Registration succed', e.uid);
+                    _this.uid = e.uid;
+
+                    _this.$.users.ref.set({
+                        basicInfo: {
+                            name: name,
+                            avatar: avatar,
+                        },
+                        advancedInfo: {
+                            email: email
+                        }
+                    });
+
+                    _this.set('firebaseSuccess', Date.now());
+                    _this.$.dataToast.text = _this.stateMessage.registerSuccess.text;
+                }).catch(function (e) {
+                    console.error(e);
+                    _this.set('firebaseError', e);
+                });
+            },
+
+            /**
+             * [loginUser description]
+             * @param  {[type]} userObject [description]
+             * @return {[type]}            [description]
+             */
+            loginUser: function (userObject) {
+                console.info("Login");
+                var _this = this;
+                var email = typeof userObject.email ? userObject.email : "";
+                var password = typeof userObject.password ? userObject.password : "";
+
+                var auth = this.$.auth.signInWithEmailAndPassword(email, password);
+
+                auth.then(function (e) {
+                    _this.set('firebaseSuccess', Date.now());
+                }).catch(function (e) {
+                    console.error(e);
+                    _this.set('firebaseError', e);
+                });
+            },
+
+            /**
+             * [logoutUser description]
+             * @return {[type]} [description]
+             */
+            logoutUser: function () {
+                var auth = this.$.auth.signOut();
+                var _this = this;
+                auth.then(function (e) {
+                    _this.set('rights', {
+                        editors: false,
+                        moderators: false,
+                        administrators: false,
+                        viewers: true,
+                        ts: Date.now(),
+                    });
+                    _this.$.dataToast.text = _this.stateMessage.userLoggedOut.text;
+                    _this.$.dataToast.open();
+                }).catch(function (e) {
+                    console.error(e);
+                });
+            },
+
+            checkRights: function (uid, editors, moderators, administrators) {
+                if (uid || editors || moderators || administrators) {
+                    if (editors[uid]) {
+                        this.set('rights.editors', true);
+                    }
+                    if (moderators[uid]) {
+                        this.set('rights.moderators', true);
+                    }
+                    if (administrators[uid]) {
+                        this.set('rights.administrators', true);
+                    }
+                }
+                this.set('rights.ts', Date.now());
+            },
+
+            userChange: function (change, userDataChange) {
+                if (change.value && change.value.uid && userDataChange.value && userDataChange.value.name) {
+                    this.$.dataToast.text = this.stateMessage.userLoggedIn.text + this.userData.name + "!";
+                    this.$.dataToast.open();
+                }
+            },
+
+            _handleError: function (e) {
+                console.error(e);
+            },
+
+            _signedInChanged: function (signed) {
+                // console.info('The user is signed in: ', signed);
+            },
+
+        });
+    </script>
+</dom-module>

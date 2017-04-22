@@ -3,6 +3,6 @@ dist
 node_modules
 build
 config.json
-ar-firebase.html
+everest-firebase.html
 /vendor/
 ar.sublime-*

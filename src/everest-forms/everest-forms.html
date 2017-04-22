@@ -1,0 +1,176 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+
+<link rel="import" href="sign-in.html">
+<link rel="import" href="sign-up.html">
+<link rel="import" href="../shared-styles.html">
+<dom-module id="everest-forms">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+
+            paper-dialog {
+                width: 70vw;
+            }
+
+            h1 {
+                color: #3eb7e9;
+            }
+
+            .section-header-vertical {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            paper-material {
+                margin: 1em;
+            }
+
+            iron-image {
+                width: 100px;
+                height: 100px;
+            }
+        </style>
+        <paper-dialog id="formDialog">
+            <div class="section-header-vertical">
+                <h1>[[dialogTitle]]</h1>
+                <iron-image src="/images/logo-transparent.png" preload sizing="contain"></iron-image>
+            </div>
+            <paper-dialog-scrollable>
+                <iron-pages attr-for-selected="name" selected="[[name]]">
+                    <section name="signIn">
+                        <paper-material elevation="0">
+                            <sign-in id="signIn"></sign-in>
+                        </paper-material>
+                    </section>
+                    <section name="signUp">
+                        <paper-material elevation="0">
+                            <sign-up id="signUp"></sign-up>
+                        </paper-material>
+                    </section>
+                </iron-pages>
+            </paper-dialog-scrollable>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancel</paper-button>
+                <paper-button class="save-button" on-tap="_confirm">[[dialogConfirm]]</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+    <script>
+        Polymer({
+            is: 'everest-forms',
+
+            properties: {
+                name: {
+                    type: String,
+                    observer: "_nameChanged"
+                }
+            },
+
+            observers: [
+                'firebaseErrorChanged(firebaseError)',
+                'firebaseSuccessChanged(firebaseSuccess)',
+            ],
+
+            openDialog: function (name) {
+                this.name = name;
+                // List dialog meta
+                if (name == 'signIn') {
+                    this.dialogTitle = "CONNECTION";
+                    this.dialogConfirm = "LOG IN";
+                } else if (name == 'signUp') {
+                    this.dialogTitle = "REGISTRATION";
+                    this.dialogConfirm = "REGISTER";
+                } else {
+                    // ...
+                }
+
+                // Then open the dialog
+                this.$.formDialog.open();
+            },
+
+            firebaseErrorChanged: function (error) {
+                if (this.name == 'signUp') {
+                    switch(error.code) {
+                        case "auth/invalid-email":
+                            this.$.signUp.errorMsg = "The email address is not valid.";
+                            break;
+                        case "auth/weak-password":
+                            this.$.signUp.errorMsg = "The password must be at least 6 characters long.";
+                            break;
+                        case "auth/email-already-in-use":
+                            this.$.signUp.errorMsg = "The e-mail address is already used by another account.";
+                            break;
+                        default:
+                            // ...
+                    }
+                } else {
+                    switch(error.code) {
+                        case "auth/invalid-email":
+                            this.$.signIn.errorMsg = "The email address is not valid.";
+                            break;
+                        case "auth/weak-password":
+                            this.$.signIn.errorMsg = "The password must be at least 6 characters long.";
+                            break;
+                        case "auth/email-already-in-use":
+                            this.$.signIn.errorMsg = "The e-mail address is already used by another account.";
+                            break;
+                        case "auth/wrong-password":
+                            this.$.signIn.errorMsg = "The password is not valid or the user does not have a password.";
+                            break;
+                        default:
+                            // ...
+                    }
+                }
+            },
+
+            firebaseSuccessChanged: function (success) {
+                if (success) {
+                    this.$.formDialog.close();
+                    this.$.signUp.clear();
+                    this.$.signIn.clear();
+                }
+            },
+
+            _nameChanged: function (e) {
+                // console.log("Name changed, Reset forms");
+                this.$.signIn.clear();
+            },
+
+            _confirm: function (e) {
+                if (this.name == 'signIn' && this.$.signIn.user.email) {
+                    this.fire('everest-login-event', {user: this.$.signIn.user});
+                }
+
+                if (this.name == 'signUp'
+                    && this.$.signUp.user.name
+                    && this.$.signUp.user.email
+                    && this.$.signUp.user.password
+                    && this.$.signUp.user.passwordConfirm
+                    && this.$.signUp.user.password == this.$.signUp.user.passwordConfirm) {
+                    this.$.signUp.nameErr = !this.$.signUp.user.name;
+                    this.$.signUp.emailErr = !this.$.signUp.user.email;
+                    this.$.signUp.passwordErr = !this.$.signUp.user.password;
+                    this.$.signUp.passwordConfirmErr = !(this.$.signUp.user.password
+                                                        && this.$.signUp.user.passwordConfirm
+                                                        && this.$.signUp.user.password == this.$.signUp.user.passwordConfirm);
+                    this.fire('everest-signup-event', {user: this.$.signUp.user});
+                } else {
+                    this.$.signUp.nameErr = !this.$.signUp.user.name;
+                    this.$.signUp.emailErr = !this.$.signUp.user.email;
+                    this.$.signUp.passwordErr = !this.$.signUp.user.password;
+                    this.$.signUp.passwordConfirmErr = !(this.$.signUp.user.password
+                                                        && this.$.signUp.user.passwordConfirm
+                                                        && this.$.signUp.user.password == this.$.signUp.user.passwordConfirm);
+                }
+            }
+        });
+    </script>
+</dom-module>

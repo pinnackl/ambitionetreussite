@@ -1,0 +1,176 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
+
+<link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
+<link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
+
+<link rel="import" href="../imports/imports-speakingurl.html">
+<link rel="import" href="../shared-styles.html">
+<dom-module id="everest-page-create">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+
+            .material {
+                background-color: #ffffff;
+                color: #757575;
+            }
+
+            paper-input {
+                width: 30%
+            }
+        </style>
+
+        <firebase-query
+            id="pages"
+            path="/pages">
+        </firebase-query>
+        <firebase-document
+            path="/users/[[user.uid]]"
+            data="{{userData}}">
+        </firebase-document>
+        <div class="material">
+            <h1>Create a new page</h1>
+            <div class="section-header">
+                <paper-input label="Title of the page" value="{{title}}"></paper-input>
+                <div class="sub-align"><span>Publish</span>
+                    <paper-toggle-button checked="{{published}}"></paper-toggle-button></div>
+                <paper-button
+                    class="save-button"
+                    raised
+                    on-tap="create">
+                    <iron-icon icon="done"></iron-icon>Save</paper-button>
+            </div>
+            <polymer-tinymce id="editor"
+                base-url="[[origin]]/bower_components/tinymce"
+                hidden$="[[!editMode]]"
+                tinytoolbar="insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+                tinyplugins='["advlist autolink lists link image charmap print preview anchor","searchreplace visualblocks code fullscreen","insertdatetime media table contextmenu paste"]'
+            ></polymer-tinymce>
+        </div>
+      <paper-toast id="stateMessage" horizontal-align="left" always-on-top duration="5000" text="" on-iron-overlay-closed="_toastClosed">
+            <iron-icon id="toastIcon" class="validate-icon" icon$="[[stateMessageIcon]]"></iron-icon>
+        </paper-toast>
+    </template>
+    <script>
+        Polymer({
+            is: 'everest-page-create',
+
+            properties: {
+                title: {
+                    type: String,
+                    observer: '_titleChanged',
+                },
+                published: {
+                    type: Boolean,
+                },
+                content: {
+                    type: String,
+                },
+
+                user: {
+                    type: Object
+                },
+
+                userData: {
+                    type: Object
+                },
+
+                isAdmin: {
+                    type: Boolean,
+                    value: false,
+                },
+
+                editMode: {
+                    type: Boolean,
+                    value: true,
+                },
+
+                stateMessage: {
+                    type: Object,
+                    value: function () {
+                        return {
+                            'success': {
+                                icon: "check-circle",
+                                text: "Your changes have been saved!",
+                            },
+                            'errorExist': {
+                                icon: "warning",
+                                text: "Error! A page with this title already exists!",
+                            },
+                            'errorEmpty': {
+                                icon: "warning",
+                                text: "Error! You must give a title to your page!",
+                            },
+                            'errorCategory': {
+                                icon: "warning",
+                                text: "Error! You must assign a category to your article!",
+                            },
+                            'errorRight': {
+                                icon: "warning",
+                                text: "Error! You do not have the rights!",
+                            },
+                        }
+                    }
+                },
+            },
+
+            create: function (e) {
+                if (this.title && this.slug && this.$.editor.getContent() != "" && this.isAdmin) {
+                    var _this = this;
+                    this.$.pages.ref.push({
+                        title: this.title || "",
+                        slug: this.slug || "",
+                        content: this.$.editor.getContent() || "",
+                        created: Date.now(),
+                        updated: Date.now(),
+                        author: this.userData.basicInfo.name,
+                        authorID: this.user.uid,
+                        published: this.published,
+                        trash: false,
+                        'published_trash': this._computeCombinedIndexPt(),
+                        'slug_published': this._computeCombinedIndexSp(),
+                    }).then(function (value) {
+                        _this.stateMessageIcon = _this.stateMessage.success.icon;
+                        _this.$.stateMessage.text = _this.stateMessage.success.text;
+                        _this.$.stateMessage.open();
+                        _this.isUpdate = true;
+                    }).catch(function (error) {
+                        _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
+                        _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
+                        _this.$.stateMessage.open();
+                    });
+                } else {
+                    _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
+                    _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
+                    _this.$.stateMessage.open();
+                }
+            },
+
+            _titleChanged: function (title) {
+                this.slug = getSlug(title);
+            },
+
+            _toastClosed: function (e) {
+                if (this.isUpdate) {
+                    window.location.href = "/page/" + this.slug;
+                }
+            },
+
+            _computeCombinedIndexPt: function () {
+                return this.published
+                    + "~" + "false";
+            },
+
+            _computeCombinedIndexSp: function () {
+                return this.slug
+                    + "~" + this.published;
+            },
+        });
+    </script>
+</dom-module>

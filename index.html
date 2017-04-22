@@ -14,7 +14,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-  <title>A&R</title>
+  <title>Everest</title>
   <meta name="description" content="My App description">
 
   <link rel="icon" href="/images/favicon.ico">
@@ -27,12 +27,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="application-name" content="A&R">
+  <meta name="application-name" content="Everest">
 
   <!-- Add to homescreen for Safari on iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="A&R">
+  <meta name="apple-mobile-web-app-title" content="Everest">
 
   <!-- Homescreen icons -->
   <link rel="apple-touch-icon" href="/images/manifest/icon-48x48.png">
@@ -92,7 +92,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
   </script>
 
-  <link rel="import" href="/src/ar-app.html">
+  <link rel="import" href="/src/everest-app.html">
 
   <style>
 
@@ -137,24 +137,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <template is="dom-bind" id="app">
     <iron-pages id="pager" selected="[[mode]]" attr-for-selected="name" fallback-selection="app">
-      <!-- Conditionnal access to ar-nimmda, the admin section -->
-      <!-- <ar-nimda name="nimda" fire-user="{{fireUser}}" mode="{{mode}}"></ar-nimda> -->
+      <!-- Conditionnal access to everest-nimmda, the admin section -->
+      <!-- <everest-nimda name="nimda" fire-user="{{fireUser}}" mode="{{mode}}"></everest-nimda> -->
       <!-- Display or not the main app -->
-        <ar-app name="app" fire-user="{{fireUser}}" mode="{{mode}}"></ar-app>
+        <everest-app name="app" fire-user="{{fireUser}}" mode="{{mode}}"></everest-app>
     </iron-pages>
     <!-- Admin delete dialog -->
     <paper-dialog class="delete-dialog" modal>
       <div class="section-header">
-        <h2>Supprimer des données</h2>
+        <h2>Delete datas</h2>
         <paper-icon-button icon="close" dialog-dismiss></paper-icon-button>
       </div>
       <div class="content">
         <div class="important-message">
-          <iron-icon icon="report-problem"></iron-icon>Toutes les données supprimées seront  toujours accessible via la corbeil.</div>
+          <iron-icon icon="report-problem"></iron-icon>All deleted datas will be always accessible throught the trash.</div>
       </div>
       <div class="buttons">
-        <paper-button class="btn" dialog-dismiss>ANNULER</paper-button>
-        <paper-button class="btn delete-btn" dialog-confirm autofocus raised>SUPPRIMER</paper-button>
+        <paper-button class="btn" dialog-dismiss>CANCEL</paper-button>
+        <paper-button class="btn delete-btn" dialog-confirm autofocus raised>DELETE</paper-button>
       </div>
     </paper-dialog>
   </template>
@@ -184,7 +184,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         });
       });
-      
+
     })(document);
   </script>
 </body>

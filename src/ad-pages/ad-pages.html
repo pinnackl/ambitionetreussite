@@ -7,8 +7,8 @@
 <link rel="import" href="../imports/imports-moment.html">
 <link rel="import" href="../imports/imports-speakingurl.html">
 
-<!-- <link rel="import" href="../ar-editor/ar-editor.html" async> -->
-<link rel="import" href="../ar-grid/ar-grid.html">
+<!-- <link rel="import" href="../everest-editor/everest-editor.html" async> -->
+<link rel="import" href="../everest-grid/everest-grid.html">
 
 <dom-module id="ad-pages">
     <template>
@@ -104,13 +104,13 @@
                         <paper-button raised>AJOUTER</paper-button>
                     </a>
                 </div>
-                <ar-grid
+                <everest-grid
                     header="{{gridHeader}}"
                     data="[[pageList]]"
                     path="nimda/pages"
                     edit
                     delete
-                    on-delete-item="_triggerModal"></ar-grid>
+                    on-delete-item="_triggerModal"></everest-grid>
             </section>
             <section name="add">
                 <firebase-document
@@ -130,7 +130,7 @@
                         value=""></paper-input>
                     <paper-button raised on-tap="createPage">VALIDER</paper-button>
                 </div>
-                <ar-editor id="addEditor" elevation="3" value=""></ar-editor>
+                <everest-editor id="addEditor" elevation="3" value=""></everest-editor>
                 <div class="ctnBtn">
                     <paper-button raised on-tap="createPage">VALIDER</paper-button>
                 </div>
@@ -159,7 +159,7 @@
                     </span>
                 </div>
                 <div class="section-header">
-                    <paper-input 
+                    <paper-input
                         id="pageSlug"
                         label="URL de la page"
                         placeholder="[[document.slug]]"
@@ -167,7 +167,7 @@
                         <div prefix>[[origin]]/</div>
                     </paper-input>
                 </div>
-                <ar-editor id="editor" elevation="3" value="[[document.content]]"></ar-editor>
+                <everest-editor id="editor" elevation="3" value="[[document.content]]"></everest-editor>
                 <div class="ctnBtn">
                     <paper-button raised on-tap="updatePage">
                     <iron-icon icon="check"></iron-icon>VALIDER</paper-button>
@@ -282,19 +282,19 @@
                     trash: false
                 });
                 this.isUpdate = true;
-                this.$.stateMessage.text = "Vos modifications ont été sauvegardées!";
+                this.$.stateMessage.text = "Your changes have been saved!";
             },
 
             publishPage: function () {
                 this.set('document.published', !this.document.published);
                 this.isUpdate = true;
-                this.$.stateMessage.text = "Vos modifications ont été sauvegardées!";
+                this.$.stateMessage.text = "Your changes have been saved!";
             },
 
             deletePage: function (e, detail) {
                 this.set('document.trash', true);
                 this.isUpdate = true;
-                this.$.stateMessage.text = "Vos modifications ont été sauvegardées!";
+                this.$.stateMessage.text = "Your changes have been saved!";
             },
 
             _userChanged: function (user) {

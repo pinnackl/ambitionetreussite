@@ -1,6 +1,6 @@
-# Ambition & Réussite
+# Everest
 
-Web application of the Ambition & Réussite association.
+Web application of the Everest product.
 
 # Setup
 

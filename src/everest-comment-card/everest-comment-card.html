@@ -1,0 +1,149 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../article-styles.html">
+<!-- Import moment -->
+<dom-module id="everest-comment-card">
+    <template>
+        <style include="shared-styles article-styles">
+            :host {
+                display: block;
+            }
+
+            .author {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            #content.comment {
+                margin-top: 1em;
+            }
+
+            paper-toggle-button {
+                --paper-toggle-button-checked-button-color: #3eb7e9;
+            }
+        </style>
+        <firebase-auth
+            user="{{fireUser}}"
+            signed-in="{{signedIn}}">
+        </firebase-auth>
+        <firebase-document
+            path="/users/[[comment.authorID]]/basicInfo"
+            data="{{author}}"
+        ></firebase-document>
+        <paper-material elevation="1" class="material">
+            <div class="author">
+                <span>
+                    <div class="avatar-ctn">
+                        <iron-image class="avatar" src="https://cdn.pinnackl.com/avatars/[[author.avatar]]" preload sizing="cover" style="background-color: lightgray;"></iron-image>
+                    </div>
+                    <div class="author-ctn">
+                        <div class="autor-name">By <a href="/user/[[comment.authorID]]" title="[[author.name]]">[[author.name]]</a>,</div>
+                        <div class="published">[[date]]</div>
+                    </div>
+                </span>
+                <paper-button raised on-tap="signalComment">Report</paper-button>
+
+                <template is="dom-if" if={{isAuthor}}>
+                    <paper-icon-button icon="delete" on-tap="trashComment"></paper-icon-button>
+                </template>
+
+                <template is="dom-if" if="{{_computeEditRight(isAdmin, isAuthor)}}">
+                    <template is="dom-if" if={{editMode}}>
+                        <!-- FIXME : Proper styling -->
+                        <div style="display: inline-block;"><span>Publish</span>
+                            <paper-toggle-button checked="{{comment.published}}"></paper-toggle-button></div>
+                        <paper-button class="save-button" raised on-tap="updateComment">Save</paper-button>
+                    </template>
+                    <paper-icon-button icon="create" raised on-tap="edit"
+                        hidden$="[[editMode]]"></paper-icon-button>
+                    <paper-icon-button icon="close" raised on-tap="close"
+                        hidden$="[[!editMode]]"></paper-icon-button>
+                </template>
+            </div>
+            <template is="dom-if" if={{editMode}}>
+                <paper-textarea label="Edit the comment" value="{{comment.content}}"></paper-textarea>
+            </template>
+            <div id="content" class="comment"></div>
+        </paper-material>
+    </template>
+    <script>
+        Polymer({
+            is: 'everest-comment-card',
+
+            properties: {
+                isAdmin: {
+                    type: Boolean
+                },
+
+                editMode: {
+                    type: Boolean,
+                    value: false
+                },
+
+                comment: {
+                    type: Object
+                },
+
+                author: {
+                    type: Object
+                },
+
+                date: {
+                    type: String
+                }
+            },
+
+            observers: [
+                '_commentChanged(comment.content)',
+                '_isAuthor(fireUser.uid, comment.authorID)',
+            ],
+
+            edit: function (e) {
+                this.editMode = true;
+            },
+
+            close: function (e) {
+                this.editMode = false;
+            },
+
+            updateComment: function (e) {
+                if (this.comment.published) {
+                    this.comment.signaled = false;
+                    this.comment.trash = false;
+                }
+                this.fire('update-comment', {comment: this.comment});
+                this.close();
+            },
+
+            signalComment: function (e) {
+                this.comment.published = false;
+                this.comment.signaled = true;
+                this.fire('signal-comment', {comment: this.comment});
+            },
+
+            trashComment: function (e) {
+                this.comment.published = false;
+                this.comment.signaled = false;
+                this.comment.trash = true;
+                this.fire('trash-comment', {comment: this.comment});
+            },
+
+            _computeEditRight: function (isAdmin, isAuthor) {
+                return isAdmin || isAuthor;
+            },
+
+            _isAuthor: function (uid, authorID) {
+                this.isAuthor = uid == authorID;
+            },
+
+            _commentChanged: function (content) {
+                this.date = moment(this.comment.edited).fromNow();
+                this.$.content.innerHTML = content.replace(/(?:\r\n|\r|\n)/g, '<br>');;
+            }
+        });
+    </script>
+</dom-module>

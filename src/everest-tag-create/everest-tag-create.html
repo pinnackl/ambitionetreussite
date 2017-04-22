@@ -1,0 +1,146 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../imports/imports-speakingurl.html">
+<dom-module id="everest-tag-create">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+
+            .material {
+                background-color: #ffffff;
+            }
+
+            paper-input {
+                width: 30%
+            }
+
+            .tags {
+                height: 291px;
+                overflow-y: scroll;
+                background-color: #f7f7f7;
+            }
+
+            .tags li.tag {
+                list-style: none;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin: 3px 0;
+            }
+        </style>
+        <firebase-query
+            id="tags"
+            path="/tags"
+            data="{{tags}}">
+        </firebase-query>
+        <div class="material">
+            <h1>Manage tags</h1>
+            <div class="section-header">
+                <paper-input
+                    label="Create a new tag"
+                    value="{{newtag}}"></paper-input>
+                <paper-button raised class="save-button" on-tap="addtag">Add</paper-button>
+            </div>
+            <ul class="tags">
+                <template is="dom-repeat" items={{tags}}
+                    as=item index-as=index>
+                    <li class="tag">
+                        <span>[[item.name]]</span>
+                        <paper-button raised tag="[[item]]" class="delete-button" on-tap="removetag">Delete</paper-button>
+                    </li>
+                </template>
+            </ul>
+        </div>
+        <paper-toast id="stateMessage" horizontal-align="left" always-on-top duration="5000" text="" on-iron-overlay-closed="_toastClosed">
+            <iron-icon id="toastIcon" class="validate-icon" icon$="[[stateMessageIcon]]"></iron-icon>
+        </paper-toast>
+    </template>
+    <script>
+        Polymer({
+            is: 'everest-tag-create',
+
+            properties: {
+                tags: {
+                    type: Object
+                },
+
+                isAdmin: {
+                    type: Boolean,
+                    value: false,
+                },
+
+                stateMessage: {
+                    type: Object,
+                    value: function () {
+                        return {
+                            'success': {
+                                icon: "check-circle",
+                                text: "Your changes have been saved!",
+                            },
+                            'errorExist': {
+                                icon: "warning",
+                                text: "Error! A tag with this title already exists!",
+                            },
+                            'errorEmpty': {
+                                icon: "warning",
+                                text: "Error! You must give a title to your tag!",
+                            },
+                            'errortag': {
+                                icon: "warning",
+                                text: "Error! You must assign a category to your article!",
+                            },
+                            'errorRight': {
+                                icon: "warning",
+                                text: "Error! You do not have the rights!",
+                            },
+                        }
+                    }
+                }
+            },
+
+            addtag: function (e) {
+                if (this.newtag && this.isAdmin) {
+                    var _this = this;
+                    this.$.tags.ref.push({
+                        slug: getSlug(this.newtag),
+                        name: this.newtag
+                    }).then(function (value) {
+                        _this.stateMessageIcon = _this.stateMessage.success.icon;
+                        _this.$.stateMessage.text = _this.stateMessage.success.text;
+                        _this.$.stateMessage.open();
+                        _this.newtag = null;
+                    }).catch(function (error) {
+                        _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
+                        _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
+                        _this.$.stateMessage.open();
+                    });
+                }
+            },
+
+            removetag: function (e) {
+                var key = e.currentTarget.tag.$key;
+                var _this = this;
+                this.$.tags.ref.child(key).remove().then(
+                function (value) {
+                    console.log(value);
+                    _this.stateMessageIcon = _this.stateMessage.success.icon;
+                    _this.$.stateMessage.text = _this.stateMessage.success.text;
+                    _this.$.stateMessage.open();
+                }).catch(function (error) {
+                    _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
+                    _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
+                    _this.$.stateMessage.open();
+                });
+            },
+
+            _toastClosed: function (e) {
+            }
+        });
+    </script>
+</dom-module>

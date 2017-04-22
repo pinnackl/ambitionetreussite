@@ -1,0 +1,123 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymer-dragula/polymer-dragula.html">
+<link rel="import" href="../../bower_components/polymer-dragula/polymer-dragula-styles.html">
+
+<dom-module id="everest-footer-item">
+    <template>
+        <style include="polymer-dragula-styles">
+            :host {
+                display: inline;
+            }
+
+            ul, li {
+                list-style: none;
+            }
+
+            li a {
+                color: #757575;
+                font-size: 12px;
+                text-decoration: none;
+                line-height: 24px;
+            }
+
+            li.iedit {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border: dotted 3px #179BD7;
+                margin-bottom: 8px;
+                -webkit-user-select: none !important;
+                -moz-user-select: none !important;
+                -ms-user-select: none !important;
+                user-select: none !important;
+            }
+
+            .edit, .inneredit {
+                cursor: move;
+                cursor: grab;
+                cursor: -moz-grab;
+                cursor: -webkit-grab;
+            }
+        </style>
+        <firebase-query
+            id="footer"
+            path="/footer/[[column.$key]]/items"
+            data="{{footerItem}}">
+        </firebase-query>
+
+        <polymer-dragula fn-moves="[[fnMovesInner]]" on-dragula-drop="_drop">
+            <ul>
+                <template is="dom-repeat" items={{footerItem}} as=item sort="_sortFooter">
+                    <li class$="i[[editClass]] inner[[editClass]]" column="[[item]]">
+                        <a href="[[item.slug]]" title="[[item.title]]">[[item.title]]</a>
+                        <template is="dom-if" if={{editMode}}>
+                            <paper-icon-button style="color: red;" icon="close" column="[[item]]" on-tap="removeFooter"></paper-icon-button>
+                        </template>
+                    </li>
+                </template>
+            </ul>
+        </polymer-dragula>
+    </template>
+    <script>
+        Polymer({
+            is: 'everest-footer-item',
+
+            properties: {
+                column: {},
+
+                editClass: {
+
+                },
+
+                editMode: {
+                    type: Boolean
+                },
+
+                fnMovesInner: {
+                    type: Function,
+                    value: function () {
+                        return function (el, container, handle) {
+                            return handle.classList.contains('inneredit');
+                        }
+                    }
+                },
+            },
+
+            observers: [
+                "_itemsChanged(items)"
+            ],
+
+            removeFooter: function (e) {
+                var column = e.currentTarget.column;
+                var key = column.$key;
+                this.$.footer.ref.child(key).remove();
+            },
+
+            _drop: function (e, detail) {
+                var target = detail.target;
+                var items = target.querySelectorAll('li');
+                var key = this.column.$key;
+                var reorder = {};
+                for (var i = 0; i < items.length; i++) {
+                    reorder[items[i].column.$key] = i;
+                }
+
+                this.fire('reorder', {column: key, order: reorder});
+            },
+
+            _itemsChanged: function (items) {
+                console.log(items);
+            },
+
+            _sortFooter: function (a, b) {
+                if (a.position < b.position) {
+                    return -1;
+                }
+                if (a.position > b.position) {
+                    return 1;
+                }
+                return 0;
+            },
+        });
+    </script>
+</dom-module>

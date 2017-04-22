@@ -1,4 +1,4 @@
-<link rel="import" href="../ar-editor/ar-editor.html">
+<link rel="import" href="../everest-editor/everest-editor.html">
 <script src="../../bower_components/node-uuid/uuid.js"></script>
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
@@ -81,7 +81,7 @@
                                 <col name="delete"/>
                             </colgroup>
                             <tbody>
-                                <template is="dom-repeat" items={{postList}} 
+                                <template is="dom-repeat" items={{postList}}
                                     as=item index-as=index>
                                     <tr>
                                         <td>[[item.$key]]</td>
@@ -117,7 +117,7 @@
                         value=""></paper-input>
                     <paper-button raised on-tap="createPost">ADD</paper-button>
                 </div>
-                <ar-editor id="editor" elevation="3" value=""></ar-editor>
+                <everest-editor id="editor" elevation="3" value=""></everest-editor>
                 <div class="ctnBtn">
                     <paper-button raised on-tap="createPost">ADD</paper-button>
                 </div>
@@ -136,7 +136,7 @@
                         value="[[document.postName]]"></paper-input>
                     <paper-button raised on-tap="updatePost">SAVE</paper-button>
                 </div>
-                <ar-editor id="editor" elevation="3" value="[[document.content]]"></ar-editor>
+                <everest-editor id="editor" elevation="3" value="[[document.content]]"></everest-editor>
                 <div class="ctnBtn">
                     <paper-button raised on-tap="updatePost">SAVE</paper-button>
                 </div>

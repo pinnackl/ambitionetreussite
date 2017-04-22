@@ -1,0 +1,146 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+
+<link rel="import" href="../everest-article/everest-article.html">
+<dom-module id="everest-read">
+    <template>
+        <style>
+            :host {
+                display: block;
+                min-height: 100vh;
+                width: 100%;
+            }
+
+            iron-pages {
+                min-height: 100vh;
+            }
+
+            iron-pages section {
+                min-height: 50vh;
+            }
+
+            [name=spinner] {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        </style>
+        <app-route
+            route="{{route}}"
+            pattern="/:category/:article"
+            data="{{routeData}}"
+            tail="{{subroute}}"></app-route>
+        <iron-pages selected="[[view]]" attr-for-selected="name" fallback-selection="spinner">
+            <section name="read">
+                <everest-article view="read" category="[[category]]" slug="{{article}}" is-admin="{{isAdmin}}" loading="{{loading}}"></everest-article>
+            </section>
+            <section name="view404">
+                <h1>404</h1>
+            </section>
+            <section name="spinner">
+                <paper-spinner active alt="Loading content"></paper-spinner>
+            </section>
+        </iron-pages>
+    </template>
+    <script>
+        Polymer({
+            is: 'everest-read',
+
+            properties: {
+                route: {
+                    type: Object
+                },
+
+                subpage: {
+                    type: String,
+                    notify: true
+                },
+
+
+                view: {
+                    type: String,
+                    value: "spinner",
+                },
+
+                article: {
+                    notify: true
+                },
+
+                loading: {
+                    type: Boolean,
+                    value: false,
+                    observer: '_loadingChanged',
+                },
+
+                rights: {
+                    type: Object,
+                },
+
+                isAdmin: {
+                    type: Boolean,
+                    value: false,
+                },
+
+                lastRoute: {
+                    type: Object,
+                    value: function () {
+                        return {
+                            category: null,
+                            article: null,
+                        }
+                    }
+                },
+            },
+
+            observers: [
+                '_routePageChanged(routeData.*)',
+                '_rightsChanged(rights.ts)',
+            ],
+
+            _routePageChanged: function (change) {
+                this.subpage = change.value.category;
+                if (!change.value.category || !change.value.article) {
+                    this.view = "view404";
+                    return;
+                }
+
+                this.category = change.value.category;
+                this.article = change.value.article;
+
+                // Default view, waiting for everest-article to load
+                this.view = "spinner";
+
+                if (this.lastRoute.category != null && this.lastRoute.category == this.category && this.lastRoute.article != null && this.lastRoute.article == this.article) {
+                    this.view = "read";
+                    this.loading = false;
+                } else {
+                    this.loading = true;
+                }
+
+                // Set the last route object to know if the content have already been fetched
+                this.lastRoute.article = this.article;
+                this.lastRoute.category = this.category;
+
+            },
+
+            _loadingChanged: function (loading) {
+                // On loading end change view to read
+                if (this.category && this.article && !this.loading) {
+                    this.view = "read";
+                }
+            },
+
+            checkRights: function (role) {
+                if (this.rights[role]) {
+                    this.isAdmin = true;
+                } else {
+                    this.isAdmin = false;
+                }
+            },
+
+            _rightsChanged: function (ts) {
+                this.checkRights('editors');
+            },
+        });
+    </script>
+</dom-module>

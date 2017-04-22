@@ -1,9 +1,9 @@
 {
   "entrypoint": "index.html",
-  "shell": "src/ar-app.html",
+  "shell": "src/everest-app.html",
   "fragments": [
-    "src/ar-accueil/ar-accueil.html",
-    "src/ar-nimda/ar-nimda.html",
+    "src/everest-accueil/everest-accueil.html",
+    "src/everest-nimda/everest-nimda.html",
     "src/ad-pages/ad-pages.html"
   ],
   "sourceGlobs": [

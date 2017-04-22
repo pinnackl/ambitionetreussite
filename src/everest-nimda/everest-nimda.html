@@ -1,0 +1,260 @@
+<!-- Polymer element -->
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../../bower_components/page-title/page-title.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+
+<!-- Editor -->
+<link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
+<link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
+
+<!-- Custom element -->
+<link rel="import" href="../everest-data/everest-data.html">
+<link rel="import" href="../imports/imports-uuid.html">
+<link rel="import" href="../imports/imports-moment.html">
+<link rel="import" href="../imports/imports-speakingurl.html">
+
+<link rel="import" href="../everest-editor/everest-editor.html" async>
+<link rel="import" href="../everest-grid/everest-grid.html">
+
+<dom-module id="everest-nimda">
+    <template>
+
+        <style>
+
+            :host {
+                display: block;
+                --app-primary-color: #2E2E2E;
+                --app-secondary-color: black;
+            }
+
+            app-header {
+                background-color: var(--app-primary-color);
+                color: #fff;
+            }
+            app-header paper-icon-button {
+                --paper-icon-button-ink-color: white;
+            }
+
+            .drawer-list {
+                margin: 0 20px;
+            }
+            .drawer-list a {
+                display: block;
+                padding: 0 16px;
+                line-height: 40px;
+                text-decoration: none;
+                color: var(--app-secondary-color);
+            }
+            .drawer-list a.iron-selected {
+                color: black;
+                font-weight: bold;
+            }
+            .drawer-list a.subroute {
+                padding-left: 32px;
+            }
+
+            .admin-toolbar {
+                background-color: #292929;
+            }
+
+            .site-btn a {
+                color: #ffffff;
+                text-decoration: none;
+            }
+
+            [hidden] {
+            	display: none !important;
+            }
+        </style>
+
+        <app-location route="{{route}}"></app-location>
+        <app-route
+                route="{{route}}"
+                pattern="/nimda/:page"
+                data="{{routeData}}"
+                tail="{{subroute}}"></app-route>
+
+        <page-title base-title="Nimda" title="[[_ucFirst(page)]]" direction="reversed"></page-title>
+
+        <app-drawer-layout fullbleed force-narrow>
+
+            <!-- Drawer content -->
+            <app-drawer id="appDrawer" swipe-open>
+                <app-toolbar>
+                	<div class="title">Menu</div>
+                </app-toolbar>
+
+                <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                    <template is="dom-repeat" items={{menu}}
+                        as=item index-as=index>
+                        <a name="{{item.name}}" href$="/nimda/{{item.path}}">{{item.label}}</a>
+                    </template>
+                </iron-selector>
+            </app-drawer>
+
+            <!-- Main content -->
+            <app-header-layout>
+
+                <app-header condenses reveals effects="waterfall">
+                    <app-toolbar>
+                        <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+                        <div title>Administration - [[_ucFirst(page)]]</div>
+                        <div class="site-btn"><a href="/" title="RETOUR AU SITE">BACK TO WEBSITE</a></div>
+                    </app-toolbar>
+                </app-header>
+
+                <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
+                    <ad-dashboard name="dashboard"></ad-dashboard>
+                    <ad-pages route="{{subroute}}" fire-user="{{fireUser}}"name="pages"></ad-pages>
+                    <ad-posts route="{{subroute}}" name="posts"></ad-posts>
+                </iron-pages>
+
+            </app-header-layout>
+
+        </app-drawer-layout>
+
+    </template>
+    <script>
+
+        Polymer({
+
+            is: 'everest-nimda',
+
+            properties: {
+
+                path: {
+                    type: String,
+                    value: '/pages',
+                    observer: '_pathChanged'
+                },
+
+                user: {
+                    type: Object,
+                    observer: '_userChanged'
+                },
+
+                fireUser: {
+                  type: Object
+                },
+
+                pageData: {
+                    observer: '_pageDataChanged'
+                },
+
+                menuData: {
+                    observer: '_menuDataChanged'
+                },
+
+                page: {
+                    type: String,
+                    reflectToAttribute: true,
+                    observer: '_pageChanged'
+                },
+
+                menu: {
+                    type: Object,
+                    value: function () {
+                        return this._getMenu();
+                    }
+                }
+            },
+
+            observers: [
+                '_signedInChanged(signedIn)',
+                '_routePageChanged(routeData.page)',
+            ],
+
+            _signedInChanged: function (signed) {
+                console.info('The user is signed in: ', signed);
+            },
+
+            _pathChanged: function (e) {
+                console.info('The path have changed');
+            },
+
+            _pageDataChanged: function (e) {
+                // console.info('Firebase data changed');
+                // console.log(e);
+            },
+
+            _menuDataChanged: function (e) {
+                // console.info('Firebase menu data changed');
+                // console.log(e);
+            },
+
+            _getMenu: function () {
+                // FIXME : Grante access to this menu
+                return [
+                    {
+                        name: 'dashboard',
+                        path: 'dashboard',
+                        label: 'Dashboard'
+                    },
+                    {
+                        name: 'pages',
+                        path: 'pages/list',
+                        label: 'Pages'
+                    },
+                    {
+                        name: 'posts',
+                        path: 'posts/list',
+                        label: 'Posts'
+                    },
+                    {
+                        name: 'categories',
+                        path: 'categories',
+                        label: 'Categories'
+                    },
+                    {
+                        name: 'users',
+                        path: 'users',
+                        label: 'Users'
+                    },
+                    {
+                        name: 'menu',
+                        path: 'menu',
+                        label: 'Menu'
+                    },
+                ];
+            },
+
+            _routePageChanged: function(page) {
+                this.page = page || 'dashboard';
+
+                // Scroll to the top of the page on every *route* change. Use `Polymer.AppLayout.scroll`
+                // with `behavior: 'silent'` to disable header scroll effects during the scroll.
+                Polymer.AppLayout.scroll({ top: 0, behavior: 'silent' });
+
+                // Force the drawer to close
+                this.$.appDrawer.opened = false;
+            },
+
+            _pageChanged: function(page) {
+                // load page import on demand.
+                this.importHref(
+                    this.resolveUrl('/src/ad-' + page + '/ad-' + page + '.html'), null, null, true);
+            },
+
+            _ucFirst: function (string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+        });
+
+    </script>
+</dom-module>
