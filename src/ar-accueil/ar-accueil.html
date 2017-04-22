@@ -51,8 +51,7 @@
             <div class="app-grid">
                 <template is="dom-repeat" items=[[data]]
                     as=item index-as=index>
-                    <p>[[item.text]]</p>
-                    <!--<ar-article-card class="item" article="[[item]]"></ar-article-card>-->
+                    <ar-article-card class="item" article="[[item]]"></ar-article-card>
                 </template>
             </div>
             <template is="dom-if" if=[[!data.length]]>

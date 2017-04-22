@@ -130,6 +130,7 @@
                             aOrder.push(tmp);
                         }
 
+                        // find a way to make it dynamic
                         collection.findAll(aOrder[0], aOrder[1], aOrder[2]).watch().subscribe(data => {
                             this.set('data', data);
                         });
