@@ -39,6 +39,7 @@
 <link rel="import" href="polymerhori/horizon-app.html">
 <link rel="import" href="everest-horizon/everest-horizon.html">
 <link rel="import" href="polymerhori/horizon-query.html">
+<link rel="import" href="polymerhori/horizon-document.html">
 
 <!--<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
@@ -690,7 +691,10 @@
             label: 'article',
             opened: false,
             icon: "expand-more",
-            submenu: [{name:"Sciences", path: "/category/sciences"},],
+            submenu: [
+              {name:"Sciences", path: "/category/sciences"},
+              {name:"Music", path: "/category/music"}
+            ],
           },
           {
             name: 'page',

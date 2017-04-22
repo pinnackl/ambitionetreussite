@@ -88,13 +88,13 @@
             }
         </style>
 
-        <firebase-query
+        <horizon-query
             id="query"
             path="/articles"
             order-by-child="category_published_trash"
             equal-to="[[combinedFilters]]"
             data="{{data}}">
-        </firebase-query>
+        </horizon-query>
 
         <!-- FIXME : Bind filter to isAdmin property event -->
         <firebase-query
@@ -115,11 +115,11 @@
             data="{{matchedArticle}}"
         ></firebase-query>
 
-        <firebase-document
+        <horizon-document
             id="query"
             path="/articles/[[match.0.$key]]"
             data="{{article}}">
-        </firebase-document>
+        </horizon-document>
 
         <iron-pages selected="[[view]]" attr-for-selected="name" fallback-selection="spinner">
             <section name="list">

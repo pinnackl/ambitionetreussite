@@ -21,7 +21,7 @@
                  */
                 query: {
                     type: Object,
-                    computed: '__computeQuery(orderByChild, limitToFirst, limitToLast, startAt, endAt, equalTo, path)'
+                    computed: '__computeQuery(orderByChild, orderLimit, limit, startAt, endAt, equalTo, path)'
                 },
 
                 /**
@@ -70,26 +70,17 @@
                     value: null
                 },
 
-                /**
-                 * The maximum number of nodes to include in the query.
-                 *
-                 * Changing this value generates a new `query` limited to the first
-                 * number of children.
-                 */
-                limitToFirst: {
-                    type: Number,
-                    value: 0
+                orderLimit: {
+                    type: String,
+                    value: "id"
                 },
 
                 /**
                  * The maximum number of nodes to include in the query.
-                 *
-                 * Changing this value generates a new `query` limited to the last
-                 * number of children.
                  */
-                limitToLast: {
+                limit: {
                     type: Number,
-                    value: 0
+                    value: 10
                 },
 
                 /**
@@ -112,57 +103,34 @@
                 }
             },
 
-            __computeQuery: function(orderByChild, limitToFirst, limitToLast, startAt, endAt, equalTo, path) {
-                console.log("compute query");
+            __computeQuery: function(orderByChild, orderLimit, limit, startAt, endAt, equalTo, path) {
                 var horizon = window.horizon;
-                console.log(orderByChild, limitToFirst, limitToLast, startAt, endAt, equalTo, path);
+
                 if (path != null) {
                     var table = path.split('/').slice(1, 2).join('');
                     var collection = horizon(table);
-                    // to do : bind this
-                    collection.watch().subscribe(data => {
-                        this.set('data', data);
-                        console.log(this.data);
-                    });
-                    // collection.store({
-                    //     id: 2,
-                    //     url: "avatar_url",
-                    //     from: "bob",
-                    //     text: "Hello from Mars"
-                    // });
+
+                    if (orderByChild != null && equalTo != null) {
+                        var keys = orderByChild.split("_");
+                        var values = equalTo.split("~");
+                        var aOrder = [];
+
+                        for (var i = 0; i < keys.length; i++) {
+                            var tmp = {};
+                            tmp[keys[i]] = values[i];
+                            aOrder.push(tmp);
+                        }
+
+                        // find a way to make it dynamic
+                        collection.findAll(aOrder[0], aOrder[1], aOrder[2]).watch().subscribe(data => {
+                            this.set('data', data);
+                        });
+                    } else {
+                        collection.order(this.orderLimit).limit(this.limit).watch().subscribe(data => {
+                            this.set('data', data);
+                        });
+                    }
                 }
-
-                // if (ref == null) {
-                //     return null;
-                // }
-
-                // var query;
-
-                // if (orderByChild) {
-                //     query = ref.orderByChild(orderByChild);
-                // } else {
-                //     query = ref.orderByKey();
-                // }
-
-                // if (limitToFirst) {
-                //     query = query.limitToFirst(limitToFirst);
-                // } else if (limitToLast) {
-                //     query = query.limitToLast(limitToLast);
-                // }
-
-                // if (startAt) {
-                //     query = query.startAt(startAt);
-                // }
-
-                // if (endAt) {
-                //     query = query.endAt(endAt);
-                // }
-
-                // if (equalTo !== null) {
-                //     query = query.equalTo(equalTo);
-                // }
-
-                // return query;
             }
         });
     </script>

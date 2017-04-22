@@ -51,8 +51,8 @@
             <div class="app-grid">
                 <template is="dom-repeat" items=[[data]]
                     as=item index-as=index>
-                    <p>[[item.text]]</p>
-                    <!--<everest-article-card class="item" article="[[item]]"></everest-article-card>-->
+                    <!-- <p>[[item.text]]</p> -->
+                    <everest-article-card class="item" article="[[item]]"></everest-article-card>
                 </template>
             </div>
             <template is="dom-if" if=[[!data.length]]>
