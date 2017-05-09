@@ -1,0 +1,86 @@
+<link rel="import" href="../../bower_components/paper-swatch-picker/paper-swatch-picker.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<dom-module id="everest-swatch-picker">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      paper-icon-button {
+        color: var(--swatch-picker-bg);
+      }
+
+      .swatch-picker {
+        display: inline-block;
+        border-radius: 50%;
+        background-color: var(--swatch-picker-bg);
+      }
+
+       [hidden] {
+         display: none;
+       }
+    </style>
+    <div class="">
+      <div class="swatch-picker">
+        <paper-swatch-picker color="{{color}}" noink horizontal-align="right" on-color-picker-selected="_showDownload"></paper-swatch-picker>
+      </div>
+      <paper-icon-button id="dl" icon="cloud-download" on-tap="_download" hidden></paper-icon-button>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'everest-swatch-picker',
+
+      properties: {
+        color: {
+          type: String,
+          notify: true
+        },
+      },
+
+      observers: [
+        '_appPrimaryColorChanged(color)'
+      ],
+
+      _appPrimaryColorChanged: function (value) {
+        this.customStyle['--swatch-picker-bg'] = this.__invertColor(value);
+        this.updateStyles();
+      },
+
+      _showDownload: function (e) {
+        this.$.dl.hidden = false;
+      },
+
+      _download: function () {
+        this.fire('download-theme');
+      },
+
+      __invertColor: function (hex) {
+          if (hex.indexOf('#') === 0) {
+              hex = hex.slice(1);
+          }
+          // convert 3-digit hex to 6-digits.
+          if (hex.length === 3) {
+              hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+          }
+          if (hex.length !== 6) {
+              throw new Error('Invalid HEX color.');
+          }
+          // invert color components
+          var r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
+              g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
+              b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
+          // pad each with zeros and return
+          return '#' + this.__padZero(r) + this.__padZero(g) + this.__padZero(b);
+      },
+
+      __padZero: function (str, len) {
+          len = len || 2;
+          var zeros = new Array(len).join('0');
+          return (zeros + str).slice(-len);
+      }
+    });
+  </script>
+</dom-module>
