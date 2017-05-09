@@ -1,0 +1,179 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="horizon.html">
+
+<dom-module id="horizon-auth">
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+
+        is: 'horizon-auth',
+
+        behaviors: [],
+
+        properties: {
+          auth: {
+            type: Object,
+            // computed: '_computeAuth(app)',
+            observer: '__authChanged'
+          },
+
+          /**
+           * Default auth provider OAuth flow to use when attempting provider
+           * sign in. This property can remain undefined when attempting to sign
+           * in anonymously, using email and password, or when specifying a
+           * provider in the provider sign-in function calls (i.e.
+           * `signInWithPopup` and `signInWithRedirect`).
+           *
+           * Current accepted providers are:
+           *
+           * ```
+           * 'facebook'
+           * 'github'
+           * 'google'
+           * 'twitter'
+           * ```
+           */
+          provider: {
+            type: String,
+            notify: true
+          },
+
+          /**
+           * True if the client is authenticated, and false if the client is not
+           * authenticated.
+           */
+          signedIn: {
+            type: Boolean,
+            // computed: '_computeSignedIn(user)',
+            notify: true
+          },
+
+          /**
+           * The currently-authenticated user with user-related metadata. See
+           * the [`firebase.User`](https://firebase.google.com/docs/reference/js/firebase.User)
+           * documentation for the spec.
+           */
+          user: {
+            type: Object,
+            readOnly: true,
+            value: null,
+            notify: true
+          },
+
+          /**
+           * When true, login status can be determined by checking `user` property.
+           */
+          statusKnown: {
+            type: Boolean,
+            value: false,
+            notify: true,
+            readOnly: true,
+            reflectToAttribute: true
+          }
+
+        },
+
+        /**
+         * Authenticates a Firebase client using a new, temporary guest account.
+         *
+         * @return {Promise} Promise that handles success and failure.
+         */
+        /**
+         * Authenticates a Firebase client using an email / password combination.
+         *
+         * @param  {!String} email Email address corresponding to the user account.
+         * @param  {!String} password Password corresponding to the user account.
+         * @return {Promise} Promise that handles success and failure.
+         */
+        signInWithEmailAndPassword: function(email, password) {
+          return this._handleSignIn(this.auth.signInWithEmailAndPassword(email, password));
+        },
+
+        /**
+         * Creates a new user account using an email / password combination.
+         *
+         * @param  {!String} email Email address corresponding to the user account.
+         * @param  {!String} password Password corresponding to the user account.
+         * @return {Promise} Promise that handles success and failure.
+         */
+        createUserWithEmailAndPassword: function(email, password) {
+            var email = typeof email !== 'undefined' ? email : "";
+            var password = typeof password !== 'undefined' ? password : "";
+
+            return this.ajax({
+                'type': 'POST'
+            });
+        },
+
+        /**
+        * [ajax description]
+        * @param  {[type]} url
+        * @param  {[type]} type
+        * @param  {[type]} data
+        * @param  {[type]} callback
+        * @param  {[type]} failure
+        * @param  {[type]} headers
+        * @return {[type]}
+        */
+        ajax: function (param) {
+            var url         = typeof param.url !== 'undefined' ? param.url  : "/";
+            var type        = typeof param.type !== 'undefined' ? param.type  : "GET";
+            var data        = typeof param.data !== 'undefined' ? param.data  : {};
+            var headers     = typeof param.headers !== 'undefined' ? param.headers  : [{'header': 'X-Requested-With', 'value': 'XMLHttpRequest'}];
+            var user        = typeof param.user !== 'undefined' ? param.user  : null;
+            var password    = typeof param.password !== 'undefined' ? param.password  : null;
+            var async       = typeof param.async != 'undefined' ? param.async : true;
+
+            // Promise fallback
+            var callback    = typeof param.callback !== 'undefined' ? param.callback  : function () {};
+            var failure     = typeof param.failure !== 'undefined' ? param.failure  : function () {};
+
+            if ('Promise' in window) {
+                var promise = new Promise(function (resolve, reject) {
+                    
+                    // Init the XHR request object
+                    var request = new XMLHttpRequest();
+                    request.open(type, url, async, user, password);
+
+                    // Set custom headers
+                    for (var i = 0; i < headers.length; i++) {
+                        request.setRequestHeader(headers[i].header, headers[i].value);
+                    }
+
+                    if (data !== "" && type.toLowerCase() == "post") {
+                        // Set additional headers
+                        request.setRequestHeader("conte", "application/json");
+                        request.setRequestHeader("content-type", "application/json");
+
+                        data = JSON.stringify(data);
+                    }
+
+                    request.onload = function () {
+                        if (request.status >= 200 && request.status < 400) {
+                            // Success!
+                            resolve(request);
+                        } else {
+                            // Error!
+                            console.error("Error:", request.status);
+                            reject(request);
+                        }
+                    };
+
+                    request.onerror = function () {
+                        reject(this.statusText);
+                    };
+
+                    request.send(data);
+                });
+
+                return promise;
+
+            } else { console.warn("Promise are not supported on this browser!"); }
+        }
+        
+      });
+    })();
+  </script>
+</dom-module>
