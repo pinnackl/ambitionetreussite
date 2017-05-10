@@ -1,0 +1,131 @@
+<script>
+  window.PinnacklBehavior = window.PinnacklBehavior || {};
+  PinnacklBehavior.liveThemingBehavior = {
+    properties: {
+      // Opp : --app-primary-color-opp
+      appPrimaryColor: {
+        value: "#000000",
+        observer: '_appPrimaryColorChanged'
+      },
+
+      theme: {
+        value: function () {
+          return {};
+        }
+      }
+    },
+
+    listeners: {
+      'download-theme': '_download'
+    },
+
+    _download: function () {
+      var str = [];
+      for(var p in this.theme)
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(this.theme[p]));
+      var data = str.join("&");
+      this._ajax({
+        url: "http://localhost:3000/download",
+        type: "POST",
+        data: data,
+        headers: [{'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}]
+      }).then(function (e) {
+        // Create a new Blob object using the
+        //response data of the onload object
+        var blob = new Blob([e.response], {type: "octet/stream"});
+        //Create a link element, hide it, direct
+        //it towards the blob, and then 'click' it programatically
+        let a = document.createElement("a");
+        a.style = "display: none";
+        a.target = "_blank";
+        document.body.appendChild(a);
+        //Create a DOMString representing the blob
+        //and point the link element towards it
+        let url = window.URL.createObjectURL(blob);
+        a.href = url;
+        a.download = 'app-theme.html';
+        //programatically click the link to trigger the download
+        a.click();
+        //release the reference to the file by revoking the Object URL
+        window.URL.revokeObjectURL(url);
+        a.remove();
+      })
+      .catch(function (e) {});
+    },
+
+    /**
+     * The list of properties
+     */
+    _appPrimaryColorChanged: function (e) {
+      this.__updateCustomProperty('--app-primary-color', e);
+    },
+
+    __updateCustomProperty: function (name, value) {
+      this.customStyle[name] = value;
+      this.updateStyles();
+
+      if (this.theme) {
+        // FIXME : Find a way for percistancy in local
+        this.theme["#" + name] = value;
+      }
+    },
+
+    /**
+     * [ajax description]
+     * @param  {[type]} url
+     * @param  {[type]} type
+     * @param  {[type]} data
+     * @param  {[type]} callback
+     * @param  {[type]} failure
+     * @param  {[type]} headers
+     * @return {[type]}
+     */
+     _ajax: function (param) {
+        var url         = typeof param.url !== 'undefined' ? param.url  : "/";
+        var type        = typeof param.type !== 'undefined' ? param.type  : "GET";
+        var data        = typeof param.data !== 'undefined' ? param.data  : {};
+        var headers     = typeof param.headers !== 'undefined' ? param.headers  : [{'header': 'X-Requested-With', 'value': 'XMLHttpRequest'}];
+        var user        = typeof param.user !== 'undefined' ? param.user  : null;
+        var password    = typeof param.password !== 'undefined' ? param.password  : null;
+        var async       = typeof param.async != 'undefined' ? param.async : true;
+
+        // Promise fallback
+        var callback    = typeof param.callback !== 'undefined' ? param.callback  : function () {};
+        var failure     = typeof param.failure !== 'undefined' ? param.failure  : function () {};
+
+        if ('Promise' in window) {
+            var promise = new Promise(function (resolve, reject) {
+
+                // Init the XHR request object
+                var request = new XMLHttpRequest();
+                request.open(type, url, async, user, password);
+
+                // Set custom headers
+                for (var i = 0; i < headers.length; i++) {
+                    request.setRequestHeader(headers[i].header, headers[i].value);
+                }
+
+                request.onload = function () {
+                    if (request.status >= 200 && request.status < 400) {
+                        // Success!
+                        resolve(request);
+                    } else {
+                        // Error!
+                        console.error("Error:", request.status);
+                        reject(request);
+                      };
+                    }
+
+                request.onerror = function () {
+                    reject(this.statusText);
+                };
+
+                request.send(data);
+            });
+
+            return promise;
+
+        } else { console.warn("Promise are not supported on this browser!"); }
+    }
+  };
+</script>

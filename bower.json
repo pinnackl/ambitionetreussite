@@ -46,7 +46,8 @@
     "paper-fab-speed-dial": "Collaborne/paper-fab-speed-dial#^1.0.16",
     "paper-fab": "^1.2.1",
     "polymer-dragula": "ergo/polymer-dragula#^0.1.1",
-    "horizon-client": "git@github.com:syu93/horizon-client.git"
+    "horizon-client": "git@github.com:syu93/horizon-client.git",
+    "paper-swatch-picker": "PolymerElements/paper-swatch-picker#^1.0.2"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
