@@ -40,6 +40,7 @@
 <link rel="import" href="everest-horizon/everest-horizon.html">
 <link rel="import" href="polymerhori/horizon-query.html">
 <link rel="import" href="polymerhori/horizon-document.html">
+<link rel="import" href="polymerhori/horizon-auth.html">
 
 <!--<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
@@ -319,12 +320,12 @@
       firebase-success="{{fireSuccess}}">
     </everest-data>
 
-    <firebase-auth
+    <horizon-auth
       id="auth"
       user="{{fireUser}}"
       signed-in="{{signedIn}}"
       on-error="_handleError">
-    </firebase-auth>
+    </horizon-auth>
     <!-- User data -->
     <firebase-document
       path$="/users/[[fireUser.uid]]/basicInfo"

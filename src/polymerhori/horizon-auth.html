@@ -46,7 +46,7 @@
            */
           signedIn: {
             type: Boolean,
-            // computed: '_computeSignedIn(user)',
+            computed: '_computeSignedIn(user)',
             notify: true
           },
 
@@ -105,6 +105,10 @@
             return this.ajax({
                 'type': 'POST'
             });
+        },
+
+        _computeSignedIn: function(user) {
+          return !!user;
         },
 
         /**
