@@ -161,14 +161,6 @@
                         request.setRequestHeader(headers[i].header, headers[i].value);
                     }
 
-                    if (data !== "" && type.toLowerCase() == "post") {
-                        // Set additional headers
-                        request.setRequestHeader("conte", "application/json");
-                        request.setRequestHeader("content-type", "application/json");
-
-                        data = JSON.stringify(data);
-                    }
-
                     request.onload = function () {
                         if (request.status >= 200 && request.status < 400) {
                             // Success!
