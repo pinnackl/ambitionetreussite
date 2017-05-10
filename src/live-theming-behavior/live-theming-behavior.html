@@ -4,10 +4,16 @@
     properties: {
       // Opp : --app-primary-color-opp
       appPrimaryColor: {
-        value: "#000000",
+        value: "",
         observer: '_appPrimaryColorChanged'
       },
 
+      appHeaderBanner: {
+        value: "",
+        observer: "_appHeaderBannerChanged"
+      },
+
+      // Theme
       theme: {
         value: function () {
           return {};
@@ -60,13 +66,19 @@
       this.__updateCustomProperty('--app-primary-color', e);
     },
 
+    _appHeaderBannerChanged: function (e) {
+      console.log(e);
+      this.__updateCustomProperty('--app-header-banner', e);
+    },
+
+    // Live updates
     __updateCustomProperty: function (name, value) {
       this.customStyle[name] = value;
       this.updateStyles();
 
       if (this.theme) {
         // FIXME : Find a way for percistancy in local
-        this.theme["#" + name] = value;
+        this.theme["#" + name + "#"] = value;
       }
     },
 

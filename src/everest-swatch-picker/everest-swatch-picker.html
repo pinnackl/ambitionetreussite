@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/paper-swatch-picker/paper-swatch-picker.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 
+
 <dom-module id="everest-swatch-picker">
   <template>
     <style>
@@ -10,6 +11,17 @@
 
       paper-icon-button {
         color: var(--swatch-picker-bg);
+      }
+
+      file-upload {
+        --paper-button: {
+          border-radius: 100%;
+          width: 56px;
+          height: 56px;
+          min-width: 56px;
+          background: red;
+          margin-bottom: 0px!important;
+        }
       }
 
       .swatch-picker {
@@ -22,12 +34,26 @@
          display: none;
        }
     </style>
-    <div class="">
-      <div class="swatch-picker">
-        <paper-swatch-picker color="{{color}}" noink horizontal-align="right" on-color-picker-selected="_showDownload"></paper-swatch-picker>
+    <template is="dom-if" if="[[option]]">
+      <div class="color">
+        <div class="swatch-picker">
+          <paper-swatch-picker color="{{color}}" noink horizontal-align="right" on-color-picker-selected="_showDownload"></paper-swatch-picker>
+        </div>
+        <paper-icon-button id="dl" icon="file-download" on-tap="_download" hidden$=[[isVisible]]></paper-icon-button>
       </div>
-      <paper-icon-button id="dl" icon="cloud-download" on-tap="_download" hidden></paper-icon-button>
-    </div>
+    </template>
+    <template is="dom-if" if="[[!option]]">
+      <div class="image">
+        <file-upload
+            accept="image/*"
+            method="POST"
+            file-data-name="cover"
+            target="https://cdn.pinnackl.com/api/images/upload"
+            on-success="_imageChanged">
+            <iron-icon icon="cloud-upload"></iron-icon>
+          </file-upload>
+      </div>
+    </template>
   </template>
   <script>
     Polymer({
@@ -38,19 +64,51 @@
           type: String,
           notify: true
         },
+
+        image: {
+          type: String,
+          notify: true
+        },
+
+        mode: {
+          type: String
+        },
+
+        isVisible: {
+          type: Boolean,
+          value: true
+        }
       },
 
       observers: [
-        '_appPrimaryColorChanged(color)'
+        '_modeChanded(mode)',
+        '__colorChanged(color)'
       ],
 
-      _appPrimaryColorChanged: function (value) {
+      _imageChanged: function(e, detail) {
+        var cdn = "https://cdn.pinnackl.com/images/";
+        var parsedResponse = JSON.parse(detail.xhr.response);
+        var image = cdn + parsedResponse.name;
+        this.set('image', 'url("'+ image +'")');
+        console.log(this.image);
+      },
+
+      _modeChanded: function (mode) {
+        this.option = mode == "color" ? true : false;
+      },
+
+      // Only triggered when the swatch picker changed
+      __colorChanged: function (value) {
+        if (!value) {
+          value = "#fefefe";
+        }
         this.customStyle['--swatch-picker-bg'] = this.__invertColor(value);
         this.updateStyles();
       },
 
       _showDownload: function (e) {
-        this.$.dl.hidden = false;
+        //this.$.dl.hidden = false;
+        this.isVisible = false;
       },
 
       _download: function () {

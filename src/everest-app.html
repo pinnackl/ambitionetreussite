@@ -61,6 +61,8 @@
     <style include="app-grid-style">
       :host {
         display: block;
+
+        --app-header-banner: url('');
         --app-primary-color: #fff;
         /* FIXME: Move in theme file */
         --app-primary-color-opp: #fefefe;
@@ -79,13 +81,13 @@
       app-header {
         background-color: var(--app-primary-color);
         /*background-color: transparent;*/
-        background-image: url('');
+        background-image: var(--app-header-banner);
         background-size: cover;
         background-repeat: no-repeat;
         background-position: 0% 88%;
         --app-header-background-front-layer: {
           background-color: var(--app-primary-color);
-          background-image: url("");
+          background-image: var(--app-header-banner);
           /* Cross browser */
          -webkit-filter: blur(3px);
           -moz-filter: blur(3px);
@@ -436,7 +438,9 @@
                 </template>
               </paper-menu-button>
             </span>
-            <everest-swatch-picker color="{{appPrimaryColor}}"></everest-swatch-picker>
+            <!-- Color Picker && Banner Upload -->
+            <everest-swatch-picker mode="image" image="{{appHeaderBanner}}"></everest-swatch-picker>
+            <everest-swatch-picker mode="color" color="{{appPrimaryColor}}"></everest-swatch-picker>
           </app-toolbar>
           <!-- Lower toolbar -->
           <template is="dom-if" if={{_computeHidden(largeScreen)}}>
