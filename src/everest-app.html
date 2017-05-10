@@ -39,7 +39,7 @@
 
 
 <!-- Custom element -->
-<!--<link rel="import" href="everest-data/everest-data.html">-->
+<link rel="import" href="everest-data/everest-data.html">
 <link rel="import" href="everest-logo/everest-logo.html">
 <link rel="import" href="everest-footer/everest-footer.html">
 
@@ -608,6 +608,8 @@
       },
 
       login: function (e, detail) {
+        console.log(this.$.everestData);
+        console.log(detail.user);
         this.$.everestData.loginUser(detail.user);
       },
 

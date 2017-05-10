@@ -88,7 +88,17 @@
          * @return {Promise} Promise that handles success and failure.
          */
         signInWithEmailAndPassword: function(email, password) {
-          return this._handleSignIn(this.auth.signInWithEmailAndPassword(email, password));
+            var str = [];
+            str.push("username="+email);
+            str.push("password="+password);
+            var data = str.join("&");
+
+            return this.ajax({
+                url: 'http://localhost:8181/auth/login',
+                type: 'POST',
+                data: data,
+                headers: [{'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}]
+            });
         },
 
         /**
@@ -99,11 +109,16 @@
          * @return {Promise} Promise that handles success and failure.
          */
         createUserWithEmailAndPassword: function(email, password) {
-            var email = typeof email !== 'undefined' ? email : "";
-            var password = typeof password !== 'undefined' ? password : "";
+            var str = [];
+            str.push("username="+email);
+            str.push("password="+password);
+            var data = str.join("&");
 
             return this.ajax({
-                'type': 'POST'
+                url: 'http://localhost:8181/auth/signup',
+                type: 'POST',
+                data: data,
+                headers: [{'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}]
             });
         },
 
