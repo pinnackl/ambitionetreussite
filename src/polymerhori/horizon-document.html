@@ -25,6 +25,12 @@
    */
   Polymer({
     is: 'horizon-document',
+    properties: {
+        path: {
+            type: String,
+            value: null
+        }
+    },
 
     attached: function() {
       this.__refChanged(this.ref, this.ref);

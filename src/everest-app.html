@@ -339,15 +339,15 @@
 
     <horizon-auth
       id="auth"
-      user="{{fireUser}}"
+      user="{{horizonUser}}"
       signed-in="{{signedIn}}"
       on-error="_handleError">
     </horizon-auth>
     <!-- User data -->
-    <firebase-document
-      path$="/users/[[fireUser.uid]]/basicInfo"
+    <horizon-document
+      path$="/users/[[horizonUser.uid]]"
       data="{{user}}">
-    </firebase-document>
+    </horizon-document>
 
     <app-drawer-layout fullbleed force-narrow>
 
@@ -612,8 +612,6 @@
       },
 
       login: function (e, detail) {
-        console.log(this.$.everestData);
-        console.log(detail.user);
         this.$.everestData.loginUser(detail.user);
       },
 
