@@ -126,30 +126,38 @@
          * @return {Promise} Promise that handles success and failure.
          */
         createUserWithEmailAndPassword: function(email, password) {
+            var _this = this;
             var str = [];
             str.push("username="+email);
             str.push("password="+password);
             var data = str.join("&");
 
-            return this.ajax({
-                url: 'http://localhost:8181/auth/signup',
-                type: 'POST',
-                data: data,
-                headers: [{'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}]
-            }).then(function (e) {
-                var token = JSON.parse(e.response).token;
-                Horizon.clearAuthTokens();
-                window.horizon.disconnect();
-                
-                var hz = new Horizon({
-                    host: 'localhost:8181',
-                    authType: {
-                        storeLocally: true,
-                        token: token
-                    }
+            var promise = new Promise(function (resolve, reject) {
+                _this.ajax({
+                    url: 'http://localhost:8181/auth/signup',
+                    type: 'POST',
+                    data: data,
+                    headers: [{'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}]
+                }).then(function (e) {
+                    var token = JSON.parse(e.response).token;
+                    Horizon.clearAuthTokens();
+                    window.horizon.disconnect();
+                    
+                    var hz = new Horizon({
+                        host: 'localhost:8181',
+                        authType: {
+                            storeLocally: true,
+                            token: token
+                        }
+                    });
+                    window.horizon = hz;
+                    resolve();
+                }).catch(function (e) {
+                    reject(e);
                 });
-                window.horizon = hz;
             });
+
+            return promise;
         },
 
         _computeSignedIn: function(user) {

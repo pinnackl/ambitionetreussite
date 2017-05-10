@@ -337,13 +337,13 @@
 
     <horizon-auth
       id="auth"
-      user="{{fireUser}}"
+      user="{{horizonUser}}"
       signed-in="{{signedIn}}"
       on-error="_handleError">
     </horizon-auth>
     <!-- User data -->
     <horizon-document
-      path$="/users/[[fireUser.uid]]/basicInfo"
+      path$="/users/[[horizonUser.uid]]"
       data="{{user}}">
     </horizon-document>
 

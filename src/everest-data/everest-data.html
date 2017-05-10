@@ -13,10 +13,10 @@
         >
         </horizon-auth>
 
-        <firebase-document
-          path$="/users/[[user.uid]]/basicInfo"
+        <horizon-document
+          path$="/users/[[user.uid]]"
           data="{{userData}}">
-        </firebase-document>
+        </horizon-document>
 
         <firebase-document
           path="/editors"
@@ -74,12 +74,12 @@
                     notify: true,
                 },
 
-                firebaseError: {
+                horizonError: {
                     type: String,
                     notify: true,
                 },
 
-                firebaseSuccess: {
+                horizonSuccess: {
                     type: Number,
                     notify: true,
                 },
@@ -139,21 +139,25 @@
                 var auth = this.$.auth.createUserWithEmailAndPassword(email, password);
 
                 auth.then(function (e) {
-                    _this.$.alpinists.ref.store({
-                        basicInfo: {
-                            name: name,
-                            avatar: avatar,
+                    // _this.$.alpinists.ref.connect();
+                    const newRef = window.horizon('alpinists');
+                    newRef.store({
+                        name: name,
+                        avatar: avatar,
+                        email: email
+                    }).subscribe(
+                        (id) => {
+                            console.log("id value:", id)
+                            _this.uid = id;
                         },
-                        advancedInfo: {
-                            email: email
-                        }
-                    });
+                        (err) => console.error(err)
+                    );
 
-                    _this.set('firebaseSuccess', Date.now());
+                    _this.set('horizonSuccess', Date.now());
                     _this.$.dataToast.text = _this.stateMessage.registerSuccess.text;
                 }).catch(function (e) {
                     console.error(e);
-                    _this.set('firebaseError', e);
+                    _this.set('horizonError', e);
                 });
             },
 
@@ -172,10 +176,10 @@
 
                 auth.then(function (e) {
                     console.log(e);
-                    _this.set('firebaseSuccess', Date.now());
+                    _this.set('horizonSuccess', Date.now());
                 }).catch(function (e) {
                     console.error(e);
-                    _this.set('firebaseError', e);
+                    _this.set('horizonError', e);
                 });
             },
 

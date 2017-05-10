@@ -112,6 +112,7 @@
                 if (path != null) {
                     var table = path.split('/').slice(1, 2).join('');
                     this.ref = horizon(table);
+                    console.log(this.ref);
 
                     if (orderByChild != null && equalTo != null) {
                         var keys = orderByChild.split("_");
