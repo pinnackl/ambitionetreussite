@@ -98,6 +98,23 @@
                 type: 'POST',
                 data: data,
                 headers: [{'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}]
+            }).then(function (e) {
+                var token = JSON.parse(e.response).token;
+                Horizon.clearAuthTokens();
+                window.horizon.disconnect();
+
+                var hz = new Horizon({
+                    host: 'localhost:8181',
+                    authType: {
+                        storeLocally: true,
+                        token: token
+                    }
+                });
+                window.horizon = hz;
+                window.horizon.status(function(status) {
+                    console.log(status);
+                    window.horizon.currentUser().fetch().subscribe( (user) => console.log(JSON.stringify(user)) );
+                });
             });
         },
 
@@ -119,6 +136,19 @@
                 type: 'POST',
                 data: data,
                 headers: [{'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}]
+            }).then(function (e) {
+                var token = JSON.parse(e.response).token;
+                Horizon.clearAuthTokens();
+                window.horizon.disconnect();
+                
+                var hz = new Horizon({
+                    host: 'localhost:8181',
+                    authType: {
+                        storeLocally: true,
+                        token: token
+                    }
+                });
+                window.horizon = hz;
             });
         },
 

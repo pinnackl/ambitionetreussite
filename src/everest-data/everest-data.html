@@ -31,10 +31,10 @@
           data="{{administrators}}">
         </firebase-document>
 
-        <firebase-query
-            id="users"
-            path="/users/[[uid]]">
-        </firebase-query>
+        <horizon-query
+            id="alpinists"
+            path="/alpinists">
+        </horizon-query>
 
         <paper-toast id="dataToast" horizontal-align="left" always-on-top duration="5000" text=""></paper-toast>
     </template>
@@ -139,10 +139,7 @@
                 var auth = this.$.auth.createUserWithEmailAndPassword(email, password);
 
                 auth.then(function (e) {
-                    console.info('Registration succed', e.uid);
-                    _this.uid = e.uid;
-
-                    _this.$.users.ref.set({
+                    _this.$.alpinists.ref.store({
                         basicInfo: {
                             name: name,
                             avatar: avatar,
@@ -174,6 +171,7 @@
                 var auth = this.$.auth.signInWithEmailAndPassword(email, password);
 
                 auth.then(function (e) {
+                    console.log(e);
                     _this.set('firebaseSuccess', Date.now());
                 }).catch(function (e) {
                     console.error(e);

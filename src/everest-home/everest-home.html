@@ -40,13 +40,6 @@
             order-by-child="published_trash"
             data="{{data}}">
         </horizon-query>
-        <!--<firebase-query
-            id="query"
-            path="/articles"
-            order-by-child="published_trash"
-            equal-to="[[combinedFilters]]"
-            data="{{data}}">
-        </firebase-query>-->
         <div class="material">
             <div class="app-grid">
                 <template is="dom-repeat" items=[[data]]
@@ -71,22 +64,6 @@
             ready: function () {
                 this.combinedFilters = "true~false";
                 var _this = this;
-                
-                // this.$.query.ref.store({
-                //     title: "title",
-                //     slug: "",
-                //     content: "",
-                //     created: Date.now(),
-                //     updated: Date.now(),
-                //     author: "alexis",
-                //     authorID: 1,
-                //     published: true,
-                //     trash: false
-                // }).then(function (value) {
-                //     console.log(value);
-                // }).catch(function (error) {
-                //     console.log(error);
-                // });
             },
 
             loginUser: function (e) {
