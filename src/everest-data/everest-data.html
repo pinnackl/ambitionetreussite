@@ -13,10 +13,10 @@
         >
         </horizon-auth>
 
-        <horizon-document
-          path$="/users/[[user.uid]]"
+        <!--<horizon-document
+          path="/alpinists/[[uid]]"
           data="{{userData}}">
-        </horizon-document>
+        </horizon-document>-->
 
         <firebase-document
           path="/editors"
@@ -139,22 +139,25 @@
                 var auth = this.$.auth.createUserWithEmailAndPassword(email, password);
 
                 auth.then(function (e) {
-                    // _this.$.alpinists.ref.connect();
                     const newRef = window.horizon('alpinists');
                     newRef.store({
+                        id: _this.$.auth.user.id,
                         name: name,
                         avatar: avatar,
                         email: email
                     }).subscribe(
-                        (id) => {
-                            console.log("id value:", id)
-                            _this.uid = id;
+                        (data) => {
+                            console.log("id value:", data.id)
+                            _this.uid = data.id;
+                             _this.set('horizonSuccess', Date.now());
+                            _this.$.dataToast.text = _this.stateMessage.registerSuccess.text;
+                            _this.$.dataToast.open();
                         },
-                        (err) => console.error(err)
+                        (err) => {
+                            console.error(err);
+                            _this.set('horizonError', err);
+                        }
                     );
-
-                    _this.set('horizonSuccess', Date.now());
-                    _this.$.dataToast.text = _this.stateMessage.registerSuccess.text;
                 }).catch(function (e) {
                     console.error(e);
                     _this.set('horizonError', e);
@@ -175,7 +178,6 @@
                 var auth = this.$.auth.signInWithEmailAndPassword(email, password);
 
                 auth.then(function (e) {
-                    console.log(e);
                     _this.set('horizonSuccess', Date.now());
                 }).catch(function (e) {
                     console.error(e);

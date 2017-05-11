@@ -349,19 +349,13 @@
     <everest-data id="everestData"
       signed-in="{{signedIn}}"
       rights="{{rights}}"
-      firebase-error="{{fireError}}"
-      firebase-success="{{fireSuccess}}">
+      user="{{horizonUser}}"
+      horizon-error="{{horizonError}}"
+      horizon-success="{{horizonSucces}}">
     </everest-data>
 
-    <horizon-auth
-      id="auth"
-      user="{{horizonUser}}"
-      signed-in="{{signedIn}}"
-      on-error="_handleError">
-    </horizon-auth>
-    <!-- User data -->
     <horizon-document
-      path$="/users/[[horizonUser.uid]]"
+      path="/alpinists/[[horizonUser.id]]"
       data="{{user}}">
     </horizon-document>
 
@@ -476,7 +470,7 @@
                   </template>
                   <div class="dropdown-content user-menu user-card">
                     <div>
-                      <a href="/user/[[fireUser.uid]]" class="email user-menu user-card" title="Profile">
+                      <a href="/user/[[horizonUser.uid]]" class="email user-menu user-card" title="Profile">
                         <template is="dom-if" if={{user.avatar}}>
                           <span class="circle"><img src="https://cdn.pinnackl.com/avatars/[[user.avatar]]"></span>
                         </template>
@@ -550,7 +544,7 @@
           </div>
         </iron-pages>
         <everest-footer rights="[[rights]]" user="{{fireUser}}"></everest-footer>
-        <everest-forms id="formDialog" name="signIn" firebase-error="{{fireError}}" firebase-success="{{fireSuccess}}"></everest-forms>
+        <everest-forms id="formDialog" name="signIn" firebase-error="{{horizonError}}" firebase-success="{{horizonSucces}}"></everest-forms>
       </app-header-layout>
 
     </app-drawer-layout>
@@ -589,16 +583,16 @@
           reflectToAttribute: true
         },
 
-        fireUser: {
+        horizonUser: {
           type: Object,
           notify: true
         },
 
-        fireError: {
+        horizonError: {
           notify: true,
         },
 
-        fireSuccess: {
+        horizonSucces: {
           notify: true,
         },
 
@@ -638,7 +632,7 @@
 
       observers: [
         '_routePageChanged(routeData.page)',
-        '_displayUserName(largeScreen, signedIn)',
+        '_displayUserName(largeScreen, signedIn)'
       ],
 
       listeners: {
@@ -651,6 +645,16 @@
       ready: function (e) {
         // Listen for scrolling event
         var _this = this;
+        window.horizon.status(function(status) {
+            window.horizon.currentUser().fetch().subscribe( (user) => {
+              console.log(user);
+                _this.horizonUser = user;
+            },
+            (err) => {
+              console.log(err);
+            });
+        });
+
         document.addEventListener('scroll', function(e) {
           if (window.scrollY >= 63) {
             _this.condensed = "condensed";

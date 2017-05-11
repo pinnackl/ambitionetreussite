@@ -57,11 +57,24 @@
                 }
             },
             __computeApp: function(name, apiKey, authDomain, databaseUrl) {
-                
                 var hz = new Horizon({
                     host: 'localhost:8181',
-                    authType: 'unauthenticated'
+                    // authType: 'unauthenticated'
                 });
+
+                if(!hz.hasAuthToken()) {
+                    hz.disconnect();
+                    var hz = new Horizon({
+                        host: 'localhost:8181',
+                        authType: 'unauthenticated'
+                    });
+                } else {
+                    hz.disconnect();
+                    var hz = new Horizon({
+                        host: 'localhost:8181',
+                        authType: 'token'
+                    });
+                }
 
                 window.horizon = hz;
                 return hz;
