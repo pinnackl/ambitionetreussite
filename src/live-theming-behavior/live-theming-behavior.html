@@ -2,12 +2,23 @@
   window.PinnacklBehavior = window.PinnacklBehavior || {};
   PinnacklBehavior.liveThemingBehavior = {
     properties: {
-      // Opp : --app-primary-color-opp
+
       appPrimaryColor: {
-        value: "#000000",
+        value: "",
         observer: '_appPrimaryColorChanged'
       },
 
+      appHeaderBanner: {
+        value: "",
+        observer: "_appHeaderBannerChanged"
+      },
+
+      appIconColor: {
+        value: "",
+        observer: '_appIconColorChanged'
+      },
+
+      // Theme
       theme: {
         value: function () {
           return {};
@@ -18,6 +29,39 @@
     listeners: {
       'download-theme': '_download'
     },
+
+
+    /**
+     * The list of properties
+     */
+    _appPrimaryColorChanged: function (e) {
+      this.__updateCustomProperty('--app-primary-color', e);
+    },
+
+    _appIconColorChanged: function (e) {
+      this.__updateCustomProperty('--app-icon-color', e);
+    },
+
+    _appHeaderBannerChanged: function (e) {
+      console.log(e);
+      this.__updateCustomProperty('--app-header-banner', e);
+    },
+
+
+
+
+
+    // Live updates
+    __updateCustomProperty: function (name, value) {
+      this.customStyle[name] = value;
+      this.updateStyles();
+
+      if (this.theme) {
+        // FIXME : Find a way for percistancy in local
+        this.theme["#" + name + "#"] = value;
+      }
+    },
+
 
     _download: function () {
       var str = [];
@@ -51,23 +95,6 @@
         a.remove();
       })
       .catch(function (e) {});
-    },
-
-    /**
-     * The list of properties
-     */
-    _appPrimaryColorChanged: function (e) {
-      this.__updateCustomProperty('--app-primary-color', e);
-    },
-
-    __updateCustomProperty: function (name, value) {
-      this.customStyle[name] = value;
-      this.updateStyles();
-
-      if (this.theme) {
-        // FIXME : Find a way for percistancy in local
-        this.theme["#" + name] = value;
-      }
     },
 
     /**

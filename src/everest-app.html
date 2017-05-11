@@ -61,31 +61,35 @@
     <style include="app-grid-style">
       :host {
         display: block;
+
+        --app-header-banner: url('');
         --app-primary-color: #fff;
+        --app-icon-color: #3eb7e9;
         /* FIXME: Move in theme file */
-        --app-primary-color-opp: #fefefe;
+        /*--app-primary-color-opp: #fefefe;*/
         --app-secondary-color: black;
 
         --app-grid-columns: 3;
         --app-grid-item-height: 30vh;
         --app-grid-expandible-item-columns: 3;
+
       }
 
-      .swatch-picker {
+      /*.swatch-picker {
         border-radius: 50%;
         background-color: var(--app-primary-color-opp)
-      }
+      }*/
 
       app-header {
         background-color: var(--app-primary-color);
         /*background-color: transparent;*/
-        background-image: url('');
+        background-image: var(--app-header-banner);
         background-size: cover;
         background-repeat: no-repeat;
         background-position: 0% 88%;
         --app-header-background-front-layer: {
           background-color: var(--app-primary-color);
-          background-image: url("");
+          background-image: var(--app-header-banner);
           /* Cross browser */
          -webkit-filter: blur(3px);
           -moz-filter: blur(3px);
@@ -185,7 +189,7 @@
       }
 
       .profileBtn {
-        color: #3eb7e9;
+        color: var(--app-icon-color);
         position: relative;
         -webkit-transition: all .2s ease;
         -moz-transition: all .2s ease;
@@ -308,6 +312,16 @@
       paper-fab-speed-dial-action {
         --paper-fab-speed-dial-action-background: #3eb7e9;
       }
+
+      .paper-tabs-admin {
+        width: 100%;
+      }
+
+      #drawerAdmin {
+        --app-drawer-width: 350px;
+      }
+
+
     </style>
     <everest-horizon>
 
@@ -364,6 +378,31 @@
             </template>
           </template>
         </iron-selector>
+      </app-drawer>
+
+      <!-- Drawer Admin Content -->
+      <app-drawer id="drawerAdmin" align="end" swipe-open>
+        <app-toolbar>
+          <paper-tabs class="paper-tabs-admin" selected="{{selected}}">
+            <paper-tab>Theme</paper-tab>
+            <paper-tab>Admin</paper-tab>
+          </paper-tabs>
+        </app-toolbar>
+
+        <iron-pages selected="{{selected}}" fallback-selection="0">
+          <div>
+            <!-- Banner Upload -->
+            <everest-swatch-picker mode="image" image="{{appHeaderBanner}}"></everest-swatch-picker>
+            <!-- Color Picker -->
+            <everest-swatch-picker mode="color" color="{{appPrimaryColor}}"></everest-swatch-picker>
+
+            <everest-swatch-picker mode="color" color="{{appIconColor}}"></everest-swatch-picker>
+          </div>
+
+          <div>
+            Admin Page
+          </div>
+        </iron-pages>
       </app-drawer>
 
       <!-- Main content -->
@@ -430,7 +469,10 @@
                 </template>
               </paper-menu-button>
             </span>
-            <everest-swatch-picker color="{{appPrimaryColor}}"></everest-swatch-picker>
+
+            <!-- Admin Drawer Button -->
+            <paper-icon-button class="profileBtn" icon="settings-applications" on-tap="_toggleDrawer"></paper-icon-button>
+
           </app-toolbar>
           <!-- Lower toolbar -->
           <template is="dom-if" if={{_computeHidden(largeScreen)}}>
@@ -728,7 +770,12 @@
 
       _ucFirst: function (string) {
           return string.charAt(0).toUpperCase() + string.slice(1);
-      }
+      },
+
+      _toggleDrawer: function () {
+        console.log(this.$.drawerAdmin);
+        this.$.drawerAdmin.toggle();
+      },
 
     });
 
