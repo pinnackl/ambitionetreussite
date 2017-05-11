@@ -29,6 +29,24 @@
         path: {
             type: String,
             value: null
+        },
+        ref: {
+            type: Object
+        },
+        query: {
+            type: Object,
+            computed: '__computeQuery(path)'
+        },
+        column: {
+          type: String,
+          value: null
+        },
+        data: {
+            type: Object,
+            notify: true,
+            value: function() {
+                return [];
+            }
         }
     },
 
@@ -168,9 +186,26 @@
     },
 
     __refChanged: function(ref, oldRef) {
-      console.log("refChanged");
-      console.log(this.path);
-      console.log(this.id);
+      // console.log("refChanged");
+    },
+
+    __computeQuery: function(path) {
+      var _this = this;
+      // temporary : add column parameter + array function
+      var horizon = window.horizon;
+      if (path != null) {
+        var aPath = path.split('/');
+        var table = aPath[1];
+        var id = aPath[2];
+        this.ref = horizon(table);
+        var aOrder = [];
+        aOrder.push({
+          id: id
+        });
+        this.ref.findAll(aOrder).watch().subscribe(data => {
+            this.set('data', data[0]);
+        });
+      }
     }
   });
 </script>

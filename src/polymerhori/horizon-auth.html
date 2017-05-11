@@ -57,7 +57,7 @@
            */
           user: {
             type: Object,
-            readOnly: true,
+            readOnly: false,
             value: null,
             notify: true
           },
@@ -88,6 +88,7 @@
          * @return {Promise} Promise that handles success and failure.
          */
         signInWithEmailAndPassword: function(email, password) {
+            var _this = this;
             var str = [];
             str.push("username="+email);
             str.push("password="+password);
@@ -112,8 +113,9 @@
                 });
                 window.horizon = hz;
                 window.horizon.status(function(status) {
-                    console.log(status);
-                    window.horizon.currentUser().fetch().subscribe( (user) => console.log(JSON.stringify(user)) );
+                    window.horizon.currentUser().fetch().subscribe( (user) => {
+                        _this.set('user', user);
+                    });
                 });
             });
         },
@@ -151,7 +153,12 @@
                         }
                     });
                     window.horizon = hz;
-                    resolve();
+                    window.horizon.status(function(status) {
+                        window.horizon.currentUser().fetch().subscribe( (user) => {
+                            _this.set('user', user);
+                            resolve(user);
+                        });
+                    });
                 }).catch(function (e) {
                     reject(e);
                 });
