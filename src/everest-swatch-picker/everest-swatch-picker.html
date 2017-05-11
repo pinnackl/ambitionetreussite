@@ -19,7 +19,8 @@
           width: 56px;
           height: 56px;
           min-width: 56px;
-          background: red;
+          background: black;
+          color: white;
           margin-bottom: 0px!important;
         }
       }
@@ -39,7 +40,7 @@
         <div class="swatch-picker">
           <paper-swatch-picker color="{{color}}" noink horizontal-align="right" on-color-picker-selected="_showDownload"></paper-swatch-picker>
         </div>
-        <paper-icon-button id="dl" icon="file-download" on-tap="_download" hidden$=[[isVisible]]></paper-icon-button>
+        <paper-icon-button icon="file-download" on-tap="_download" hidden$=[[isVisible]]></paper-icon-button>
       </div>
     </template>
     <template is="dom-if" if="[[!option]]">
@@ -52,6 +53,7 @@
             on-success="_imageChanged">
             <iron-icon icon="cloud-upload"></iron-icon>
           </file-upload>
+          <paper-icon-button class="uploadBtn" icon="file-download" on-tap="_download" hidden$=[[isVisible]]></paper-icon-button>
       </div>
     </template>
   </template>
@@ -91,6 +93,8 @@
         var image = cdn + parsedResponse.name;
         this.set('image', 'url("'+ image +'")');
         console.log(this.image);
+
+        this._showDownload();
       },
 
       _modeChanded: function (mode) {
@@ -107,7 +111,6 @@
       },
 
       _showDownload: function (e) {
-        //this.$.dl.hidden = false;
         this.isVisible = false;
       },
 
