@@ -142,7 +142,6 @@
                     headers: [{'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}]
                 }).then(function (e) {
                     var token = JSON.parse(e.response).token;
-                    Horizon.clearAuthTokens();
                     window.horizon.disconnect();
                     
                     var hz = new Horizon({
@@ -165,6 +164,10 @@
             });
 
             return promise;
+        },
+
+        signOut: function() {
+          window.horizon.disconnect();
         },
 
         _computeSignedIn: function(user) {

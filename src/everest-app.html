@@ -454,11 +454,21 @@
                       src="https://cdn.pinnackl.com/avatars/[[user.avatar]]">
                     </paper-icon-button>
                   </template>
+                  <template is="dom-if" if={{!user.avatar}}>
+                    <paper-icon-button
+                      class="dropdown-trigger profileBtn"
+                      condensed$="[[_computeCondensed(largeScreen, condensed)]]"
+                      src="https://placeholdit.imgix.net/~text?txtsize=6&txt=45%C3%9745&w=45&h=45">
+                    </paper-icon-button>
+                  </template>
                   <div class="dropdown-content user-menu user-card">
                     <div>
                       <a href="/user/[[horizonUser.uid]]" class="email user-menu user-card" title="Profile">
                         <template is="dom-if" if={{user.avatar}}>
                           <span class="circle"><img src="https://cdn.pinnackl.com/avatars/[[user.avatar]]"></span>
+                        </template>
+                        <template is="dom-if" if={{!user.avatar}}>
+                          <span class="circle"><img src="https://placeholdit.imgix.net/~text?txtsize=6&txt=45%C3%9745&w=45&h=45"></span>
                         </template>
                         <span>[[user.name]]</span>
                       </a>
@@ -773,7 +783,6 @@
       },
 
       _toggleDrawer: function () {
-        console.log(this.$.drawerAdmin);
         this.$.drawerAdmin.toggle();
       },
 

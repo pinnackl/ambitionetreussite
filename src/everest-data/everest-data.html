@@ -191,20 +191,6 @@
              */
             logoutUser: function () {
                 var auth = this.$.auth.signOut();
-                var _this = this;
-                auth.then(function (e) {
-                    _this.set('rights', {
-                        editors: false,
-                        moderators: false,
-                        administrators: false,
-                        viewers: true,
-                        ts: Date.now(),
-                    });
-                    _this.$.dataToast.text = _this.stateMessage.userLoggedOut.text;
-                    _this.$.dataToast.open();
-                }).catch(function (e) {
-                    console.error(e);
-                });
             },
 
             checkRights: function (uid, editors, moderators, administrators) {
