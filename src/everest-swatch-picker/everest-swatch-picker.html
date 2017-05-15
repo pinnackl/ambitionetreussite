@@ -13,6 +13,12 @@
         color: var(--swatch-picker-bg);
       }
 
+      paper-swatch-picker {
+        --paper-swatch-picker-icon: {
+          color: white;
+        }
+      }
+
       file-upload {
         --paper-button: {
           border-radius: 100%;
@@ -38,9 +44,8 @@
     <template is="dom-if" if="[[option]]">
       <div class="color">
         <div class="swatch-picker">
-          <paper-swatch-picker color="{{color}}" noink horizontal-align="right" on-color-picker-selected="_showDownload"></paper-swatch-picker>
+          <paper-swatch-picker color="{{color}}" noink horizontal-align="right"></paper-swatch-picker>
         </div>
-        <paper-icon-button icon="file-download" on-tap="_download" hidden$=[[isVisible]]></paper-icon-button>
       </div>
     </template>
     <template is="dom-if" if="[[!option]]">
@@ -53,7 +58,6 @@
             on-success="_imageChanged">
             <iron-icon icon="cloud-upload"></iron-icon>
           </file-upload>
-          <paper-icon-button class="uploadBtn" icon="file-download" on-tap="_download" hidden$=[[isVisible]]></paper-icon-button>
       </div>
     </template>
   </template>
@@ -74,11 +78,6 @@
 
         mode: {
           type: String
-        },
-
-        isVisible: {
-          type: Boolean,
-          value: true
         }
       },
 
@@ -108,14 +107,6 @@
         }
         this.customStyle['--swatch-picker-bg'] = this.__invertColor(value);
         this.updateStyles();
-      },
-
-      _showDownload: function (e) {
-        this.isVisible = false;
-      },
-
-      _download: function () {
-        this.fire('download-theme');
       },
 
       __invertColor: function (hex) {

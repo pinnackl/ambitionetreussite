@@ -18,6 +18,16 @@
         observer: '_appIconColorChanged'
       },
 
+      appTabColor: {
+        value: "",
+        observer: '_appTabColorChanged'
+      },
+
+      showDownload: {
+        type: Boolean,
+        value: false
+      },
+
       // Theme
       theme: {
         value: function () {
@@ -42,6 +52,10 @@
       this.__updateCustomProperty('--app-icon-color', e);
     },
 
+    _appTabColorChanged: function (e) {
+      this.__updateCustomProperty('--app-tab-color', e);
+    },
+
     _appHeaderBannerChanged: function (e) {
       console.log(e);
       this.__updateCustomProperty('--app-header-banner', e);
@@ -59,6 +73,7 @@
       if (this.theme) {
         // FIXME : Find a way for percistancy in local
         this.theme["#" + name + "#"] = value;
+        this.showDownload = true;
       }
     },
 

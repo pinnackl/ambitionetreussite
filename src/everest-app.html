@@ -65,8 +65,8 @@
         --app-header-banner: url('');
         --app-primary-color: #fff;
         --app-icon-color: #3eb7e9;
+        --app-tab-color: #3eb7e9;
         /* FIXME: Move in theme file */
-        /*--app-primary-color-opp: #fefefe;*/
         --app-secondary-color: black;
 
         --app-grid-columns: 3;
@@ -74,11 +74,6 @@
         --app-grid-expandible-item-columns: 3;
 
       }
-
-      /*.swatch-picker {
-        border-radius: 50%;
-        background-color: var(--app-primary-color-opp)
-      }*/
 
       app-header {
         background-color: var(--app-primary-color);
@@ -150,7 +145,7 @@
       paper-tabs {
         height: 100%;
         max-width: 45%;
-        --paper-tabs-selection-bar-color: #3eb7e9;
+        --paper-tabs-selection-bar-color: var(--app-tab-color);
       }
 
       paper-tab[link] a, paper-tab[link] span, .submenu a {
@@ -166,7 +161,7 @@
       }
 
       paper-tab[aria-selected=true] a {
-        color: #3eb7e9;
+        color: var(--app-tab-color);
       }
 
       .submenu-tab {
@@ -301,6 +296,15 @@
         line-height: 24px;
       }
 
+      .flexbox-container {
+        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        align-content: space-between;
+        padding: 6px 8px;
+      }
+
       [hidden] {
         display: none !important;
       }
@@ -391,12 +395,22 @@
 
         <iron-pages selected="{{selected}}" fallback-selection="0">
           <div>
+            <paper-button raised on-tap="_downloadTheme" hidden="[[!showDownload]]"><iron-icon icon="file-download"></iron-icon>Download</paper-button>
             <!-- Banner Upload -->
             <everest-swatch-picker mode="image" image="{{appHeaderBanner}}"></everest-swatch-picker>
             <!-- Color Picker -->
-            <everest-swatch-picker mode="color" color="{{appPrimaryColor}}"></everest-swatch-picker>
-
-            <everest-swatch-picker mode="color" color="{{appIconColor}}"></everest-swatch-picker>
+            <div class="flexbox-container">
+              <span>Primary Color</span>
+              <everest-swatch-picker mode="color" color="{{appPrimaryColor}}"></everest-swatch-picker>
+            </div>
+            <div class="flexbox-container">
+              <span>Icon Color</span>
+              <everest-swatch-picker mode="color" color="{{appIconColor}}"></everest-swatch-picker>
+            </div>
+            <div class="flexbox-container">
+              <span>Tab Color</span>
+              <everest-swatch-picker mode="color" color="{{appTabColor}}"></everest-swatch-picker>
+            </div>
           </div>
 
           <div>
@@ -784,6 +798,11 @@
 
       _toggleDrawer: function () {
         this.$.drawerAdmin.toggle();
+      },
+
+      _downloadTheme: function (e) {
+        console.log(e);
+        this.fire('download-theme');
       },
 
     });
