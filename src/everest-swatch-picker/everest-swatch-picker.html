@@ -54,6 +54,7 @@
             accept="image/*"
             method="POST"
             file-data-name="cover"
+            hide-file-list
             target="https://cdn.pinnackl.com/api/images/upload"
             on-success="_imageChanged">
             <iron-icon icon="cloud-upload"></iron-icon>
@@ -78,6 +79,11 @@
 
         mode: {
           type: String
+        },
+
+        asBackground: {
+          type: Boolean,
+          value: false
         }
       },
 
@@ -90,10 +96,11 @@
         var cdn = "https://cdn.pinnackl.com/images/";
         var parsedResponse = JSON.parse(detail.xhr.response);
         var image = cdn + parsedResponse.name;
-        this.set('image', 'url("'+ image +'")');
+        if(this.asBackground)
+          this.set('image', 'url("'+ image +'")');
+        else
+          this.set('image', image);
         console.log(this.image);
-
-        this._showDownload();
       },
 
       _modeChanded: function (mode) {
