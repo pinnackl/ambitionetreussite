@@ -13,6 +13,11 @@
         observer: "_appHeaderBannerChanged"
       },
 
+      appLogo: {
+        value: "/images/logo-transparent.wo.png",
+        observer: "_appLogoChanged"
+      },
+
       appIconColor: {
         value: "",
         observer: '_appIconColorChanged'
@@ -61,6 +66,10 @@
       this.__updateCustomProperty('--app-header-banner', e);
     },
 
+    _appLogoChanged: function (e) {
+      console.log(e);
+      this.__updateThemeVariable('appLogo', e);
+    },
 
 
 
@@ -70,6 +79,16 @@
       this.customStyle[name] = value;
       this.updateStyles();
 
+      this.__setTheme(name, value);
+    },
+
+    __updateThemeVariable: function (name, value) {
+      this.set(name, value);
+
+      this.__setTheme(name, value);
+    },
+
+    __setTheme: function (name, value) {
       if (this.theme) {
         // FIXME : Find a way for percistancy in local
         this.theme["#" + name + "#"] = value;
