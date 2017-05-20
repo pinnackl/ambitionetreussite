@@ -6,22 +6,32 @@
       /* CSS Custom Properties */
 
       appPrimaryColor: {
+        value: "",
         observer: '_appPrimaryColorChanged'
       },
 
       appHeaderBanner: {
+        value: "",
         observer: "_appHeaderBannerChanged"
       },
 
       appIconColor: {
+        value: "",
         observer: '_appIconColorChanged'
       },
 
+      appLogoTitleColor: {
+        value: "",
+        observer: '_appLogoTitleColorChanged'
+      },
+
       appTabColor: {
+        value: "",
         observer: '_appTabColorChanged'
       },
 
       appTabSelectedColor: {
+        value: "",
         observer: '_appTabSelectedColorChanged'
       },
 
@@ -58,6 +68,10 @@
 
     _appIconColorChanged: function (e) {
       this.__updateCustomProperty('--app-icon-color', e);
+    },
+
+     _appLogoTitleColorChanged: function (e) {
+      this.__updateCustomProperty('--app-logo-title-color', e);
     },
 
     _appTabColorChanged: function (e) {
