@@ -3,6 +3,8 @@
   PinnacklBehavior.liveThemingBehavior = {
     properties: {
 
+      /* CSS Custom Properties */
+
       appPrimaryColor: {
         value: "",
         observer: '_appPrimaryColorChanged'
@@ -18,9 +20,25 @@
         observer: '_appIconColorChanged'
       },
 
+      appLogoTitleColor: {
+        value: "",
+        observer: '_appLogoTitleColorChanged'
+      },
+
       appTabColor: {
         value: "",
         observer: '_appTabColorChanged'
+      },
+
+      appTabSelectedColor: {
+        value: "",
+        observer: '_appTabSelectedColorChanged'
+      },
+
+      /* JS Properties */
+
+      appLogo: {
+        observer: "_appLogoChanged"
       },
 
       showDownload: {
@@ -42,7 +60,7 @@
 
 
     /**
-     * The list of properties
+     * The list of CSS properties
      */
     _appPrimaryColorChanged: function (e) {
       this.__updateCustomProperty('--app-primary-color', e);
@@ -52,15 +70,28 @@
       this.__updateCustomProperty('--app-icon-color', e);
     },
 
+     _appLogoTitleColorChanged: function (e) {
+      this.__updateCustomProperty('--app-logo-title-color', e);
+    },
+
     _appTabColorChanged: function (e) {
       this.__updateCustomProperty('--app-tab-color', e);
     },
 
+    _appTabSelectedColorChanged: function (e) {
+      this.__updateCustomProperty('--app-tab-selected-color', e);
+    },
+
     _appHeaderBannerChanged: function (e) {
-      console.log(e);
       this.__updateCustomProperty('--app-header-banner', e);
     },
 
+    /**
+     * The list of JS properties
+     */
+    _appLogoChanged: function (e) {
+      this.__updateThemeVariable('appLogo', e);
+    },
 
 
 
@@ -70,6 +101,16 @@
       this.customStyle[name] = value;
       this.updateStyles();
 
+      this.__setTheme(name, value);
+    },
+
+    __updateThemeVariable: function (name, value) {
+      this.set(name, value);
+
+      this.__setTheme(name, value);
+    },
+
+    __setTheme: function (name, value) {
       if (this.theme) {
         // FIXME : Find a way for percistancy in local
         this.theme["#" + name + "#"] = value;

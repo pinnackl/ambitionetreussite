@@ -64,7 +64,7 @@
 			}
 
 			.logo-container .content-wrapper ::content > .title {
-				color: #3eb7e9;
+				color: var(--app-logo-title-color);
 			}
 
 			.logo-container ::content > .title {
@@ -94,7 +94,7 @@
 			<a href="/" title="">
 				<iron-image
 					class="logo"
-					src="/images/logo-transparent.wo.png"
+					src$="[[appLogo]]"
 					sizing="contain"
 					preload
 					fade
@@ -113,7 +113,11 @@
 				left: Boolean,
 				center: Boolean,
 				rigth: Boolean,
-				condensed: String
+				condensed: String,
+
+				appLogo: {
+					type: String,
+				}
 			}
 		});
 	</script>

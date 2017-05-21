@@ -56,16 +56,14 @@
 
 <link rel="import" href="everest-forms/everest-forms.html">
 
+<link rel="import" href="app-theme.html">
+
 <dom-module id="everest-app">
   <template>
-    <style include="app-grid-style">
+    <style include="app-theme app-grid-style">
       :host {
         display: block;
-
-        --app-header-banner: url('');
-        --app-primary-color: #fff;
-        --app-icon-color: #3eb7e9;
-        --app-tab-color: #3eb7e9;
+        
         /* FIXME: Move in theme file */
         --app-secondary-color: black;
 
@@ -145,14 +143,14 @@
       paper-tabs {
         height: 100%;
         max-width: 45%;
-        --paper-tabs-selection-bar-color: var(--app-tab-color);
+        --paper-tabs-selection-bar-color: var(--app-tab-selected-color);
       }
 
       paper-tab[link] a, paper-tab[link] span, .submenu a {
         /* These mixins (from iron-flex-layout) center the link text. */
         @apply(--layout-horizontal);
         @apply(--layout-center-center);
-        color: #fff;
+        color: var(--app-tab-color);
         text-decoration: none;
         font-size: 16px;
         font-weight: 600;
@@ -161,7 +159,7 @@
       }
 
       paper-tab[aria-selected=true] a {
-        color: var(--app-tab-color);
+        color: var(--app-tab-selected-color);
       }
 
       .submenu-tab {
@@ -359,6 +357,10 @@
       data="{{user}}">
     </horizon-document>
 
+    <app-theme
+      app-logo="{{appLogo}}">
+    </app-theme>
+
     <app-drawer-layout fullbleed force-narrow>
 
       <!-- Drawer content -->
@@ -397,7 +399,15 @@
           <div>
             <paper-button raised on-tap="_downloadTheme" hidden="[[!showDownload]]"><iron-icon icon="file-download"></iron-icon>Download</paper-button>
             <!-- Banner Upload -->
-            <everest-swatch-picker mode="image" image="{{appHeaderBanner}}"></everest-swatch-picker>
+            <div class="flexbox-container">
+              <span>Banner</span>
+              <everest-swatch-picker mode="image" image="{{appHeaderBanner}}" as-background></everest-swatch-picker>
+            </div>
+            <!-- Logo Upload -->
+            <div class="flexbox-container">
+              <span>Logo</span>
+              <everest-swatch-picker mode="image" image="{{appLogo}}"></everest-swatch-picker>
+            </div>
             <!-- Color Picker -->
             <div class="flexbox-container">
               <span>Primary Color</span>
@@ -408,8 +418,16 @@
               <everest-swatch-picker mode="color" color="{{appIconColor}}"></everest-swatch-picker>
             </div>
             <div class="flexbox-container">
+              <span>Logo Title Color</span>
+              <everest-swatch-picker mode="color" color="{{appLogoTitleColor}}"></everest-swatch-picker>
+            </div>
+            <div class="flexbox-container">
               <span>Tab Color</span>
               <everest-swatch-picker mode="color" color="{{appTabColor}}"></everest-swatch-picker>
+            </div>
+            <div class="flexbox-container">
+              <span>Selected Tab Color</span>
+              <everest-swatch-picker mode="color" color="{{appTabSelectedColor}}"></everest-swatch-picker>
             </div>
           </div>
 
@@ -432,7 +450,7 @@
             </a>
             <!-- left / centered (minified)logo -->
             <div class="logo" main-title condensed$="[[_computeCondensed(largeScreen, condensed)]]">
-              <everest-logo center$="[[!_computeHidden(largeScreen)]]" condensed$="[[_computeCondensed(largeScreen, condensed)]]">
+              <everest-logo center$="[[!_computeHidden(largeScreen)]]" condensed$="[[_computeCondensed(largeScreen, condensed)]]" app-logo="[[appLogo]]">
                 <span class="title">EVEREST</span>
               </everest-logo>
             </div>
