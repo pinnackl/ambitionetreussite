@@ -109,7 +109,7 @@
 
             __computeQuery: function(orderByChild, orderLimit, limit, startAt, endAt, equalTo, path) {
                 var horizon = window.horizon;
-                if (path != null) {
+                if (path != null && typeof horizon != "undefined") {
                     var table = path.split('/').slice(1, 2).join('');
                     this.ref = horizon(table);
 

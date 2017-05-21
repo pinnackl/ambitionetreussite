@@ -178,6 +178,7 @@
                 var auth = this.$.auth.signInWithEmailAndPassword(email, password);
 
                 auth.then(function (e) {
+                    console.log(e);
                     _this.set('horizonSuccess', Date.now());
                 }).catch(function (e) {
                     console.error(e);

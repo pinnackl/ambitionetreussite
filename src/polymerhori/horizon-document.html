@@ -193,7 +193,7 @@
       var _this = this;
       // temporary : add column parameter + array function
       var horizon = window.horizon;
-      if (path != null) {
+      if (path != null && typeof horizon != "undefined") {
         var aPath = path.split('/');
         var table = aPath[1];
         var id = aPath[2];

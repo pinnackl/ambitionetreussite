@@ -655,7 +655,8 @@
       ready: function (e) {
         // Listen for scrolling event
         var _this = this;
-        window.horizon.status(function(status) {
+        if(typeof window.horizon != "undefined") {
+          window.horizon.status(function(status) {
             window.horizon.currentUser().fetch().subscribe( (user) => {
               console.log(user);
                 _this.horizonUser = user;
@@ -663,8 +664,9 @@
             (err) => {
               console.log(err);
             });
-        });
-
+          });
+        }
+        
         document.addEventListener('scroll', function(e) {
           if (window.scrollY >= 63) {
             _this.condensed = "condensed";
@@ -709,13 +711,11 @@
       },
 
       _signIn: function (e) {
-        console.info('sign-in');
         this.fire('sign-in');
         this.$.formDialog.openDialog('signIn');
       },
 
       _signUp: function (e) {
-        console.info('sign-up');
         this.fire('sign-up');
         this.$.formDialog.openDialog('signUp');
       },

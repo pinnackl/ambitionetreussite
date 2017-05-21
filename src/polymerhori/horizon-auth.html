@@ -75,6 +75,15 @@
 
         },
 
+        storeToken: function(token) {
+            var request = window.indexedDB.open("Horizon", 1);
+            console.log("storeToken");
+            console.log(window.db);
+            var request = window.db.transaction("token", "readwrite")
+            .objectStore("token")
+            .put({ id: 1 ,token: token });
+        },
+
         /**
          * Authenticates a Firebase client using a new, temporary guest account.
          *
@@ -94,29 +103,40 @@
             str.push("password="+password);
             var data = str.join("&");
 
-            return this.ajax({
-                url: 'http://localhost:8181/auth/login',
-                type: 'POST',
-                data: data,
-                headers: [{'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}]
-            }).then(function (e) {
-                var token = JSON.parse(e.response).token;
-                Horizon.clearAuthTokens();
-                window.horizon.disconnect();
-
-                var hz = new Horizon({
-                    host: 'localhost:8181',
-                    authType: {
-                        storeLocally: true,
-                        token: token
-                    }
-                });
-                window.horizon = hz;
-                window.horizon.status(function(status) {
-                    window.horizon.currentUser().fetch().subscribe( (user) => {
-                        _this.set('user', user);
+            var promise = new Promise(function (resolve, reject) {
+                _this.ajax({
+                    url: 'http://localhost:8181/auth/login',
+                    type: 'POST',
+                    data: data,
+                    headers: [{'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}]
+                }).then(function (e) {
+                    var token = JSON.parse(e.response).token;
+                    
+                    window.horizon.disconnect();
+                    window.horizon.onDisconnected(function(status) {
+                        console.log('onDisconnect sign in')
+                        _this.storeToken(token);
                     });
+
+                    var hz = new Horizon({
+                        host: 'localhost:8181',
+                        authType: {
+                            storeLocally: false,
+                            token: token
+                        }
+                    });
+                    window.horizon = hz;
+                    window.horizon.status(function(status) {
+                        window.horizon.currentUser().fetch().subscribe( (user) => {
+                            _this.set('user', user);
+                            resolve(user);
+                        });
+                    });
+                }).catch(function (e) {
+                    reject(e);
                 });
+
+                return promise;
             });
         },
 
@@ -147,7 +167,7 @@
                     var hz = new Horizon({
                         host: 'localhost:8181',
                         authType: {
-                            storeLocally: true,
+                            storeLocally: false,
                             token: token
                         }
                     });
@@ -167,7 +187,13 @@
         },
 
         signOut: function() {
-          window.horizon.disconnect();
+            window.horizon.disconnect();
+            var request = db.transaction("token", "readwrite")
+                .objectStore("token")
+                .delete(1);
+            request.onsuccess = function(event) {
+                window.db.close();
+            };
         },
 
         _computeSignedIn: function(user) {

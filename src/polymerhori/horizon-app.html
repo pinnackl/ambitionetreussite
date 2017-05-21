@@ -57,27 +57,64 @@
                 }
             },
             __computeApp: function(name, apiKey, authDomain, databaseUrl) {
-                var hz = new Horizon({
-                    host: 'localhost:8181',
-                    // authType: 'unauthenticated'
-                });
+                window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+ 
+                window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
+                window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange
+                
+                if (!window.indexedDB) {
+                    window.alert("Your browser doesn't support a stable version of IndexedDB.")
+                }
 
-                if(!hz.hasAuthToken()) {
-                    hz.disconnect();
+                var request = window.indexedDB.open("Horizon", 1);
+                request.onsuccess = function(event) {
+                    window.db = request.result;
+                    var getToken = db.transaction("token", "readwrite")
+                        .objectStore("token")
+                        .get(1);
+                    
+                    getToken.onsuccess = function(event) {
+                        console.log(getToken.result.token);
+                        if(getToken.result.token) {
+                            var hz = new Horizon({
+                                host: 'localhost:8181',
+                                authType: {
+                                    storeLocally: false,
+                                    token: getToken.result.token
+                                }
+                            });
+                        } else {
+                            var hz = new Horizon({
+                                host: 'localhost:8181',
+                                authType: 'unauthenticated'
+                            });
+                        }
+                        window.horizon = hz;
+                        return hz;
+                    };
+                };
+
+                request.onerror = function(event) {
                     var hz = new Horizon({
                         host: 'localhost:8181',
                         authType: 'unauthenticated'
                     });
-                } else {
-                    hz.disconnect();
-                    var hz = new Horizon({
-                        host: 'localhost:8181',
-                        authType: 'token'
-                    });
+                    window.horizon = hz;
+                    return hz;
+                };
+                
+                request.onupgradeneeded = function(event) {
+                    window.db = event.target.result;
+                    var objectStore = db.createObjectStore("token", {keyPath: "id"});
+                    objectStore.transaction.oncomplete = function(event) {
+                        var hz = new Horizon({
+                            host: 'localhost:8181',
+                            authType: 'unauthenticated'
+                        });
+                        window.horizon = hz;
+                        return hz;
+                    }
                 }
-
-                window.horizon = hz;
-                return hz;
             }
         });
     </script>
