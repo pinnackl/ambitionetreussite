@@ -1,6 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<link rel="import" href="../everest-article/everest-article.html">
+<!-- <link rel="import" href="../everest-article/everest-article.html"> -->
 <dom-module id="everest-category">
     <template>
         <style>
@@ -54,6 +54,7 @@
             ],
 
             _routePageChanged: function (category) {
+                console.log(category);
                 this.category = category || '';
                 this.subpage = this.category;
             },

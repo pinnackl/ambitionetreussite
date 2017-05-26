@@ -1,557 +1,218 @@
-<!-- Polymer element -->
-<link rel="import" href="../bower_components/polymer/polymer.html">
-
-<link rel="import" href="./app-theme.html">
-
-<link rel="import" href="../bower_components/app-route/app-location.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<!-- Polymmer Starter Kit -->
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="my-icons.html">
 
-<link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
+<!-- Everest Dependencies -->
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
-
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="../bower_components/page-title/page-title.html">
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
-<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
-<link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
-<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
-<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="../bower_components/paper-material/paper-material.html">
-<link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="../bower_components/paper-fab-speed-dial/paper-fab-speed-dial.html">
-<link rel="import" href="../bower_components/paper-fab-speed-dial/paper-fab-speed-dial-action.html">
-<link rel="import" href="live-theming-behavior/live-theming-behavior.html">
-<link rel="import" href="everest-swatch-picker/everest-swatch-picker.html">
 
-
-
-<!-- Custom element -->
-<link rel="import" href="everest-data/everest-data.html">
-<link rel="import" href="everest-logo/everest-logo.html">
+<!-- Everest Custom Elements -->
+<link rel="lazy-import" href="my-view404.html">
+<link rel="import" href="everest-common-behaviors/everest-behaviors.html">
 <link rel="import" href="everest-footer/everest-footer.html">
-
-<link rel="import" href="polymerhori/horizon-app.html">
-<link rel="import" href="everest-horizon/everest-horizon.html">
-<link rel="import" href="polymerhori/horizon-query.html">
-<link rel="import" href="polymerhori/horizon-document.html">
-<link rel="import" href="polymerhori/horizon-auth.html">
-
-<!--<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-query.html">-->
-
-<link rel="import" href="everest-forms/everest-forms.html">
-
-<link rel="import" href="app-theme.html">
 
 <dom-module id="everest-app">
   <template>
-    <style include="app-theme app-grid-style">
+    <style>
+      /* Polymer Starter Kit */
       :host {
-        display: block;
-        
-        /* FIXME: Move in theme file */
+        --app-primary-color: #4285f4;
         --app-secondary-color: black;
+        --app-tab-color: #ffffff;
+        --app-tab-selected-color: green;
 
-        --app-grid-columns: 3;
-        --app-grid-item-height: 30vh;
-        --app-grid-expandible-item-columns: 3;
+        --logo-size: 64px;
+        --condensed-logo-size: 48px;
 
+        display: block;
+      }
+
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
       }
 
       app-header {
-        background-color: var(--app-primary-color);
-        /*background-color: transparent;*/
-        background-image: var(--app-header-banner);
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: 0% 88%;
-        --app-header-background-front-layer: {
-          background-color: var(--app-primary-color);
-          background-image: var(--app-header-banner);
-          /* Cross browser */
-         -webkit-filter: blur(3px);
-          -moz-filter: blur(3px);
-          -o-filter: blur(3px);
-          -ms-filter: blur(3px);
-          filter: blur(3px);
-
-          background-repeat: no-repeat;
-          background-position: 0px 88%;
-        };
-
         color: #fff;
+        background-color: var(--app-primary-color);
       }
 
       app-header paper-icon-button {
         --paper-icon-button-ink-color: white;
       }
 
-      app-header .logo[condensed] {
-        position: absolute;
-        top: 55px;
-        vertical-align: middle;
-        width: 45px;
-        height: 75px;
-      }
-
-      app-toolbar a {
-        color: #ffffff;
-      }
-
-      :host(:not([page=read])) .back-btn
-      {
-        display: none;
-      }
-      :host([page=read]) [drawer-toggle]
-      {
-        display: none;
-      }
-
       .drawer-list {
         margin: 0 20px;
       }
+
       .drawer-list a {
         display: block;
         padding: 0 16px;
-        line-height: 40px;
         text-decoration: none;
         color: var(--app-secondary-color);
+        line-height: 40px;
       }
+
       .drawer-list a.iron-selected {
         color: black;
         font-weight: bold;
       }
-      .drawer-list a.subroute {
-        padding-left: 32px;
+
+      iron-pages {
+        height: 200vh;/* FIXME : Dev purpose */
+      }
+
+      /* Everest Main CSS */
+      :host([large-screen]) [drawer-toggle] {
+        display: none;
       }
 
       paper-tabs {
-        height: 100%;
-        max-width: 45%;
         --paper-tabs-selection-bar-color: var(--app-tab-selected-color);
       }
 
-      paper-tab[link] a, paper-tab[link] span, .submenu a {
+      paper-tab[link] a, paper-tab[link] span {
         /* These mixins (from iron-flex-layout) center the link text. */
         @apply(--layout-horizontal);
         @apply(--layout-center-center);
-        color: var(--app-tab-color);
         text-decoration: none;
-        font-size: 16px;
-        font-weight: 600;
-        letter-spacing: 0.1em;
         pointer-events: auto;
+        color: var(--app-tab-color);
       }
 
       paper-tab[aria-selected=true] a {
         color: var(--app-tab-selected-color);
       }
 
-      .submenu-tab {
-        display: block;
-        height: 100%;
-        width: 100%;
-        text-align: center;
-        line-height: 64px;
+      /* Logo display */
+      [condensed-title] [title] {
+        position: absolute;
+        top: 50%;/* Title position (25%, 50%, 100%) */
+        left: var(--condensed-logo-size);
       }
 
-      .submenu {
-        display: flex;
-        align-items: center;
-      }
-
-      .submenu paper-item a {
-        display: inline-block;
-        line-height: 48px;
-        width: 100%;
-      }
-
-      .profileBtn {
-        color: var(--app-icon-color);
-        position: relative;
-        -webkit-transition: all .2s ease;
-        -moz-transition: all .2s ease;
-        -ms-transition: all .2s ease;
-        -o-transition: all .2s ease;
-        transition: all .2s ease;
+      [condensed-title] {
+        position: absolute;
         top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-image: url('//placehold.it/48/48');/* Condensed logo background image */
+        background-repeat: no-repeat;
+        background-position: left center;/* Condensed logo position */
+        background-size: var(--condensed-logo-size);/* Condensed logo size */
+        /* The difference in font size is used to calculate the scale of the title in the transition. */
+        font-size: 16px;
       }
 
-      .profileBtn[condensed] {
-        top: -100px;
+      [main-title] [title] {
+        position: absolute;
+        top: 50%;/* Title position (25%, 50%, 100%) */
+        left: var(--logo-size);
       }
 
-      .user-menu paper-button {
-        color: #000;
-        text-decoration: none;
-        font-size: small
+      [main-title] {
+        position: absolute;
+        top: -120px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-image: url('//placehold.it/64/64');/* Logo background image */
+        background-repeat: no-repeat;
+        background-position: left center;/* Logo position */
+        background-size: var(--logo-size);/* Logo size */
+        -webkit-transform-origin: left top !important;
+        transform-origin: left top !important;
+        /* The difference in font size is used to calculate the scale of the title in the transition. */
+        font-size: 32px;
       }
 
-      .user-menu paper-button iron-icon {
-        margin-right: .4em;
+      [condensed-title][mobile] {
+        background-position: center center;/* Logo position */
       }
 
-      .user-menu.user-card {
-        padding: 16px;
-        color: #56585c;
-        font-size: 1em;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
+      [condensed-title][mobile] [title] {
+        display: none;
       }
-
-      .user-menu.user-card .circle {
-        overflow: hidden;
-        width: 64px;
-        height: 64px;
-        display: block;
-        border-radius: 50%;
-      }
-
-      .user-menu.user-card img {
-        height: 64px;
-        width: 64px;
-      }
-
-      .user-menu.user-card a {
-        color: #56585c;
-        text-decoration: none;
-      }
-
-      iron-pages {
-        min-height: 90vh;
-      }
-
-      .end {
-        background-color: #f8f8f8;
-      }
-
-      .footer {
-        min-height: 30vh;
-      }
-
-      .item:nth-child(4) {
-        @apply(--app-grid-expandible-item);
-        height: 24px;
-      }
-
-      .right {
-        text-align: center;
-        vertical-align: middle;
-        font-weight: bold;
-        font-size: 12px;
-        line-height: 24px;
-        color: #757575;
-      }
-
-      .right iron-icon {
-        height: 18px;
-        vertical-align: middle;
-      }
-
-      .item .footer-cln-header {
-        font-weight: bold;
-        font-size: 12px;
-        line-height: 24px;
-        color: #179BD7;
-      }
-
-      .item ul, .item li {
-        list-style: none;
-      }
-
-      .item li a {
-        color: #757575;
-        font-size: 12px;
-        text-decoration: none;
-        line-height: 24px;
-      }
-
-      .item li .github {
-        vertical-align: middle;
-        width: 2em;
-        height: 2em;
-      }
-
-      .item li .social {
-        line-height: 24px;
-      }
-
-      .flexbox-container {
-        text-align: left;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        align-content: space-between;
-        padding: 6px 8px;
-      }
-
-      [hidden] {
-        display: none !important;
-      }
-
-      paper-fab-speed-dial {
-        --paper-fab-speed-dial-background: #3eb7e9;
-      }
-
-      paper-fab-speed-dial-action {
-        --paper-fab-speed-dial-action-background: #3eb7e9;
-      }
-
-      .paper-tabs-admin {
-        width: 100%;
-      }
-
-      #drawerAdmin {
-        --app-drawer-width: 350px;
-      }
-
 
     </style>
-    <everest-horizon>
 
-    </everest-horizon>
     <app-location route="{{route}}"></app-location>
     <app-route
         route="{{route}}"
-        pattern="/:page"
+        pattern="[[rootPattern]]:page"
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
 
-    <iron-media-query query="min-width: 640px" query-matches="{{largeScreen}}">
-    </iron-media-query>
-
-    <page-title base-title="Everest" title="[[_ucFirst(page)]]" direction="reversed"></page-title>
-
-    <!--
-      everest-data represent the primary database access
-      As we are usiung the firebase service, its aloso handle the authentication process
-    -->
-    <everest-data id="everestData"
-      signed-in="{{signedIn}}"
-      rights="{{rights}}"
-      user="{{horizonUser}}"
-      horizon-error="{{horizonError}}"
-      horizon-success="{{horizonSucces}}">
-    </everest-data>
-
-    <horizon-document
-      path="/alpinists/[[horizonUser.id]]"
-      data="{{user}}">
-    </horizon-document>
-
-    <app-theme
-      app-logo="{{appLogo}}">
-    </app-theme>
+    <iron-media-query query="(min-width: 600px)" query-matches="{{largeScreen}}"></iron-media-query>
 
     <app-drawer-layout fullbleed force-narrow>
-
       <!-- Drawer content -->
-      <app-drawer id="appDrawer" swipe-open>
-        <app-toolbar>fireUser</app-toolbar>
+      <app-drawer id="drawer" slot="drawer" swipe-open="[[!largeScreen]]">
+        <app-toolbar>Menu [[largeScreen]]</app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <template is="dom-repeat" items={{menu}}
-            as=item index-as=index>
-            <template is="dom-if" if={{!item.submenu}}>
-              <a href="[[item.path]]" name="[[item.name]]" title="[[_ucFirst(item.label)]]">[[_ucFirst(item.label)]]</a>
-            </template>
-            <template is="dom-if" if={{item.submenu}}>
-              <a href="#" class="dropdown-trigger" item="[[item]]" on-tap="expandTags">
-                [[_ucFirst(item.label)]]<iron-icon item="[[item]]" icon$="[[item.icon]]"></iron-icon></a>
-              <iron-collapse opened="[[item.opened]]">
-                <template is="dom-repeat" items={{item.submenu}}
-                  as=item index-as=index>
-                  <a href="[[item.path]]" label="[[item.label]]"><paper-item>[[item.name]]</paper-item></a>
-                </template>
-              </iron-collapse>
-            </template>
-          </template>
+          <a name="view1" href="view1">View One</a>
+          <a name="view2" href="view2">View Two</a>
+          <a name="view3" href="view3">View Three</a>
         </iron-selector>
-      </app-drawer>
-
-      <!-- Drawer Admin Content -->
-      <app-drawer id="drawerAdmin" align="end" swipe-open>
-        <app-toolbar>
-          <paper-tabs class="paper-tabs-admin" selected="{{selected}}">
-            <paper-tab>Theme</paper-tab>
-            <paper-tab>Admin</paper-tab>
-          </paper-tabs>
-        </app-toolbar>
-
-        <iron-pages selected="{{selected}}" fallback-selection="0">
-          <div>
-            <paper-button raised on-tap="_downloadTheme" hidden="[[!showDownload]]"><iron-icon icon="file-download"></iron-icon>Download</paper-button>
-            <!-- Banner Upload -->
-            <div class="flexbox-container">
-              <span>Banner</span>
-              <everest-swatch-picker mode="image" image="{{appHeaderBanner}}" as-background></everest-swatch-picker>
-            </div>
-            <!-- Logo Upload -->
-            <div class="flexbox-container">
-              <span>Logo</span>
-              <everest-swatch-picker mode="image" image="{{appLogo}}"></everest-swatch-picker>
-            </div>
-            <!-- Color Picker -->
-            <div class="flexbox-container">
-              <span>Primary Color</span>
-              <everest-swatch-picker mode="color" color="{{appPrimaryColor}}"></everest-swatch-picker>
-            </div>
-            <div class="flexbox-container">
-              <span>Icon Color</span>
-              <everest-swatch-picker mode="color" color="{{appIconColor}}"></everest-swatch-picker>
-            </div>
-            <div class="flexbox-container">
-              <span>Logo Title Color</span>
-              <everest-swatch-picker mode="color" color="{{appLogoTitleColor}}"></everest-swatch-picker>
-            </div>
-            <div class="flexbox-container">
-              <span>Tab Color</span>
-              <everest-swatch-picker mode="color" color="{{appTabColor}}"></everest-swatch-picker>
-            </div>
-            <div class="flexbox-container">
-              <span>Selected Tab Color</span>
-              <everest-swatch-picker mode="color" color="{{appTabSelectedColor}}"></everest-swatch-picker>
-            </div>
-          </div>
-
-          <div>
-            Admin Page
-          </div>
-        </iron-pages>
       </app-drawer>
 
       <!-- Main content -->
       <app-header-layout>
 
-        <!-- Main header -->
-        <app-header condenses reveals effects="parallax-background" fixed$="[[_computeHidden(largeScreen)]]">
+        <!-- <app-header
+          condenses="[[condenses]]"
+          fixed="[[fixed]]"
+          reveals="[[reveals]]"
+          shadow="[[shadow]]"
+          effects="[[_computeEffects(blendBackground, fadeBackground, parallaxBackground, resizeSnappedTitle, resizeTitle, waterfall)]]"
+          slot="header"> -->
+        <!-- FIXME : Dev purpose -->
+        <app-header
+          condenses
+          fixed
+          effects="resize-title"
+          slot="header">
+
           <app-toolbar>
-            <!-- Left menu button -->
-            <paper-icon-button icon="menu" drawer-toggle hidden$="[[_computeHidden(largeScreen)]]"></paper-icon-button>
-            <a class="back-btn" href="/category/[[subpage]]" tabindex="-1" hidden$="[[_computeHidden(largeScreen)]]">
-              <paper-icon-button icon="arrow-back" aria-label="Back"></paper-icon-button>
-            </a>
-            <!-- left / centered (minified)logo -->
-            <div class="logo" main-title condensed$="[[_computeCondensed(largeScreen, condensed)]]">
-              <everest-logo center$="[[!_computeHidden(largeScreen)]]" condensed$="[[_computeCondensed(largeScreen, condensed)]]" app-logo="[[appLogo]]">
-                <span class="title">EVEREST</span>
-              </everest-logo>
+            <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
+            <div condensed-title mobile$=[[!largeScreen]]>
+              <div title>Everest</div>
             </div>
-            <!-- Right menu button -->
-            <span>
-              <span class="user-pseudo" hidden$="[[!displayUserName]]">[[user.name]]</span>
-              <paper-menu-button id="userMenu" allow-outside-scroll horizontal-align="right">
-
-                <!-- User not authenticated -->
-                <template is="dom-if" if={{!signedIn}}>
-                  <paper-icon-button
-                    class="dropdown-trigger profileBtn"
-                    condensed$="[[_computeCondensed(largeScreen, condensed)]]"
-                    icon="account-circle">
-                  </paper-icon-button>
-                  <paper-menu class="dropdown-content user-menu">
-                    <paper-item>
-                      <paper-button on-tap="_signIn">
-                        <iron-icon icon="lock-open"></iron-icon>Sign In</paper-button></paper-item>
-                    <paper-item>
-                      <paper-button on-tap="_signUp">
-                        <iron-icon icon="input"></iron-icon>Sign Up</paper-button>
-                    </paper-item>
-                  </paper-menu>
-                </template>
-
-                <!-- User authenticated -->
-                <template is="dom-if" if={{signedIn}}>
-                  <template is="dom-if" if={{user.avatar}}>
-                    <paper-icon-button
-                      class="dropdown-trigger profileBtn"
-                      condensed$="[[_computeCondensed(largeScreen, condensed)]]"
-                      src="https://cdn.pinnackl.com/avatars/[[user.avatar]]">
-                    </paper-icon-button>
-                  </template>
-                  <template is="dom-if" if={{!user.avatar}}>
-                    <paper-icon-button
-                      class="dropdown-trigger profileBtn"
-                      condensed$="[[_computeCondensed(largeScreen, condensed)]]"
-                      src="https://placeholdit.imgix.net/~text?txtsize=6&txt=45%C3%9745&w=45&h=45">
-                    </paper-icon-button>
-                  </template>
-                  <div class="dropdown-content user-menu user-card">
-                    <div>
-                      <a href="/user/[[horizonUser.uid]]" class="email user-menu user-card" title="Profile">
-                        <template is="dom-if" if={{user.avatar}}>
-                          <span class="circle"><img src="https://cdn.pinnackl.com/avatars/[[user.avatar]]"></span>
-                        </template>
-                        <template is="dom-if" if={{!user.avatar}}>
-                          <span class="circle"><img src="https://placeholdit.imgix.net/~text?txtsize=6&txt=45%C3%9745&w=45&h=45"></span>
-                        </template>
-                        <span>[[user.name]]</span>
-                      </a>
-                      <hr>
-                      <div class="signout"><a href="#" title="LOGOUT" on-tap="logout">LOGOUT</a></div>
-                    </div>
-                  </div>
-                </template>
-              </paper-menu-button>
-            </span>
-
-            <!-- Admin Drawer Button -->
-            <paper-icon-button class="profileBtn" icon="settings-applications" on-tap="_toggleDrawer"></paper-icon-button>
-
           </app-toolbar>
-          <!-- Lower toolbar -->
-          <template is="dom-if" if={{_computeHidden(largeScreen)}}>
-            <app-toolbar sticky>
-              <paper-tabs attr-for-selected="name" selected="[[page]]" bottom-item spacer$="[[condensed]]">
-                <template is="dom-repeat" items={{menu}}
-                  as=item index-as=index>
-                  <paper-tab link name="[[item.name]]" tabindex="-1">
-                    <template is="dom-if" if={{!item.submenu}}>
-                      <a href="[[item.path]]" title="Home" tabindex="0">[[_ucFirst(item.label)]]</a>
-                    </template>
-                    <template is="dom-if" if={{item.submenu}}>
-                      <a href="" class="submenu-tab" on-tap="expandTags" item="[[item]]" tabindex="0">
-                      [[_ucFirst(item.label)]]<iron-icon item="[[item]]" icon$="[[item.icon]]"></iron-icon>
-                      </a>
-                    </template>
-                  </paper-tab>
-                </template>
-              </paper-tabs>
-              <div title></div>
+
+          <template is="dom-if" if={{largeScreen}}>
+            <app-toolbar>
+              <div main-title>
+                <div title>Everest</div>
+              </div>
             </app-toolbar>
-            <!-- Submenu -->
-            <template is="dom-repeat" items={{menu}}
-              as=item index-as=index>
-              <template is="dom-if" if={{item.submenu}}>
-                <iron-collapse id="collapse" class="submenu" opened="[[item.opened]]">
-                  <template is="dom-repeat" items={{item.submenu}}
-                    as=item index-as=index>
-                    <a href="[[item.path]]" label="[[item.label]]" tabindex="0"><paper-item>[[item.name]]</paper-item></a>
-                  </template>
-                </iron-collapse>
-              </template>
-            </template>
+            <paper-tabs selected="[[page]]" attr-for-selected="name"
+              fit-container
+              style="width: 50%; margin-left: 50%;">
+              <paper-tab link name="home"><a href="/home" title="Home">Home</a></paper-tab>
+              <paper-tab link name="category"><a href="/category" title="Category">Category</a></paper-tab>
+            </paper-tabs>
           </template>
         </app-header>
 
-        <iron-pages role="main" selected="[[page]]" attr-for-selected="name" fallback-selection="404">
+        <iron-pages
+            selected="[[page]]"
+            attr-for-selected="name"
+            fallback-selection="404"
+            role="main">
+
           <!-- Home view -->
           <everest-home name="home" rights="[[rights]]"></everest-home>
           <!-- Category view -->
@@ -570,261 +231,87 @@
           <div name="404">
             <h1>404</h1>
           </div>
+
         </iron-pages>
         <everest-footer rights="[[rights]]" user="{{fireUser}}"></everest-footer>
-        <everest-forms id="formDialog" name="signIn" firebase-error="{{horizonError}}" firebase-success="{{horizonSucces}}"></everest-forms>
       </app-header-layout>
-
     </app-drawer-layout>
-
-    <template is="dom-if" if={{rights.editors}}>
-      <paper-fab-speed-dial icon="add" id="fab">
-        <a style="display: block;" href="/new/article"><paper-fab-speed-dial-action icon="create">New Article</paper-fab-speed-dial-action></a>
-        <template is="dom-if" if={{rights.administrators}}>
-          <a style="display: block;" href="/new/page"><paper-fab-speed-dial-action icon="description">New Page</paper-fab-speed-dial-action></a>
-          <!-- Menu -->
-          <!-- Footer -->
-        </template>
-        <a style="display: block;" href="/new/category"><paper-fab-speed-dial-action icon="label">New Category</paper-fab-speed-dial-action></a>
-        <a style="display: block;" href="/new/tag"><paper-fab-speed-dial-action icon="loyalty">New Tag</paper-fab-speed-dial-action></a>
-      </paper-fab-speed-dial>
-    </template>
-
   </template>
 
   <script>
+    class EverestApp extends Polymer.mixinBehaviors([EverestBehavior.appTitleBehavior], Polymer.Element) {
 
-    Polymer({
+      static get is() { return 'everest-app'; }
 
-      is: 'everest-app',
-
-      properties: {
-
-        page: {
-          type: String,
-          reflectToAttribute: true,
-          observer: '_pageChanged'
-        },
-
-        subpage: {
-          type: String,
-          reflectToAttribute: true
-        },
-
-        horizonUser: {
-          type: Object,
-          notify: true
-        },
-
-        horizonError: {
-          notify: true,
-        },
-
-        horizonSucces: {
-          notify: true,
-        },
-
-        signedIn: {
-          observer: '_signedInChanged'
-        },
-
-        largeScreen: Boolean,
-
-        displayUserName: {
-          type: Boolean,
-          notify: true
-        },
-
-        menu: {
-          type: Object,
-          value: function () {
-            return this._getMenu();
-          }
-        },
-
-        opened: {
-            type: Boolean,
-            observer: "_openedChanged"
-        },
-
-        expand: {
+      static get properties() {
+        return {
+          page: {
             type: String,
-            value: "expand-more"
-        },
+            reflectToAttribute: true,
+            observer: '_pageChanged',
+          },
+          largeScreen: {
+            type: String,
+            reflectToAttribute: true
+          },
+          rootPattern: String,
+          routeData: Object,
+          subroute: String,
+        };
+      }
 
-        data: {
-          type: Array
-        }
-
-      },
-
-      observers: [
-        '_routePageChanged(routeData.page)',
-        '_displayUserName(largeScreen, signedIn)'
-      ],
-
-      listeners: {
-        'everest-login-event': 'login',
-        'everest-signup-event': 'signup'
-      },
-
-      behaviors: [PinnacklBehavior.liveThemingBehavior],
-
-      ready: function (e) {
-        // Listen for scrolling event
-        var _this = this;
-        if(typeof window.horizon != "undefined") {
-          window.horizon.status(function(status) {
-            window.horizon.currentUser().fetch().subscribe( (user) => {
-              console.log(user);
-                _this.horizonUser = user;
-            },
-            (err) => {
-              console.log(err);
-            });
-          });
-        }
-        
-        document.addEventListener('scroll', function(e) {
-          if (window.scrollY >= 63) {
-            _this.condensed = "condensed";
-          } else {
-            _this.condensed = false;
-          }
-        });
-
-        // Remove restor focus to the menu button
-        this.$.userMenu.restoreFocusOnClose = false;
-      },
-
-      login: function (e, detail) {
-        this.$.everestData.loginUser(detail.user);
-      },
-
-      signup: function (e, detail) {
-        this.$.everestData.createUser(detail.user);
-      },
-
-      logout: function () {
-        this.$.everestData.logoutUser();
-      },
-
-      _openedChanged: function (opened) {
-          this.expand = "expand-more";
-          if (opened) {
-              this.expand = "expand-less";
-          }
-      },
-
-      expandTags: function (e) {
-        for (var i = 0; i < this.menu.length; i++) {
-          if (this.menu[i].name == e.target.item.name) {
-            this.set('menu.'+i+'.opened', !this.menu[i].opened);
-            this.set('menu.'+i+'.icon', "expand-more");
-            if (this.menu[i].opened) {
-              this.set('menu.'+i+'.icon', "expand-less");
-            }
-          }
-        }
-      },
-
-      _signIn: function (e) {
-        this.fire('sign-in');
-        this.$.formDialog.openDialog('signIn');
-      },
-
-      _signUp: function (e) {
-        this.fire('sign-up');
-        this.$.formDialog.openDialog('signUp');
-      },
-
-      _signedInChanged: function (userStatus) {
-        if (userStatus) {
-          console.info("User logged in");
-        } else {
-          console.info("User logged out");
-        }
-      },
-
-      _routePageChanged: function(page) {
-        this.page = page || 'home';
-        this.subpage = '';
-        if (this.$$('#fab')) {
-          this.$$('#fab').close();
-        }
-
-        Polymer.AppLayout.scroll({ top: 0, behavior: 'silent' });
-        // Force the drawer to close
-        this.$.appDrawer.opened = false;
-        // Force the submenu to close
-        for (var i = 0; i < this.menu.length; i++) {
-          if (this.menu[i].opened) {
-            this.set('menu.' + i + '.opened', false);
-            this.set('menu.' + i + '.icon', "expand-more");
-          }
-        }
-      },
-
-      _pageChanged: function(page) {
-        // load page import on demand.
-        this.importHref(
-          this.resolveUrl('everest-' + page + '/everest-' + page + '.html'), null, null, true);
-      },
-
-      _computeHidden: function (largeScreen) {
-        return largeScreen;
-      },
-
-      _computeCondensed: function (largeScreen, condensed) {
-        return largeScreen && condensed;
-      },
-
-      _displayUserName: function (largeScreen, signedIn) {
-        this.set('displayUserName', largeScreen && signedIn);
-      },
-
-      _getMenu: function () {
-        // FIXME : Grante access to this menu
+      static get observers() {
         return [
-          {
-            name: 'home',
-            path: '/home',
-            label: 'home'
-          },
-          {
-            name: 'article',
-            path: '#',
-            label: 'article',
-            opened: false,
-            icon: "expand-more",
-            submenu: [
-              {name:"Sciences", path: "/category/sciences"},
-              {name:"Music", path: "/category/music"}
-            ],
-          },
-          {
-            name: 'page',
-            path: '/page/about',
-            label: 'about'
-          },
+          '_routePageChanged(routeData.page)',
         ];
-      },
+      }
 
-      _ucFirst: function (string) {
-          return string.charAt(0).toUpperCase() + string.slice(1);
-      },
+      constructor() {
+        super();
 
-      _toggleDrawer: function () {
-        this.$.drawerAdmin.toggle();
-      },
+        // Get root pattern for app-route, for more info about `rootPath` see:
+        // https://www.polymer-project.org/2.0/docs/upgrade#urls-in-templates
+        this.rootPattern = (new URL(this.rootPath)).pathname;
+      }
 
-      _downloadTheme: function (e) {
-        console.log(e);
-        this.fire('download-theme');
-      },
+      ready() {
+        super.ready();
+        console.log("ready");
+        this.addEventListener('route-changed', e => this.__routeChanged(e));
+      }
 
-    });
+      _routePageChanged(page) {
+        // Polymer 2.0 will call with `undefined` on initialization.
+        // Ignore until we are properly called with a string.
+        if (page === undefined) {
+          return;
+        }
 
+        // If no page was found in the route data, page will be an empty string.
+        // Deault to 'home' in that case.
+        this.page = page || 'home';
+
+        // Close a non-persistent drawer when the page & route are changed.
+        if (!this.$.drawer.persistent) {
+          this.$.drawer.close();
+        }
+      }
+
+      _pageChanged(page) {
+        // Load page import on demand. Show 404 page if fails
+        var resolvedPageUrl = this.resolveUrl('everest-' + page + '/everest-' + page + '.html');
+        Polymer.importHref(
+            resolvedPageUrl,
+            null,
+            this._showPage404.bind(this),
+            true);
+      }
+
+      _showPage404() {
+        this.page = '404';
+      }
+    }
+
+    window.customElements.define(EverestApp.is, EverestApp);
   </script>
-
 </dom-module>
