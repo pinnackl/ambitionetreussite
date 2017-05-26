@@ -10,182 +10,83 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="Polymer Starter Kit">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-  <title>Everest</title>
-  <meta name="description" content="My App description">
+    <title>My App</title>
+    <meta name="description" content="My App description">
 
-  <link rel="icon" href="/images/favicon.ico">
+    <!--
+      If deploying to a non-root path, replace href="/" with the full path to the project root.
+      For example: href="/polymer-starter-kit/relative-path-example/"
+    -->
+    <base href="/">
 
-  <!-- See https://goo.gl/OOhYW5 -->
-  <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="images/favicon.ico">
 
-  <!-- See https://goo.gl/qRE0vM -->
-  <meta name="theme-color" content="#3eb7e9">
+    <!-- See https://goo.gl/OOhYW5 -->
+    <link rel="manifest" href="manifest.json">
 
-  <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="application-name" content="Everest">
+    <!-- See https://goo.gl/qRE0vM -->
+    <meta name="theme-color" content="#3f51b5">
 
-  <!-- Add to homescreen for Safari on iOS -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Everest">
+    <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="My App">
 
-  <!-- Homescreen icons -->
-  <link rel="apple-touch-icon" href="/images/manifest/icon-48x48.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="96x96" href="/images/manifest/icon-96x96.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/icon-144x144.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="My App">
 
-  <!-- Tile icon for Windows 8 (144x144 + tile color) -->
-  <meta name="msapplication-TileImage" content="/images/manifest/icon-144x144.png">
-  <meta name="msapplication-TileColor" content="#3eb7e9">
-  <meta name="msapplication-tap-highlight" content="no">
+    <!-- Homescreen icons -->
+    <link rel="apple-touch-icon" href="images/manifest/icon-48x48.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/manifest/icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="images/manifest/icon-96x96.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="images/manifest/icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="images/manifest/icon-192x192.png">
 
-  <script>
-    // Setup Polymer options
-    window.Polymer = {
-      dom: 'shady',
-      lazyRegister: true
-    };
+    <!-- Tile icon for Windows 8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#3f51b5">
+    <meta name="msapplication-tap-highlight" content="no">
 
-    // Load webcomponentsjs polyfill if browser does not support native Web Components
-    (function() {
-      'use strict';
+    <script>
+      // Register the base URL
+      const baseUrl = document.querySelector('base').href;
 
-      var onload = function() {
-        // For native Imports, manually fire WebComponentsReady so user code
-        // can use the same code path for native and polyfill'd imports.
-        if (!window.HTMLImports) {
-          document.dispatchEvent(
-            new CustomEvent('WebComponentsReady', {bubbles: true})
-          );
-        }
-      };
-
-      var webComponentsSupported = (
-        'registerElement' in document
-        && 'import' in document.createElement('link')
-        && 'content' in document.createElement('template')
-      );
-
-      if (!webComponentsSupported) {
-        var script = document.createElement('script');
-        script.async = true;
-        script.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
-        script.onload = onload;
-        document.head.appendChild(script);
-      } else {
-        onload();
+      // Load and register pre-caching Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register(baseUrl + 'service-worker.js');
+        });
       }
-    })();
+    </script>
 
-    // Load pre-caching Service Worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/service-worker.js');
-      });
-    }
-  </script>
+    <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
+    <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
 
-  <link rel="import" href="/src/everest-app.html">
+    <!-- Load your application shell -->
+    <link rel="import" href="src/everest-app.html">
 
-  <style>
-
-    body {
-      margin: 0;
-      font-family: 'Roboto', 'Noto', sans-serif;
-      line-height: 1.5;
-      min-height: 100vh;
-      background-color: #eee;
-    }
-
-    .delete-dialog {
-      width: 50%;
-    }
-
-    .btn {
-      color: #757575;
-    }
-
-    .btn.delete-btn {
-      color: #ffffff;
-      background: #ff5252;
-    }
-
-    .section-header {
-      display: flex;
-      flex-wrap: nowrap;
-      justify-content: space-between;
-      margin-bottom: 1em;
-      align-items: center;
-    }
-
-    .important-message {
-      color: #d50000;
-      background: #fbe9e7;
-      padding: 1em 2em;
-    }
-  </style>
-
-</head>
-<body>
-
-  <template is="dom-bind" id="app">
-    <iron-pages id="pager" selected="[[mode]]" attr-for-selected="name" fallback-selection="app">
-      <!-- Conditionnal access to everest-nimmda, the admin section -->
-      <!-- <everest-nimda name="nimda" fire-user="{{fireUser}}" mode="{{mode}}"></everest-nimda> -->
-      <!-- Display or not the main app -->
-        <everest-app name="app" fire-user="{{fireUser}}" mode="{{mode}}"></everest-app>
-    </iron-pages>
-    <!-- Admin delete dialog -->
-    <paper-dialog class="delete-dialog" modal>
-      <div class="section-header">
-        <h2>Delete datas</h2>
-        <paper-icon-button icon="close" dialog-dismiss></paper-icon-button>
-      </div>
-      <div class="content">
-        <div class="important-message">
-          <iron-icon icon="report-problem"></iron-icon>All deleted datas will be always accessible throught the trash.</div>
-      </div>
-      <div class="buttons">
-        <paper-button class="btn" dialog-dismiss>CANCEL</paper-button>
-        <paper-button class="btn delete-btn" dialog-confirm autofocus raised>DELETE</paper-button>
-      </div>
-    </paper-dialog>
-  </template>
-  <script>
-    (function (document) {
-
-      const app = document.querySelector('#app');
-
-      var   section;
-
-      app.addEventListener('dom-change', function() {
-        console.info('App ready');
-
-        const deleteDialog = document.querySelector('.delete-dialog');
-        // Open modal
-        document.addEventListener('trigger-delete-modal', function (e) {
-          // Set the section name
-          section = e.detail.section;
-          deleteDialog.open();
-        });
-        // close modal
-        deleteDialog.addEventListener('iron-overlay-closed', function (e) {
-          // If the modal is confirmed trigger the confirm event
-          if (e.detail.confirmed) {
-            var event = new Event('modal-' + section);
-            document.dispatchEvent(event);
-          }
-        });
-      });
-
-    })(document);
-  </script>
-</body>
+    <!-- Add any global styles for body, document, etc. -->
+    <style>
+      body {
+        margin: 0;
+        font-family: 'Roboto', 'Noto', sans-serif;
+        line-height: 1.5;
+        min-height: 100vh;
+        background-color: #eeeeee;
+      }
+    </style>
+  </head>
+  <body>
+    <everest-app id="app"></everest-app>
+    <noscript>
+      Please enable JavaScript to view this website.
+    </noscript>
+    <!-- Built with love using Polymer Starter Kit -->
+  </body>
 </html>
