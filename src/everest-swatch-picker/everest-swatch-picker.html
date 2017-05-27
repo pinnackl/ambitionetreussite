@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/paper-swatch-picker/paper-swatch-picker.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/web-animations-js/web-animations-next-lite.min.html">
 
 
 <dom-module id="everest-swatch-picker">
@@ -112,7 +113,6 @@
         if (!value) {
           value = "#fefefe";
         }
-        console.log(this.updateStyles);
         this.updateStyles({'--swatch-picker-bg' : this.__invertColor(value)});
       },
 
