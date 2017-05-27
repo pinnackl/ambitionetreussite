@@ -22,6 +22,9 @@
 <link rel="lazy-import" href="my-view404.html">
 <link rel="import" href="everest-common-behaviors/everest-behaviors.html">
 <link rel="import" href="everest-footer/everest-footer.html">
+<link rel="import" href="live-theming-behavior/live-theming-behavior.html">
+<link rel="import" href="everest-swatch-picker/everest-swatch-picker.html">
+
 
 <dom-module id="everest-app">
   <template>
@@ -29,7 +32,7 @@
       /* Polymer Starter Kit */
       :host {
         --app-primary-color: #4285f4;
-        --app-secondary-color: black;
+        --app-icon-color: black;
         --app-tab-color: #ffffff;
         --app-tab-selected-color: green;
 
@@ -146,6 +149,29 @@
         display: none;
       }
 
+      .profileBtn {
+        color: var(--app-icon-color);
+        position: relative;
+        -webkit-transition: all .2s ease;
+        -moz-transition: all .2s ease;
+        -ms-transition: all .2s ease;
+        -o-transition: all .2s ease;
+        transition: all .2s ease;
+        top: 0;
+      }
+
+      .profileBtn[condensed] {
+        top: -100px;
+      }
+
+      .paper-tabs-admin {
+        width: 100%;
+      }
+
+      #drawerAdmin {
+        --app-drawer-width: 350px;
+      }
+
     </style>
 
     <app-location route="{{route}}"></app-location>
@@ -190,6 +216,10 @@
             <div condensed-title mobile$=[[!largeScreen]]>
               <div title>Everest</div>
             </div>
+
+            <!-- Admin Drawer Button -->
+            <paper-icon-button class="profileBtn" icon="my-icons:menu" on-tap="_toggleDrawer"></paper-icon-button>
+
           </app-toolbar>
 
           <template is="dom-if" if={{largeScreen}}>
@@ -234,12 +264,66 @@
 
         </iron-pages>
         <everest-footer rights="[[rights]]" user="{{fireUser}}"></everest-footer>
+
+        
       </app-header-layout>
+
+        <!-- Drawer Admin Content -->
+        <app-drawer id="drawerAdmin" align="end" swipe-open>
+          <app-toolbar>
+            <paper-tabs class="paper-tabs-admin" selected="{{selected}}">
+              <paper-tab>Theme</paper-tab>
+              <paper-tab>Admin</paper-tab>
+            </paper-tabs>
+          </app-toolbar>
+
+          <iron-pages selected="{{selected}}" fallback-selection="0">
+            <div>
+              <paper-button raised on-tap="_downloadTheme" hidden="[[!showDownload]]"><iron-icon icon="file-download"></iron-icon>Download</paper-button>
+              <!-- Banner Upload -->
+              <div class="flexbox-container">
+                <span>Banner</span>
+                <everest-swatch-picker mode="image" image="{{appHeaderBanner}}" as-background></everest-swatch-picker>
+              </div>
+              <!-- Logo Upload -->
+              <div class="flexbox-container">
+                <span>Logo</span>
+                <everest-swatch-picker mode="image" image="{{appLogo}}"></everest-swatch-picker>
+              </div>
+              <!-- Color Picker -->
+              <div class="flexbox-container">
+                <span>Primary Color</span>
+                <everest-swatch-picker mode="color" color="{{appPrimaryColor}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Icon Color</span>
+                <everest-swatch-picker mode="color" color="{{appIconColor}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Logo Title Color</span>
+                <everest-swatch-picker mode="color" color="{{appLogoTitleColor}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Tab Color</span>
+                <everest-swatch-picker mode="color" color="{{appTabColor}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Selected Tab Color</span>
+                <everest-swatch-picker mode="color" color="{{appTabSelectedColor}}"></everest-swatch-picker>
+              </div>
+            </div>
+
+            <div>
+              Admin Page
+            </div>
+          </iron-pages>
+        </app-drawer>
+
     </app-drawer-layout>
   </template>
 
   <script>
-    class EverestApp extends Polymer.mixinBehaviors([EverestBehavior.appTitleBehavior], Polymer.Element) {
+    class EverestApp extends Polymer.mixinBehaviors([EverestBehavior.liveThemingBehavior], Polymer.Element) {
 
       static get is() { return 'everest-app'; }
 
@@ -309,6 +393,15 @@
 
       _showPage404() {
         this.page = '404';
+      }
+
+      _toggleDrawer() {
+        this.$.drawerAdmin.toggle();
+      }
+
+      _downloadTheme(e) {
+        console.log(e);
+        this.fire('download-theme');
       }
     }
 
