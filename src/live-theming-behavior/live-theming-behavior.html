@@ -1,6 +1,6 @@
 <script>
-  window.PinnacklBehavior = window.PinnacklBehavior || {};
-  PinnacklBehavior.liveThemingBehavior = {
+  window.EverestBehavior = window.EverestBehavior || {};
+  EverestBehavior.liveThemingBehavior = {
     properties: {
 
       /* CSS Custom Properties */
@@ -98,9 +98,11 @@
 
     // Live updates
     __updateCustomProperty: function (name, value) {
-      this.customStyle[name] = value;
-      this.updateStyles();
 
+      var property = {};
+      property[name] = value;
+      
+      this.updateStyles(property);
       this.__setTheme(name, value);
     },
 

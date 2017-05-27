@@ -112,8 +112,8 @@
         if (!value) {
           value = "#fefefe";
         }
-        this.customStyle['--swatch-picker-bg'] = this.__invertColor(value);
-        this.updateStyles();
+        console.log(this.updateStyles);
+        this.updateStyles({'--swatch-picker-bg' : this.__invertColor(value)});
       },
 
       __invertColor: function (hex) {
