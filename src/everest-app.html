@@ -100,64 +100,62 @@
 
       /* Logo display */
       [condensed-title] [title] {
-        position: absolute;
-        top: 50%;/* Title position (25%, 50%, 100%) */
+        position: relative;
+        top: 228%;
         left: var(--condensed-logo-size);
       }
 
       [condensed-title] {
-        position: absolute;
-        top: 0;
+        height: 64px;
+        position: relative;
+        top: -28%;
         bottom: 0;
         left: 0;
         right: 0;
-        background-image: url('//placehold.it/48/48');/* Condensed logo background image */
-        background-repeat: no-repeat;
-        background-position: left center;/* Condensed logo position */
-        background-size: var(--condensed-logo-size);/* Condensed logo size */
         /* The difference in font size is used to calculate the scale of the title in the transition. */
         font-size: 16px;
       }
 
       [main-title] [title] {
-        position: absolute;
-        top: 50%;/* Title position (25%, 50%, 100%) */
+        position: relative;
+        top: -80%; /* Title position (-25%, -50%, -80%) */
         left: var(--logo-size);
       }
 
+      [main-title] [title] img,
+      [condensed-title] [title] img {
+        vertical-align: middle;
+      }
+
       [main-title] {
-        position: absolute;
-        top: -120px;
+        height: 64px;
+        position: relative;
+        top: 0;
         bottom: 0;
         left: 0;
         right: 0;
-        background-image: url('//placehold.it/64/64');/* Logo background image */
-        background-repeat: no-repeat;
-        background-position: left center;/* Logo position */
-        background-size: var(--logo-size);/* Logo size */
-        -webkit-transform-origin: left top !important;
-        transform-origin: left top !important;
+        -webkit-transform-origin: left bottom !important;
+        transform-origin: left bottom !important;
         /* The difference in font size is used to calculate the scale of the title in the transition. */
         font-size: 32px;
       }
 
       [condensed-title][mobile] {
-        background-position: center center;/* Logo position */
+        top: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 2%;
       }
 
       [condensed-title][mobile] [title] {
-        display: none;
+        top: 0;
+        left: 0;
       }
 
-      .profileBtn {
-        color: var(--app-icon-color);
-        position: relative;
-        -webkit-transition: all .2s ease;
-        -moz-transition: all .2s ease;
-        -ms-transition: all .2s ease;
-        -o-transition: all .2s ease;
-        transition: all .2s ease;
-        top: 0;
+      paper-tabs.menu-tab {
+        width: 60%; /* Tabs size (50%, ...) */
+        margin-left: 40%; /* The rest of Tabs size to go to 100% */
       }
 
       .profileBtn[condensed] {
@@ -204,17 +202,19 @@
           shadow="[[shadow]]"
           effects="[[_computeEffects(blendBackground, fadeBackground, parallaxBackground, resizeSnappedTitle, resizeTitle, waterfall)]]"
           slot="header"> -->
+
         <!-- FIXME : Dev purpose -->
         <app-header
           condenses
-          fixed
+          reveals
+          fixed="[[largeScreen]]"
           effects="resize-title"
           slot="header">
 
           <app-toolbar>
             <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
             <div condensed-title mobile$=[[!largeScreen]]>
-              <div title>Everest</div>
+              <div title><img src="//placehold.it/48/48">Everest</div>
             </div>
 
             <!-- Admin Drawer Button -->
@@ -225,12 +225,11 @@
           <template is="dom-if" if={{largeScreen}}>
             <app-toolbar>
               <div main-title>
-                <div title>Everest</div>
+                <div title><img src="//placehold.it/64/64">Everest</div>
               </div>
             </app-toolbar>
-            <paper-tabs selected="[[page]]" attr-for-selected="name"
-              fit-container
-              style="width: 50%; margin-left: 50%;">
+            <paper-tabs class="menu-tab" selected="[[page]]" attr-for-selected="name"
+              fit-container scrollable sticky$="[[largeScreen]]">
               <paper-tab link name="home"><a href="/home" title="Home">Home</a></paper-tab>
               <paper-tab link name="category"><a href="/category" title="Category">Category</a></paper-tab>
             </paper-tabs>
