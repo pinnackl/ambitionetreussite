@@ -18,7 +18,9 @@
     "paper-tabs": "PolymerElements/paper-tabs#1 - 2",
     "paper-swatch-picker": "PolymerElements/paper-swatch-picker#^2.0.0",
     "paper-button": "PolymerElements/paper-button#^2.0.0",
-    "web-animations-js": "^2.2.5"
+    "web-animations-js": "^2.2.5",
+    "vaadin-upload": "vaadin/vaadin-upload#2.0.0-alpha3",
+    "file-upload": "https://github.com/pinnackl/file-upload"
   },
   "resolutions": {
     "polymer": "^2.0.0-rc.3",
