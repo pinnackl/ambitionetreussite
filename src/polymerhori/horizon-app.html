@@ -3,20 +3,20 @@
 <dom-module id="horizon-app">
     <template>
         <style>
-            :host {
+             :host {
                 display: block;
             }
         </style>
-        
+
     </template>
     <script>
         Polymer({
             is: 'horizon-app',
 
             properties: {
-            /**
-            * The name of your app. Optional.
-            */
+                /**
+                * The name of your app. Optional.
+                */
                 name: {
                     type: String,
                     value: ''
@@ -56,26 +56,26 @@
                     computed: '__computeApp(name, apiKey, authDomain, databaseUrl)'
                 }
             },
-            __computeApp: function(name, apiKey, authDomain, databaseUrl) {
+            __computeApp: function (name, apiKey, authDomain, databaseUrl) {
                 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
- 
+
                 window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
                 window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange
-                
+
                 if (!window.indexedDB) {
                     window.alert("Your browser doesn't support a stable version of IndexedDB.")
                 }
 
+                var _this = this;
                 var request = window.indexedDB.open("Horizon", 1);
-                request.onsuccess = function(event) {
+                request.onsuccess = function (event) {
                     window.db = request.result;
                     var getToken = db.transaction("token", "readwrite")
                         .objectStore("token")
                         .get(1);
-                    
-                    getToken.onsuccess = function(event) {
-                        console.log(getToken.result.token);
-                        if(getToken.result.token) {
+
+                    getToken.onsuccess = function (event) {
+                        if (getToken.result && getToken.result.token) {
                             var hz = new Horizon({
                                 host: 'localhost:8181',
                                 authType: {
@@ -90,11 +90,16 @@
                             });
                         }
                         window.horizon = hz;
+                        window.horizon.status(function (status) {
+                            window.horizon.currentUser().fetch().subscribe((user) => {
+                                _this.fire('user', { user: user });
+                            }, (err) => { console.log(err); });
+                        });
                         return hz;
                     };
                 };
 
-                request.onerror = function(event) {
+                request.onerror = function (event) {
                     var hz = new Horizon({
                         host: 'localhost:8181',
                         authType: 'unauthenticated'
@@ -102,11 +107,11 @@
                     window.horizon = hz;
                     return hz;
                 };
-                
-                request.onupgradeneeded = function(event) {
+
+                request.onupgradeneeded = function (event) {
                     window.db = event.target.result;
-                    var objectStore = db.createObjectStore("token", {keyPath: "id"});
-                    objectStore.transaction.oncomplete = function(event) {
+                    var objectStore = db.createObjectStore("token", { keyPath: "id" });
+                    objectStore.transaction.oncomplete = function (event) {
                         var hz = new Horizon({
                             host: 'localhost:8181',
                             authType: 'unauthenticated'
