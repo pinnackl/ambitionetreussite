@@ -188,9 +188,9 @@
                     var request = db.transaction("token", "readwrite")
                         .objectStore("token")
                         .delete(1);
-                    request.onsuccess = function (event) {
-                        window.db.close();
-                    };
+                    // request.onsuccess = function (event) {
+                    //     window.db.close();
+                    // };
                 },
 
                 _computeSignedIn: function (user) {

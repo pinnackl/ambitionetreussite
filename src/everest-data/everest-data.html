@@ -134,7 +134,6 @@
                         email: email
                     }).subscribe(
                         (data) => {
-                            console.log("id value:", data.id)
                             _this.uid = data.id;
                             _this.set('horizonSuccess', Date.now());
                             _this.$.dataToast.text = _this.stateMessage.registerSuccess.text;
@@ -164,13 +163,14 @@
 
                 var auth = this.$.auth.signInWithEmailAndPassword(email, password);
 
-                auth.then(function (e) {
-                    console.log(e);
-                    _this.set('horizonSuccess', Date.now());
-                }).catch(function (e) {
-                    console.error(e);
-                    _this.set('horizonError', e);
-                });
+                // to do : resolve error auth undefined
+                // auth.then(function (e) {
+                //     console.log(e);
+                //     _this.set('horizonSuccess', Date.now());
+                // }).catch(function (e) {
+                //     console.error(e);
+                //     _this.set('horizonError', e);
+                // });
             },
 
             /**
