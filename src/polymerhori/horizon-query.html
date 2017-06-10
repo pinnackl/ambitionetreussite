@@ -4,11 +4,11 @@
 <dom-module id="horizon-query">
     <template>
         <style>
-            :host {
+             :host {
                 display: block;
             }
         </style>
-        
+
     </template>
     <script>
         Polymer({
@@ -18,7 +18,7 @@
                 ref: {
                     type: Object
                 },
-            
+
                 /**
                  * Horizon data query
                  * object computed by the following parameters.
@@ -101,13 +101,13 @@
                 data: {
                     type: Array,
                     notify: true,
-                    value: function() {
+                    value: function () {
                         return [];
                     }
                 }
             },
 
-            __computeQuery: function(orderByChild, orderLimit, limit, startAt, endAt, equalTo, path) {
+            __computeQuery: function (orderByChild, orderLimit, limit, startAt, endAt, equalTo, path) {
                 var horizon = window.horizon;
                 if (path != null && typeof horizon != "undefined") {
                     var table = path.split('/').slice(1, 2).join('');
@@ -135,7 +135,7 @@
                 }
             },
 
-            __computeRef: function(path) {
+            __computeRef: function (path) {
                 // console.log(path);
             }
         });

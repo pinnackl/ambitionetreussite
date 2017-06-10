@@ -26,35 +26,35 @@
   Polymer({
     is: 'horizon-document',
     properties: {
-        path: {
-            type: String,
-            value: null
-        },
-        ref: {
-            type: Object
-        },
-        query: {
-            type: Object,
-            computed: '__computeQuery(path)'
-        },
-        column: {
-          type: String,
-          value: null
-        },
-        data: {
-            type: Object,
-            notify: true,
-            value: function() {
-                return [];
-            }
+      path: {
+        type: String,
+        value: null
+      },
+      ref: {
+        type: Object
+      },
+      query: {
+        type: Object,
+        computed: '__computeQuery(path)'
+      },
+      column: {
+        type: String,
+        value: null
+      },
+      data: {
+        type: Object,
+        notify: true,
+        value: function () {
+          return [];
         }
+      }
     },
 
-    attached: function() {
+    attached: function () {
       this.__refChanged(this.ref, this.ref);
     },
 
-    detached: function() {
+    detached: function () {
       if (this.ref) {
         this.ref.off('value', this.__onFirebaseValue, this);
       }
@@ -90,8 +90,8 @@
      *     written to the new path.
      * @override
      */
-    save: function(parentPath, key) {
-      return new Promise(function(resolve, reject) {
+    save: function (parentPath, key) {
+      return new Promise(function (resolve, reject) {
         var path;
 
         if (!this.app) {
@@ -103,14 +103,14 @@
           resolve(this._setFirebaseValue(path, this.data));
         } else {
           path = firebase.database(this.app).ref(parentPath)
-              .push(this.data, function(error) {
-                if (error) {
-                  reject(error);
-                  return;
-                }
+            .push(this.data, function (error) {
+              if (error) {
+                reject(error);
+                return;
+              }
 
-                resolve();
-              }).path.toString();
+              resolve();
+            }).path.toString();
         }
 
         this.path = path;
@@ -120,7 +120,7 @@
     /**
      * @override
      */
-    reset: function() {
+    reset: function () {
       this.path = null;
       return Promise.resolve();
     },
@@ -128,8 +128,8 @@
     /**
      * @override
      */
-    destroy: function() {
-      return this._setFirebaseValue(this.path, null).then(function() {
+    destroy: function () {
+      return this._setFirebaseValue(this.path, null).then(function () {
         return this.reset();
       }.bind(this));
     },
@@ -137,7 +137,7 @@
     /**
      * @override
      */
-    memoryPathToStoragePath: function(path) {
+    memoryPathToStoragePath: function (path) {
       var storagePath = this.path;
 
       if (path !== 'data') {
@@ -150,11 +150,11 @@
     /**
      * @override
      */
-    storagePathToMemoryPath: function(storagePath) {
+    storagePathToMemoryPath: function (storagePath) {
       var path = 'data';
 
       storagePath =
-          storagePath.replace(this.path, '').split('/').join('.');
+        storagePath.replace(this.path, '').split('/').join('.');
 
       if (storagePath) {
         path += '.' + storagePath;
@@ -166,9 +166,9 @@
     /**
      * @override
      */
-    getStoredValue: function(path) {
-      return new Promise(function(resolve, reject) {
-        this.db.ref(path).once('value', function(snapshot) {
+    getStoredValue: function (path) {
+      return new Promise(function (resolve, reject) {
+        this.db.ref(path).once('value', function (snapshot) {
           var value = snapshot.val();
           if (value == null) {
             resolve(this.zeroValue);
@@ -181,15 +181,17 @@
     /**
      * @override
      */
-    setStoredValue: function(path, value) {
+    setStoredValue: function (path, value) {
       return this._setFirebaseValue(path, value);
     },
 
-    __refChanged: function(ref, oldRef) {
+    __refChanged: function (ref, oldRef) {
       // console.log("refChanged");
     },
 
-    __computeQuery: function(path) {
+    __computeQuery: function (path) {
+      console.log("compute query");
+      console.log(path);
       var _this = this;
       // temporary : add column parameter + array function
       var horizon = window.horizon;
@@ -198,14 +200,18 @@
         var table = aPath[1];
         var id = aPath[2];
         this.ref = horizon(table);
+        console.log(this.ref);
         var aOrder = [];
         aOrder.push({
           id: id
         });
-        this.ref.findAll(aOrder).watch().subscribe(data => {
-            this.set('data', data[0]);
+
+        this.ref.find({ id: "ploper" }).watch().subscribe(data => {
+          console.log(data);
+          this.set('data', data);
         });
       }
     }
   });
+
 </script>
