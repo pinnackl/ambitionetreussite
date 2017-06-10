@@ -200,13 +200,8 @@
         var table = aPath[1];
         var id = aPath[2];
         this.ref = horizon(table);
-        console.log(this.ref);
-        var aOrder = [];
-        aOrder.push({
-          id: id
-        });
 
-        this.ref.find({ id: "ploper" }).watch().subscribe(data => {
+        this.ref.find({ id: id }).watch().subscribe(data => {
           console.log(data);
           this.set('data', data);
         });

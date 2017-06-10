@@ -5,12 +5,7 @@
 <dom-module id="everest-data">
     <template>
         <everest-horizon></everest-horizon>
-        <horizon-auth
-            id="auth"
-            user="{{user}}"
-            signed-in="{{signedIn}}"
-            on-error="_handleError"
-        >
+        <horizon-auth id="auth" user="{{user}}" signed-in="{{signedIn}}" on-error="_handleError">
         </horizon-auth>
 
         <!--<horizon-document
@@ -18,22 +13,14 @@
           data="{{userData}}">
         </horizon-document>-->
 
-        <firebase-document
-          path="/editors"
-          data="{{editors}}">
+        <firebase-document path="/editors" data="{{editors}}">
         </firebase-document>
-        <firebase-document
-          path="/moderators"
-          data="{{moderators}}">
+        <firebase-document path="/moderators" data="{{moderators}}">
         </firebase-document>
-        <firebase-document
-          path="/administrators"
-          data="{{administrators}}">
+        <firebase-document path="/administrators" data="{{administrators}}">
         </firebase-document>
 
-        <horizon-query
-            id="alpinists"
-            path="/alpinists">
+        <horizon-query id="alpinists" path="/alpinists">
         </horizon-query>
 
         <paper-toast id="dataToast" horizontal-align="left" always-on-top duration="5000" text=""></paper-toast>
@@ -149,7 +136,7 @@
                         (data) => {
                             console.log("id value:", data.id)
                             _this.uid = data.id;
-                             _this.set('horizonSuccess', Date.now());
+                            _this.set('horizonSuccess', Date.now());
                             _this.$.dataToast.text = _this.stateMessage.registerSuccess.text;
                             _this.$.dataToast.open();
                         },
@@ -157,7 +144,7 @@
                             console.error(err);
                             _this.set('horizonError', err);
                         }
-                    );
+                        );
                 }).catch(function (e) {
                     console.error(e);
                     _this.set('horizonError', e);

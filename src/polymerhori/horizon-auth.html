@@ -77,8 +77,6 @@
 
                 storeToken: function (token) {
                     var request = window.indexedDB.open("Horizon", 1);
-                    console.log("storeToken");
-                    console.log(window.db);
                     var request = window.db.transaction("token", "readwrite")
                         .objectStore("token")
                         .put({ id: 1, token: token });
@@ -114,7 +112,6 @@
 
                             window.horizon.disconnect();
                             window.horizon.onDisconnected(function (status) {
-                                console.log('onDisconnect sign in')
                                 _this.storeToken(token);
                             });
 
