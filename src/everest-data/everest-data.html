@@ -13,13 +13,6 @@
           data="{{userData}}">
         </horizon-document>-->
 
-        <firebase-document path="/editors" data="{{editors}}">
-        </firebase-document>
-        <firebase-document path="/moderators" data="{{moderators}}">
-        </firebase-document>
-        <firebase-document path="/administrators" data="{{administrators}}">
-        </firebase-document>
-
         <horizon-query id="alpinists" path="/alpinists">
         </horizon-query>
 
@@ -114,7 +107,6 @@
              * @return void
              */
             createUser: function (userObject) {
-                console.info("Register");
                 var _this = this;
                 var name = typeof userObject.name ? userObject.name : "";
                 var email = typeof userObject.email ? userObject.email : "";
@@ -140,12 +132,10 @@
                             _this.$.dataToast.open();
                         },
                         (err) => {
-                            console.error(err);
                             _this.set('horizonError', err);
                         }
                         );
                 }).catch(function (e) {
-                    console.error(e);
                     _this.set('horizonError', e);
                 });
             },
@@ -164,13 +154,13 @@
                 var auth = this.$.auth.signInWithEmailAndPassword(email, password);
 
                 // to do : resolve error auth undefined
-                // auth.then(function (e) {
-                //     console.log(e);
-                //     _this.set('horizonSuccess', Date.now());
-                // }).catch(function (e) {
-                //     console.error(e);
-                //     _this.set('horizonError', e);
-                // });
+                auth.then(function (e) {
+                    console.log(e);
+                    _this.set('horizonSuccess', Date.now());
+                }).catch(function (e) {
+                    console.error(e);
+                    _this.set('horizonError', e);
+                });
             },
 
             /**
