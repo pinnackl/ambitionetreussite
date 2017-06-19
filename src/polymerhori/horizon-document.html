@@ -190,9 +190,8 @@
     },
 
     __computeQuery: function (path) {
-      console.log("compute query");
-      console.log(path);
       var _this = this;
+      console.log(path);
       // temporary : add column parameter + array function
       var horizon = window.horizon;
       if (path != null && typeof horizon != "undefined") {
@@ -200,11 +199,11 @@
         var table = aPath[1];
         var id = aPath[2];
         this.ref = horizon(table);
-
-        this.ref.find({ id: id }).watch().subscribe(data => {
-          console.log(data);
-          this.set('data', data);
-        });
+        if (id != "" && typeof id != "undefined") {
+          this.ref.find({ id: id }).watch().subscribe(data => {
+            this.set('data', data);
+          });
+        }
       }
     }
   });

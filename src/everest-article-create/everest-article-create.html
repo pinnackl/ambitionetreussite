@@ -363,7 +363,7 @@
 
         <horizon-document id="article" path="/articles">
         </horizon-document>
-        <horizon-document path="/users/[[user.uid]]" data="{{userData}}">
+        <horizon-document path="/alpinists/[[user.id]]" data="{{userData}}">
         </horizon-document>
         <horizon-query id="categories" path="/categories" data="{{categories}}">
         </horizon-query>
@@ -380,7 +380,7 @@
                             <iron-image class="avatar" src="https://cdn.pinnackl.com/avatars/[[userData.basicInfo.avatar]]" preload sizing="cover" style="background-color: lightgray;"></iron-image>
                         </div>
                         <div class="author-ctn">
-                            <div class="autor-name">By <a href="/user/[[user.uid]]" title="[[userData.basicInfo.name]]">[[userData.basicInfo.name]]</a>,</div>
+                            <div class="autor-name">By <a href="/user/[[user.id]]" title="[[userData.name]]">[[userData.name]]</a>,</div>
                         </div>
                         <div class="category">
                             <a class="tag" href="#" title="[[_ucfirst(category)]]">[[_ucfirst(category)]]</a>
@@ -565,14 +565,16 @@
 
             ready: function () {
                 this.origin = window.location.origin;
+                console.log(this.user);
             },
 
             create: function (e) {
                 console.log('create');
+                console.log(this.userData);
                 this.isUpdate = false;
                 if (this.slug != "" && typeof this.category != "undefined" && this.$.editor.getContent() != "" /*&& this.isAdmin*/) {
                     var _this = this;
-                    const newRef = window.horizon('categories');
+                    const newRef = window.horizon('articles');
                     newRef.store({
                         slug: this.slug,
                         title: this.title || "",
@@ -583,8 +585,8 @@
                         content: this.$.editor.getContent() || "",
                         created: Date.now(),
                         edited: Date.now(),
-                        author: this.userData.basicInfo.name,
-                        authorID: this.user.uid,
+                        author: this.userData.name,
+                        authorID: this.user.id,
                         comments: [],
                         published: this.published,
                         trash: false,
@@ -620,7 +622,7 @@
 
             addTag: function (e) {
                 if (this.newTag /*&& this.isAdmin*/) {
-                    const newRef = window.horizon('categories');
+                    const newRef = window.horizon('tags');
                     newRef.store({
                         slug: getSlug(this.newTag),
                         name: this.newTag
