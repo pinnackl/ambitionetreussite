@@ -340,7 +340,7 @@
       As we are usiung the firebase service, its aloso handle the authentication process
     -->
     <everest-data id="everestData" signed-in="{{signedIn}}" rights="{{rights}}" user="{{horizonUser}}" horizon-error="{{horizonError}}"
-      horizon-success="{{horizonSucces}}">
+      horizon-success="{{horizonSuccess}}">
     </everest-data>
 
     <horizon-document path="/alpinists/[[horizonUser.id]]" data="{{user}}">
@@ -353,7 +353,7 @@
 
       <!-- Drawer content -->
       <app-drawer id="appDrawer" swipe-open>
-        <app-toolbar>fireUser</app-toolbar>
+        <app-toolbar>horizonUser</app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
           <template is="dom-repeat" items={{menu}} as=item index-as=index>
             <template is="dom-if" if={{!item.submenu}}>
@@ -541,9 +541,9 @@
           <!-- Page view -->
           <everest-page name="page" rights="[[rights]]" route="{{subroute}}" subpage="{{subpage}}"></everest-page>
           <!-- New view -->
-          <everest-new name="new" rights="{{rights}}" route="{{subroute}}" subpage="{{subpage}}" user="{{fireUser}}"></everest-new>
+          <everest-new name="new" rights="{{rights}}" route="{{subroute}}" subpage="{{subpage}}" user="{{horizonUser}}"></everest-new>
           <!-- User view -->
-          <everest-user name="user" rights="{{rights}}" route="{{subroute}}" subpage="{{subpage}}" user="{{fireUser}}"></everest-user>
+          <everest-user name="user" rights="{{rights}}" route="{{subroute}}" subpage="{{subpage}}" user="{{horizonUser}}"></everest-user>
           <!-- Author view -->
           <div name="author">author</div>
 
@@ -551,8 +551,8 @@
             <h1>404</h1>
           </div>
         </iron-pages>
-        <everest-footer rights="[[rights]]" user="{{fireUser}}"></everest-footer>
-        <everest-forms id="formDialog" name="signIn" firebase-error="{{horizonError}}" firebase-success="{{horizonSucces}}"></everest-forms>
+        <everest-footer rights="[[rights]]" user="{{horizonUser}}"></everest-footer>
+        <everest-forms id="formDialog" name="signIn" horizon-error="{{horizonError}}" horizon-success="{{horizonSuccess}}"></everest-forms>
       </app-header-layout>
 
     </app-drawer-layout>
