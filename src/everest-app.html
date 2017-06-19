@@ -33,6 +33,7 @@
       :host {
         --app-primary-color: #4285f4;
         --app-icon-color: black;
+        --app-header-text-color: #ffffff;
         --app-tab-color: #ffffff;
         --app-tab-selected-color: green;
 
@@ -47,8 +48,9 @@
       }
 
       app-header {
-        color: #fff;
+        color: var(--app-header-text-color);
         background-color: var(--app-primary-color);
+        background-image: var(--app-header-banner);
       }
 
       app-header paper-icon-button {
@@ -294,6 +296,10 @@
               <div class="flexbox-container">
                 <span>Primary Color</span>
                 <everest-swatch-picker mode="color" color="{{appPrimaryColor}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Header Text Color</span>
+                <everest-swatch-picker mode="color" color="{{appHeaderTextColor}}"></everest-swatch-picker>
               </div>
               <div class="flexbox-container">
                 <span>Icon Color</span>

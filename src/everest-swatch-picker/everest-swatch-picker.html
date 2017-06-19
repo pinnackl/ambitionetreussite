@@ -1,7 +1,8 @@
 <link rel="import" href="../../bower_components/paper-swatch-picker/paper-swatch-picker.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/web-animations-js/web-animations-next-lite.min.html">
-
+<!--<link rel="import" href="../../bower_components/file-upload/file-upload.html">-->
+<link rel="import" href="../../bower_components/vaadin-upload/vaadin-upload.html">
 
 <dom-module id="everest-swatch-picker">
   <template>
@@ -51,15 +52,24 @@
     </template>
     <template is="dom-if" if="[[!option]]">
       <div class="image">
-        <file-upload
-            accept="image/*"
-            method="POST"
-            file-data-name="cover"
-            hide-file-list
-            target="https://cdn.pinnackl.com/api/images/upload"
-            on-success="_imageChanged">
-            <iron-icon icon="cloud-upload"></iron-icon>
-          </file-upload>
+        <!--<file-upload
+          accept="image/*"
+          method="POST"
+          file-data-name="cover"
+          hide-file-list
+          target="https://cdn.pinnackl.com/api/images/upload"
+          on-success="_imageChanged">
+          <iron-icon icon="cloud-upload"></iron-icon>
+        </file-upload>-->
+        <vaadin-upload 
+          nodrop 
+          max-files="1" 
+          accept="image/*" 
+          method="POST" 
+          form-data-name="cover" 
+          target="https://cdn.pinnackl.com/api/images/upload" 
+          on-upload-success="_imageChanged">
+        </vaadin-upload>
       </div>
     </template>
   </template>
