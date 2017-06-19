@@ -37,9 +37,9 @@
         type: Object,
         computed: '__computeQuery(path)'
       },
-      column: {
+      index: {
         type: String,
-        value: null
+        value: 'id'
       },
       data: {
         type: Object,
@@ -197,10 +197,12 @@
       if (path != null && typeof horizon != "undefined") {
         var aPath = path.split('/');
         var table = aPath[1];
-        var id = aPath[2];
+        var value = aPath[2];
         this.ref = horizon(table);
-        if (id != "" && typeof id != "undefined") {
-          this.ref.find({ id: id }).watch().subscribe(data => {
+        if (value != "" && typeof value != "undefined") {
+          var query = {};
+          query[this.index] = value;
+          this.ref.find(query).watch().subscribe(data => {
             this.set('data', data);
           });
         }
