@@ -1,4 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
@@ -388,7 +390,7 @@
 
         <div class="post">
             <div class="cover">
-                <iron-image src="https://cdn.pinnackl.com/images/[[cover]]" preload style="background: #3eb7e9;" fade  sizing="cover" position="{{position}}"></iron-image>
+                <iron-image src="https://cdn.pinnackl.com/images/[[cover]]" preload style="background: #3eb7e9;" fade sizing="cover" position="{{position}}"></iron-image>
                 <div class="filter">
                     <h1 class="title">[[title]]</h1>
                     <div class="article-info">
@@ -409,13 +411,13 @@
                             <span></span>
                             <div>
                                 <span>Position of the cover <iron-icon icon="editor:vertical-align-[[position]]"></iron-icon></span>
-                                <paper-menu-button horizontal-align="right">
-                                    <paper-icon-button icon="open-with" class="dropdown-trigger"></paper-icon-button>
-                                    <paper-menu class="dropdown-content" selected="{{position}}" attr-for-selected="value">
+                                <paper-menu-button>
+                                    <paper-icon-button icon="icons:open-with" slot="dropdown-trigger" horizontal-align="right"></paper-icon-button>
+                                    <paper-listbox slot="dropdown-content" selected="{{position}}" attr-for-selected="value">
                                         <paper-item value="top"><iron-icon icon="editor:vertical-align-top"></iron-icon>Top</paper-item>
                                         <paper-item value="center"><iron-icon icon="editor:vertical-align-center"></iron-icon>Center</paper-item>
                                         <paper-item value="bottom"><iron-icon icon="editor:vertical-align-bottom"></iron-icon>Bottom</paper-item>
-                                    </paper-menu>
+                                    </paper-listbox>
                                 </paper-menu-button>
                             </div>
                         </div>
