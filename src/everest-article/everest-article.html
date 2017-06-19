@@ -12,114 +12,91 @@
 <dom-module id="everest-article">
     <template>
         <style include="shared-styles app-grid-style">
-            :host {
+             :host {
                 display: block;
-
                 min-height: 100vh;
                 width: 100%;
-
                 --app-grid-columns: 3;
                 --app-grid-item-height: 200px;
             }
-
+            
             iron-pages {
                 min-height: 100vh;
             }
-
+            
             iron-pages section {
                 min-height: 50vh;
             }
-
+            
             [name=spinner] {
                 display: flex;
                 justify-content: center;
                 align-items: center;
             }
-
+            
             .material {
                 background: #ffffff;
                 height: 100%;
             }
-
+            
             .material h1 {
                 padding-left: 8px;
                 border-left: solid #3eb7e9 6px;
                 color: #56585c;
             }
-
+            
             .material h2 {
                 text-align: center;
                 color: #757575;
             }
-
+            
             .material .section-header {
                 margin: 0 8px;
             }
-
+            
             .material .section-header a {
                 text-decoration: none;
                 color: #757575;
                 display: block;
             }
-
+            
             .item {
                 padding: 0 0.5em 1em 0.5em;
             }
-
+            
             .sub-align {
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 color: #737373;
             }
-
+            
             .sub-align span {
                 margin-right: 8px;
             }
-
+            
             .sub-align paper-toggle-button {
                 --paper-toggle-button-checked-button-color: #3eb7e9;
             }
-
+            
             @media (max-width: 799px) {
-                :host {
+                 :host {
                     --app-grid-columns: 1;
                 }
             }
         </style>
 
-        <horizon-query
-            id="query"
-            path="/articles"
-            order-by-child="category_published_trash"
-            equal-to="[[combinedFilters]]"
-            data="{{data}}">
+        <horizon-query id="query" path="/articles" order-by-child="category_published_trash" equal-to="[[combinedFilters]]" data="{{data}}">
         </horizon-query>
 
         <!-- FIXME : Bind filter to isAdmin property event -->
-        <firebase-query
-            path="/articles"
-            disabled$="{{!isAdmin}}"
-            order-by-child="slug"
-            equal-to="[[slug]]"
-            limit-to-first="1"
-            data="{{matchedArticle}}"
-        ></firebase-query>
+        <firebase-query path="/articles" disabled$="{{!isAdmin}}" order-by-child="slug" equal-to="[[slug]]" limit-to-first="1" data="{{matchedArticle}}"></firebase-query>
 
-        <firebase-query
-            path="/articles"
-            disabled$="{{isAdmin}}"
-            order-by-child="slug_published"
-            equal-to="[[slug]]~true"
-            limit-to-first="1"
-            data="{{matchedArticle}}"
-        ></firebase-query>
+        <firebase-query path="/articles" disabled$="{{isAdmin}}" order-by-child="slug_published" equal-to="[[slug]]~true" limit-to-first="1"
+            data="{{matchedArticle}}"></firebase-query>
 
-        <!--<horizon-document
-            id="query"
-            path="/articles/[[match.0.$key]]"
-            data="{{article}}">
-        </horizon-document>-->
+        <horizon-document id="query" path="/articles/[[slug]]" data="{{article}}" index="slug">
+        </horizon-document>
 
         <iron-pages selected="[[view]]" attr-for-selected="name" fallback-selection="spinner">
             <section name="list">
@@ -128,17 +105,18 @@
                         <h1>[[_ucfirst(category)]]</h1>
                         <template is="dom-if" if={{isAdmin}}>
                             <div class="sub-align"><span>Published</span>
-                                <paper-toggle-button checked="{{published}}"></paper-toggle-button></div>
+                                <paper-toggle-button checked="{{published}}"></paper-toggle-button>
+                            </div>
                             <div class="sub-align"><span>Trash</span>
-                                <paper-toggle-button checked="{{trash}}"></paper-toggle-button></div>
+                                <paper-toggle-button checked="{{trash}}"></paper-toggle-button>
+                            </div>
                             <a href="/new/article" title="Create an article">
                                 <paper-icon-button class="" icon="add"></paper-icon-button>
                             </a>
                         </template>
                     </div>
                     <div class="app-grid">
-                        <template is="dom-repeat" items={{data}}
-                            as=item index-as=index>
+                        <template is="dom-repeat" items={{data}} as=item index-as=index>
                             <everest-article-card class="item" article="{{item}}"></everest-article-card>
                         </template>
                     </div>
@@ -148,8 +126,8 @@
                 </div>
             </section>
             <section name="read">
-                <template is="dom-if" if={{match.0.$key}}>
-                    <everest-article-page article="[[article]]" uid="[[match.0.$key]]" is-admin="{{isAdmin}}"></everest-article-page>
+                <template is="dom-if" if={{slug}}>
+                    <everest-article-page article="[[article]]" uid="[[slug]]" is-admin="{{isAdmin}}"></everest-article-page>
                 </template>
             </section>
             <section name="spinner">

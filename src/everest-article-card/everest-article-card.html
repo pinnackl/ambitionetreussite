@@ -8,36 +8,36 @@
 <dom-module id="everest-article-card">
     <template>
         <style include="shared-styles">
-            :host {
+             :host {
                 display: block;
             }
-
+            
             .item {
                 height: 100%;
             }
-
+            
             paper-material {
                 height: 100%;
             }
-
+            
             paper-material iron-image.thumbnail {
-                width : 40%;
+                width: 40%;
                 height: 100%;
                 vertical-align: top;
             }
-
+            
             paper-material .description {
-                width : 40%;
+                width: 40%;
                 height: 100%;
                 display: inline-block;
             }
-
+            
             article paper-material {
                 overflow: hidden;
                 border-radius: 3px;
                 background-color: #ffffff;
             }
-
+            
             article footer {
                 position: absolute;
                 height: 72px;
@@ -45,32 +45,32 @@
                 right: 0;
                 left: 0;
             }
-
+            
             article a {
                 text-decoration: none;
             }
-
+            
             article a.article {
                 display: block;
                 height: 100%;
             }
-
-            article paper-material:hover .filter{
+            
+            article paper-material:hover .filter {
                 cursor: pointer;
                 transform: translateX(0%);
             }
-
+            
             article .filter {
                 position: absolute;
                 z-index: 1;
-                width : 40%;
+                width: 40%;
                 height: 100%;
                 color: #ffffff;
                 font-weight: 400;
                 font-size: 12px;
-                background-color: rgba(0,0,0,0);
-                background-image: -webkit-linear-gradient(rgba(0,0,0,0.6) 0%,rgba(0,0,0,.6) 75%,rgba(0,0,0,.6) 100%);
-                background-image: linear-gradient(rgba(0,0,0,0.6) 0%,rgba(0,0,0,.6) 75%,rgba(0,0,0,.6) 100%);
+                background-color: rgba(0, 0, 0, 0);
+                background-image: -webkit-linear-gradient(rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, .6) 75%, rgba(0, 0, 0, .6) 100%);
+                background-image: linear-gradient(rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, .6) 75%, rgba(0, 0, 0, .6) 100%);
                 transform: translateX(-100%);
                 -webkit-transition: all .2s ease;
                 -moz-transition: all .2s ease;
@@ -83,25 +83,24 @@
                 justify-content: center;
                 align-items: center;
             }
-
+            
             article .filter .avatar-ctn {
                 width: 64px;
                 height: 64px;
                 border-radius: 100%;
                 overflow: hidden;
             }
-
-            article .filter .avatar-ctn iron-image.avatar {
+            
+            article .filter .avatar-ctn iron-image.avatar {
                 width: 64px;
                 height: 64px;
             }
-
+            
             article .filter .autor-name,
             article .filter .published {
                 text-align: center;
             }
-
-
+            
             article .tags {
                 position: absolute;
                 right: 0;
@@ -113,7 +112,7 @@
                 box-sizing: border-box;
                 z-index: 2;
             }
-
+            
             article .tags .tag {
                 display: inline-block;
                 background-color: #56585c;
@@ -125,22 +124,22 @@
                 border-radius: 2px;
                 box-sizing: border-box;
             }
-
+            
             article .tags .collapse-content {
                 z-index: 3;
                 background-color: #ffffff;
                 text-align: left;
                 border-radius: 2px;
             }
-
+            
             article .tags .tag:hover {
                 background-color: #3eb7e9;
             }
-
+            
             article .tags .add {
                 color: #56585c;
             }
-
+            
             article .social {
                 position: absolute;
                 right: 0;
@@ -152,7 +151,7 @@
                 box-sizing: border-box;
                 z-index: 1;
             }
-
+            
             article .social .circle {
                 width: 24px;
                 height: 24px;
@@ -160,54 +159,39 @@
                 display: inline-block;
                 color: #56585c;
             }
-
-            article .social .circle > paper-badge {
-            }
+            
+            article .social .circle>paper-badge {}
         </style>
-        <firebase-document
-            id="users"
-            path="/users/[[article.authorID]]"
-            data="{{user}}">
+        <firebase-document id="users" path="/users/[[article.authorID]]" data="{{user}}">
         </firebase-document>
-        <firebase-query
-            id="comments"
-            order-by-child="published_signaled_trash"
-            equal-to="true~false~false"
-            path="/comments/[[article.$key]]"
-            data="{{comments}}"
-        ></firebase-query>
+        <firebase-query id="comments" order-by-child="published_signaled_trash" equal-to="true~false~false" path="/comments/[[article.$key]]"
+            data="{{comments}}"></firebase-query>
         <article class="item">
             <paper-material elevation="1">
-                <a class="article" href="/lire/[[_lowerCase(article.category)]]/[[article.slug]]" title="[[article.title]]">
+                <a class="article" href="/read/[[_lowerCase(article.category)]]/[[article.slug]]" title="[[article.title]]">
                     <div class="filter">
                         <div class="avatar-ctn">
-                            <iron-image class="avatar"
-                                style="background-color: lightgray;"
-                                src="https://cdn.pinnackl.com/avatars/[[user.basicInfo.avatar]]"
+                            <iron-image class="avatar" style="background-color: lightgray;" src="https://cdn.pinnackl.com/avatars/[[user.basicInfo.avatar]]"
                                 fade preload sizing="cover"></iron-image>
                         </div>
                         <div class="autor-name">By [[article.author]],</div>
                         <div class="published">[[date]]</div>
                     </div>
-                    <iron-image class="thumbnail"
-                        style="background: #3eb7e9;"
-                        src="https://cdn.pinnackl.com/images/[[article.cover]]"
-                        preload fade sizing="cover"></iron-image>
+                    <iron-image class="thumbnail" style="background: #3eb7e9;" src="https://cdn.pinnackl.com/images/[[article.cover]]" preload
+                        fade sizing="cover"></iron-image>
                     <div class="description">
                         <h1>[[article.title]]</h1>
                     </div>
                 </a>
                 <footer>
                     <div class="tags">
-                        <template is="dom-repeat" items={{_limiteTags(article.tags)}}
-                            as=item index-as=index>
+                        <template is="dom-repeat" items={{_limiteTags(article.tags)}} as=item index-as=index>
                             <a class="tag" href="#">[[item]]</a>
                         </template>
                         <paper-icon-button class="add" icon$="[[expand]]" on-tap="expandTags"></paper-icon-button>
                         <iron-collapse id="collapse" opened="{{opened}}">
                             <div class="collapse-content">
-                                <template is="dom-repeat" items={{moreTags}}
-                                    as=item index-as=index>
+                                <template is="dom-repeat" items={{moreTags}} as=item index-as=index>
                                     <a class="tag" href="#">[[item]]</a>
                                 </template>
                             </div>
