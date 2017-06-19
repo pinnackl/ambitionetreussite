@@ -21,7 +21,9 @@
     "web-animations-js": "^2.2.5",
     "vaadin-upload": "vaadin/vaadin-upload#2.0.0-beta1",
     "file-upload": "https://github.com/pinnackl/file-upload",
-    "iron-image": "PolymerElements/iron-image#^2.1.1"
+    "iron-image": "PolymerElements/iron-image#^2.1.1",
+    "paper-slider": "PolymerElements/paper-slider#^2.0.1",
+    "paper-toggle-button": "PolymerElements/paper-toggle-button#^2.0.0"
   },
   "resolutions": {
     "polymer": "^2.0.0-rc.3",
