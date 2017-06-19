@@ -9,10 +9,11 @@
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
 
-<link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
-<link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
-<link rel="import" href="../../bower_components/file-upload/file-upload.html">
+<link rel="import" href="../../bower_components/polymer-mce/polymer-mce.html" async>
+<!-- FIXME : To be replaced -->
+<!-- <link rel="import" href="../../bower_components/file-upload/file-upload.html"> -->
 
 <link rel="import" href="../imports/imports-moment.html">
 <link rel="import" href="../imports/imports-speakingurl.html">
@@ -464,12 +465,11 @@
                         </div>
                     </div>
                 </template>
-                <polymer-tinymce id="editor"
+                <polymer-mce id="editor"
                     base-url="[[origin]]/bower_components/tinymce"
-                    hidden$="[[!editMode]]"
                     tinytoolbar="insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
                     tinyplugins='["advlist autolink lists link image charmap print preview anchor","searchreplace visualblocks code fullscreen","insertdatetime media table contextmenu paste"]'
-                ></polymer-tinymce>
+                ></polymer-mce>
 
                 <article id="content"></article>
                 <div class="material footer">
