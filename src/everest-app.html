@@ -11,11 +11,11 @@
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="my-icons.html">
 
 <!-- Everest Dependencies -->
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 
@@ -217,13 +217,13 @@
           slot="header">
 
           <app-toolbar>
-            <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
+            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div condensed-title mobile$=[[!largeScreen]]>
               <a title href="/"><iron-image src="//placehold.it/48/48"></iron-image>Everest</a>
             </div>
 
             <!-- Admin Drawer Button -->
-            <paper-icon-button class="profileBtn" icon="my-icons:menu" on-tap="_toggleDrawer"></paper-icon-button>
+            <paper-icon-button class="profileBtn" icon="menu" on-tap="_toggleDrawer"></paper-icon-button>
 
           </app-toolbar>
 
