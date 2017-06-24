@@ -1,0 +1,172 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+
+<link rel="import" href="../imports/imports-simpla.html">
+<link rel="import" href="../../bower_components/simpla-article/simpla-article.html">
+
+<dom-module id="page-tile">
+    <template>
+        <style>
+            :host {
+                display: block;
+                background: #ffffff;
+
+                opacity: 0.9;
+                cursor: move;
+                border: solid 3px #03a9f4;
+                box-sizing: border-box;
+            }
+
+            simpla-article {
+                color: #191919;
+            }
+
+            [name] {
+                max-height: 100%;
+                overflow: hidden;
+                box-sizing: border-box;
+            } 
+
+            [name=text] {
+                padding: 16px;
+            }
+
+            div ::slotted([resize]) {
+                position: absolute;
+                display: block;
+                width: 15px;
+                height: 15px;
+                bottom: 0;
+                right: 0;
+                border-radius: 50%;
+                background-color: #03a9f4;
+                border: solid thin #ffffff;
+            }
+
+            div ::slotted([resize="top"]),
+            div ::slotted([resize="bottom"]) {
+                left: 50%;
+                -webkit-transform: translateX(-50%);
+                transform: translateX(-50%);
+            }
+
+            div ::slotted([resize="bottom-right"]) {
+                bottom: 0;
+                right: 0;
+                cursor: nwse-resize;
+            }
+
+            div ::slotted([resize="bottom-left"]) {
+                bottom: 0;
+                left: 0;
+                cursor: nesw-resize;
+            }
+
+            div ::slotted([resize="top-right"]) {
+                top: 0;
+                right: 0;
+                cursor: nesw-resize;
+            }
+
+            div ::slotted([resize="top-left"]) {
+                top: 0;
+                left: 0;
+                cursor: nwse-resize;
+            }
+
+            div ::slotted([resize="left"]) {
+                top: 50%;
+                left: 0;
+                cursor: ew-resize;
+                margin-top: -10px;
+            }
+
+            div ::slotted([resize="top"]) {
+                top: 0%;
+                text-align: center;
+                cursor: ns-resize;
+            }
+
+            div ::slotted([resize="right"]) {
+                top: 50%;
+                right: 0;
+                cursor: ew-resize;
+                margin-top: -10px;
+            }
+
+            div ::slotted([resize="bottom"]) {
+                bottom: 0;
+                text-align: center;
+                cursor: ns-resize;
+            }
+
+            div ::slotted([resize="bottom-right"]) {
+                -webkit-transform: translateX(8px) translateY(8px);
+                transform: translateX(8px) translateY(8px);
+            }
+
+            div ::slotted([resize="bottom-left"]) {
+                -webkit-transform: translateX(-8px) translateY(8px);
+                transform: translateX(-8px) translateY(8px);
+            }
+
+            div ::slotted([resize="top-right"]) {
+                -webkit-transform: translateX(8px) translateY(-8px);
+                transform: translateX(8px) translateY(-8px);
+            }
+
+            div ::slotted([resize="top-left"]) {
+                -webkit-transform: translateX(-8px) translateY(-8px);
+                transform: translateX(-8px) translateY(-8px);
+            }
+
+            div ::slotted([resize="left"]) {
+                -webkit-transform: translateX(-8px);
+                transform: translateX(-8px);
+            }
+
+            div ::slotted([resize="top"]) {
+                -webkit-transform: translateX(-50%) translateY(-8px);
+                transform: translateX(-50%) translateY(-8px);
+            }
+
+            div ::slotted([resize="right"]) {
+                -webkit-transform: translateX(8px);
+                transform: translateX(8px)
+            }
+
+            div ::slotted([resize="bottom"]) {
+                -webkit-transform: translateX(-50%) translateY(8px);
+                transform: translateX(-50%) translateY(8px);
+            }
+        </style>
+        <iron-selector attr-for-selected="name" selected="{{type}}">
+            <div name="text">
+                <simpla-article value="{{text}}"></simpla-article>
+            </div>
+        </iron-selector>
+        <div><slot></slot></div>
+    </template>
+    <script>
+        Polymer({
+            is: 'page-tile',
+
+            properties: {
+                type: {
+                    type: String
+                },
+
+                text: {
+                    type: String,
+                    value: ""
+                }
+            },
+
+            ready: function () {
+                Simpla.init('local');
+                Simpla.editable(true);
+            }
+        });
+    </script>
+</dom-module>
