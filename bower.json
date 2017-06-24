@@ -42,7 +42,7 @@
     "node-uuid": "^3.0.0",
     "moment": "^2.18.1",
     "speakingurl": "^13.0.0",
-    "vaadin-upload": "vaadin/vaadin-upload#2.0.0-alpha3",
+    "vaadin-upload": "vaadin/vaadin-upload#2.0.0-alpha3"
   },
   "resolutions": {
     "polymer": "^2.0.0",
