@@ -1,11 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 
-<link rel="import" href="../everest-article-create/everest-article-create.html">
-<link rel="import" href="../everest-page-create/everest-page-create.html">
-<link rel="import" href="../everest-category-create/everest-category-create.html">
-<link rel="import" href="../everest-tag-create/everest-tag-create.html">
-
 <dom-module id="everest-new">
     <template>
         <style>
@@ -108,6 +103,18 @@
                 // } else {
                 //     this.tempPage = page;
                 // }
+
+                // Load page import on demand. Show 404 page if fails
+                var resolvedPageUrl = this.resolveUrl('../everest-' + page + '-create/everest-' + page + '-create.html');
+                Polymer.importHref(
+                    resolvedPageUrl,
+                    null,
+                    this._showPage404.bind(this),
+                    true);
+            },
+
+            _showPage404() {
+                this.page = 'spinner';
             },
 
             _rightsChanged: function (ts) {
