@@ -8,6 +8,9 @@
 <link rel="import" href="../../bower_components/polymer-mce/polymer-mce.html">
 <link rel="import" href="../../bower_components/the-grid/the-grid.html">
 <link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
 
 <link rel="import" href="page-tile.html">
 <link rel="import" href="../imports/imports-speakingurl.html">
@@ -51,6 +54,16 @@
             the-grid > div[placeholder] {
                 background: #afafaf;
             }
+
+            paper-item {
+                min-height: 48px;
+                padding: 0px;
+            }
+
+            paper-item paper-button {
+                background: #179bd7;
+                color: #ffffff;
+            }
         </style>
 
         <!-- <firebase-query
@@ -90,7 +103,13 @@
                     <div class="section-header">
                         <div>Column number : {{nbCol}} <paper-slider value="{{nbCol}}" min="5" max="12"></paper-slider></div>
                         <div>
-                            <paper-button class="save-button" raised on-tap=addTile>ADD</paper-button>
+                            <paper-menu-button>
+                              <paper-button class="save-button" raised slot="dropdown-trigger"><iron-icon icon="add"></iron-icon>ADD</paper-button>
+                              <paper-listbox slot="dropdown-content">
+                                <paper-item><paper-button on-tap="addTextTile"><iron-icon icon="editor:text-fields"></iron-icon>Text</paper-button></paper-item>
+                                <paper-item><paper-button on-tap="addImageTile"><iron-icon icon="editor:insert-photo"></iron-icon>Image</paper-button></paper-item>
+                              </paper-listbox>
+                            </paper-menu-button>
                         </div>
                     </div>
                     <the-grid
@@ -107,11 +126,13 @@
                         <template is="dom-repeat" items={{pageTiles}}
                             as=tile index-as=index initialCount=2>
                             <page-tile class="tile"
-                                type="[[tile.type]]"
-                                col$="[[tile.col]]"
-                                row$="[[tile.row]]"
-                                height$="[[tile.height]]"
-                                width$="[[tile.width]]">
+                                tile="{{tile}}"
+                                type="{{tile.type}}"
+                                col$="{{tile.col}}"
+                                row$="{{tile.row}}"
+                                height$="{{tile.height}}"
+                                width$="{{tile.width}}"
+                                on-delete-tile="handleDeleteTile">
 
                                 <span resize="left"></span>
                                 <span resize="right"></span>
@@ -142,11 +163,20 @@
                     type: String,
                     observer: '_titleChanged',
                 },
+
                 published: {
                     type: Boolean,
                 },
+
                 content: {
                     type: String,
+                },
+
+                pageTiles: {
+                    type: Array,
+                    value: function () {
+                        return [];
+                    }
                 },
 
                 user: {
@@ -157,6 +187,11 @@
                     type: Object
                 },
 
+                builderMode: {
+                    type: String,
+                    value: "text"
+                },
+
                 isAdmin: {
                     type: Boolean,
                     value: false,
@@ -165,13 +200,6 @@
                 editMode: {
                     type: Boolean,
                     value: true,
-                },
-
-                pageTiles: {
-                    type: Array,
-                    value: function () {
-                        return [];
-                    }
                 },
 
                 nbCol: {
@@ -231,7 +259,11 @@
                 window.addEventListener('resize', this._computeCellWidth.bind(this));
             },
 
-            addTile: function (e) {
+            handleDeleteTile: function (e) {
+                this.arrayDelete('pageTiles', e.detail.tile);
+            },
+
+            addTextTile: function (e) {
                 if (this.pageTiles.length >= this.nbRow-2) {
                     ++this.nbRow;
                 }
@@ -241,38 +273,65 @@
                     row: this.pageTiles.length,
                     height: 1,
                     width: this.nbCol,
+                    content: {}
+                });
+            },
+
+            addImageTile: function (e) {
+                if (this.pageTiles.length >= this.nbRow-2) {
+                    ++this.nbRow;
+                }
+                this.push('pageTiles', {
+                    type: 'image',
+                    col: 0,
+                    row: this.pageTiles.length,
+                    height: 1,
+                    width: this.nbCol,
+                    content: {}
                 });
             },
 
             create: function (e) {
-                if (this.title && this.slug && this.$.editor.getContent() != "" && this.isAdmin) {
-                    var _this = this;
-                    this.$.pages.ref.push({
+                // if (this.title && this.slug && (this.$.editor.getContent() != "" || this.pageTiles.length > 0) && this.isAdmin) {
+                if (this.title && this.slug && (this.$.editor.getContent() != "" || this.pageTiles.length > 0)) {
+                    // Initiate the page object
+                    const  pageObject = {
                         title: this.title || "",
                         slug: this.slug || "",
-                        content: this.$.editor.getContent() || "",
                         created: Date.now(),
                         updated: Date.now(),
-                        author: this.userData.basicInfo.name,
-                        authorID: this.user.uid,
+                        // author: this.userData.basicInfo.name, // FIXME : get the active user info
+                        // authorID: this.user.uid, // FIXME : get the active user info
                         published: this.published,
                         trash: false,
                         'published_trash': this._computeCombinedIndexPt(),
                         'slug_published': this._computeCombinedIndexSp(),
-                    }).then(function (value) {
-                        _this.stateMessageIcon = _this.stateMessage.success.icon;
-                        _this.$.stateMessage.text = _this.stateMessage.success.text;
-                        _this.$.stateMessage.open();
-                        _this.isUpdate = true;
-                    }).catch(function (error) {
-                        _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
-                        _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
-                        _this.$.stateMessage.open();
-                    });
+                    };
+
+                    if (this.builderMode == 'text') {
+                        pageObject['mode'] = 'text';
+                        pageObject['content'] = this.$.editor.getContent() || "";
+                    } else {
+                        pageObject['mode'] = 'grid';
+                        pageObject['content'] = this.pageTiles || [];
+                        
+                    }
+
+                    // this.$.pages.ref.push(pageObject).then((value) => {
+                    //     this.stateMessageIcon = this.stateMessage.success.icon;
+                    //     this.$.stateMessage.text = this.stateMessage.success.text;
+                    //     this.$.stateMessage.open();
+                    //     this.isUpdate = true;
+                    // }).catch((error) => {
+                    //     this.stateMessageIcon = this.stateMessage.errorRight.icon;
+                    //     this.$.stateMessage.text = this.stateMessage.errorRight.text;
+                    //     this.$.stateMessage.open();
+                    // });
                 } else {
-                    _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
-                    _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
-                    _this.$.stateMessage.open();
+                    // FIXME : Better handle state messages
+                    this.stateMessageIcon = this.stateMessage.errorRight.icon;
+                    this.$.stateMessage.text = this.stateMessage.errorRight.text;
+                    this.$.stateMessage.open();
                 }
             },
 

@@ -1,16 +1,20 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 
 <link rel="import" href="../imports/imports-simpla.html">
 <link rel="import" href="../../bower_components/simpla-article/simpla-article.html">
+
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
 
 <dom-module id="page-tile">
     <template>
         <style>
             :host {
                 display: block;
-                background: #ffffff;
+                background: #fefefe;
 
                 opacity: 0.9;
                 cursor: move;
@@ -18,12 +22,57 @@
                 box-sizing: border-box;
             }
 
+            :host(:hover) .delete {
+                display: block;
+            }
+
+            .delete {
+                position: absolute;
+                left: 8px;
+                bottom: 8px;
+                background: #e83b3b;
+            }
+
+            iron-pages {
+                height: 100%;
+            }
+
             simpla-article {
                 color: #191919;
             }
 
+            simpla-article img {
+                max-width: 100%;
+            }
+
+            iron-image {
+                max-width: 100%;
+                width: 100%;
+                height: 100%;
+            }
+
+            .cover {
+                background: #85ccec;
+                color: #ffffff;
+            }
+
+            .position {
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                color: #ffffff;
+            }
+
+            paper-fab {
+                background: #179bd7;
+                position: absolute;
+                right: 8px;
+                bottom: 8px;
+            }
+
             [name] {
                 max-height: 100%;
+                height: 100%;
                 overflow: hidden;
                 box-sizing: border-box;
             } 
@@ -141,12 +190,30 @@
                 transform: translateX(-50%) translateY(8px);
             }
         </style>
-        <iron-selector attr-for-selected="name" selected="{{type}}">
+        <iron-pages selected="{{type}}" attr-for-selected="name">
             <div name="text">
                 <simpla-article value="{{text}}"></simpla-article>
             </div>
-        </iron-selector>
+            <div name="image">
+                <iron-image id="img" src$="[[content.image]]" placeholder="[[content.image]]" preload sizing="[[content.cover]]" position="[[content.position]]"></iron-image>
+                <input id="inpt" type="file" style="display: none;" on-change="previewFile">
+                <div class="position">
+                    <paper-button class="cover" raised on-tap="_changeSizing">[[content.cover]]</paper-button>
+                    <iron-icon icon="editor:vertical-align-[[content.position]]"></iron-icon>
+                    <paper-menu-button>
+                        <paper-icon-button icon="icons:open-with" slot="dropdown-trigger" horizontal-align="right"></paper-icon-button>
+                        <paper-listbox slot="dropdown-content" selected="{{content.position}}" attr-for-selected="value" fallback-selection="center">
+                            <paper-item value="top"><iron-icon icon="editor:vertical-align-top"></iron-icon>Top</paper-item>
+                            <paper-item value="center"><iron-icon icon="editor:vertical-align-center"></iron-icon>Center</paper-item>
+                            <paper-item value="bottom"><iron-icon icon="editor:vertical-align-bottom"></iron-icon>Bottom</paper-item>
+                        </paper-listbox>
+                    </paper-menu-button>
+                </div>
+                <paper-fab mini icon="file-upload" on-tap="_fileUpload"></paper-fab>
+            </div>
+        </iron-pages>
         <div><slot></slot></div>
+        <paper-fab class="delete" mini icon="delete" on-tap="deleteTile"></paper-fab>
     </template>
     <script>
         Polymer({
@@ -157,15 +224,120 @@
                     type: String
                 },
 
+                tile: {
+                    type: Object,
+                    notify: true
+                },
+
                 text: {
                     type: String,
                     value: ""
+                },
+
+                col: {
+                    type: Number,
+                    notify: true
+                },
+
+                row: {
+                    type: Number,
+                    notify: true
+                },
+
+                height: {
+                    type: Number,
+                    notify: true
+                },
+
+                width: {
+                    type: Number,
+                    notify: true
+                },
+
+                content: {
+                    type: Object,
+                    value: function () {
+                        return {};
+                    }
                 }
+
             },
+
+            observers: [
+                '_tilePropertiesChanged(type, col, row, height, width, content.*)'
+            ],
 
             ready: function () {
                 Simpla.init('local');
                 Simpla.editable(true);
+            },
+
+            deleteTile: function (e) {
+                this.fire('delete-tile', {tile: this.tile});
+            },
+
+            previewFile: function () {
+                // FIXME : to test cross browser
+                var file    = this.$.inpt.files[0];
+                var reader  = new FileReader();
+
+                reader.addEventListener("load", () => {
+                    if (reader.result) {
+                        this.set('content.image', reader.result);
+                    }
+                }, false);
+
+                if (file) {
+                    reader.readAsDataURL(file);
+                }
+            },
+
+            _changeSizing: function (e) {
+                let cover = this.content.cover == "cover" ? "contain" : "cover";
+                this.set('content.cover', cover);
+            },
+
+            _fileUpload: function (e) {
+                this.$.inpt.click();
+            },
+
+            _getTileContent: function (type) {
+                switch (type) {
+                    case 'image':
+                        console.log("variable");
+                    break;
+
+                    // Default tile type is text
+                    default:
+                        return this.text;
+                    break;
+                }
+            },
+
+            _setContent: function (type) {
+                switch (type) {
+                    case "image":
+                        if (!this.content.image) {
+                            this.set('content.cover', 'cover');
+                        }
+                    break;
+
+                    default:
+                    break;
+                }
+            },
+
+            _tilePropertiesChanged: function (type, col, row, height, width, content) {
+                this._setContent(type);
+                // FIXME : find a better way than force it 
+                this.set('tile', {
+                    type: type,
+                    col: col,
+                    row: row,
+                    height: height,
+                    width: width,
+                    content: this.content
+                });
             }
         });
     </script>
