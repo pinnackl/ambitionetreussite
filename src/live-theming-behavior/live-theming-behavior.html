@@ -35,6 +35,16 @@
         observer: '_appTabSelectedColorChanged'
       },
 
+      appTitleSize: {
+        value: "",
+        observer: '_appTitleSizeChanged'
+      },
+
+      appCondensedTitleSize: {
+        value: "",
+        observer: '_appCondensedTitleSizeChanged'
+      },
+
       /* JS Properties */
 
       appLogo: {
@@ -89,6 +99,14 @@
 
     _appTabSelectedColorChanged: function (e) {
       this.__updateCustomProperty('--app-tab-selected-color', e);
+    },
+
+    _appTitleSizeChanged: function (e) {
+      this.__updateCustomProperty('--app-title-size', e);
+    },
+
+    _appCondensedTitleSizeChanged: function (e) {
+      this.__updateCustomProperty('--app-condensed-title-size', e);
     },
 
     /**

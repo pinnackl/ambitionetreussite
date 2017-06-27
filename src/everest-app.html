@@ -38,9 +38,8 @@
         --app-header-text-color: #ffffff;
         --app-tab-color: #ffffff;
         --app-tab-selected-color: green;
-
-        --logo-size: 64px;
-        --condensed-logo-size: 48px;
+        --app-condensed-title-size: 16px;
+        --app-title-size: 32px;
 
         display: block;
       }
@@ -118,7 +117,7 @@
         left: 0;
         right: 0;
         /* The difference in font size is used to calculate the scale of the title in the transition. */
-        font-size: 16px;
+        font-size: var(--app-condensed-title-size);
       }
 
       [main-title] [title] {
@@ -143,7 +142,7 @@
         -webkit-transform-origin: left bottom !important;
         transform-origin: left bottom !important;
         /* The difference in font size is used to calculate the scale of the title in the transition. */
-        font-size: 32px;
+        font-size: var(--app-title-size);
       }
 
       [condensed-title][mobile] {
@@ -319,10 +318,14 @@
                   <span>Selected Tab Color</span>
                   <everest-swatch-picker mode="css" category="color" color="{{appTabSelectedColor}}"></everest-swatch-picker>
                 </div>
-                <!-- Position Settings -->
+                <!-- Size Settings -->
                 <div class="flexbox-container">
-                  <span>Lorem</span>
-                  <everest-swatch-picker mode="css" category="position" type="number"></everest-swatch-picker>
+                  <span>Title Font Size</span>
+                  <everest-swatch-picker mode="css" category="position" type="number" size="{{appTitleSize}}"></everest-swatch-picker>
+                </div>
+                <div class="flexbox-container">
+                  <span>Condensed Title Font Size</span>
+                  <everest-swatch-picker mode="css" category="position" type="number" size="{{appCondensedTitleSize}}"></everest-swatch-picker>
                 </div>
                 <div class="flexbox-container">
                   <span>Ipsum</span>
