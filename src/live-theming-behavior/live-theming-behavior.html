@@ -45,6 +45,16 @@
         observer: '_appCondensedTitleSizeChanged'
       },
 
+      appLogoPosition: {
+        value: "",
+        observer: '_appLogoPositionChanged'
+      },
+
+      appCondensedLogoPosition: {
+        value: "",
+        observer: '_appCondensedLogoPositionChanged'
+      },
+
       /* JS Properties */
 
       appLogo: {
@@ -107,6 +117,14 @@
 
     _appCondensedTitleSizeChanged: function (e) {
       this.__updateCustomProperty('--app-condensed-title-size', e);
+    },
+
+    _appLogoPositionChanged: function (e) {
+      this.__updateCustomProperty('--app-logo-position', e);
+    },
+
+    _appCondensedLogoPositionChanged: function (e) {
+      this.__updateCustomProperty('--app-condensed-logo-position', e);
     },
 
     /**

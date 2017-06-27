@@ -40,6 +40,8 @@
         --app-tab-selected-color: green;
         --app-condensed-title-size: 16px;
         --app-title-size: 32px;
+        --app-logo-position: 64px;
+        --app-condensed-logo-position: 48px;
 
         display: block;
       }
@@ -105,7 +107,7 @@
       [condensed-title] [title] {
         position: relative;
         top: 228%;
-        left: var(--condensed-logo-size);
+        left: var(--app-condensed-logo-position);
         pointer-events: auto;
       }
 
@@ -123,7 +125,7 @@
       [main-title] [title] {
         position: relative;
         top: -80%; /* Title position (-25%, -50%, -80%) */
-        left: var(--logo-size);
+        left: var(--app-logo-position);
         pointer-events: auto;
       }
 
@@ -327,6 +329,17 @@
                   <span>Condensed Title Font Size</span>
                   <everest-swatch-picker mode="css" category="position" type="number" size="{{appCondensedTitleSize}}"></everest-swatch-picker>
                 </div>
+
+                <div class="flexbox-container">
+                  <span>Logo Position</span>
+                  <everest-swatch-picker mode="css" category="position" type="number" size="{{appLogoPosition}}"></everest-swatch-picker>
+                </div>
+                <div class="flexbox-container">
+                  <span>Condensed Logo Position</span>
+                  <everest-swatch-picker mode="css" category="position" type="number" size="{{appCondensedLogoPosition}}"></everest-swatch-picker>
+                </div>
+
+                <!-- Boolean Settings -->
                 <div class="flexbox-container">
                   <span>Ipsum</span>
                   <everest-swatch-picker mode="css" category="position" type="boolean"></everest-swatch-picker>
