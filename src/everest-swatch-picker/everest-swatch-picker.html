@@ -64,15 +64,6 @@
     </template>
     <template is="dom-if" if="[[!isCSS]]">
       <div class="image">
-        <!--<file-upload
-          accept="image/*"
-          method="POST"
-          file-data-name="cover"
-          hide-file-list
-          target="https://cdn.pinnackl.com/api/images/upload"
-          on-success="_imageChanged">
-          <iron-icon icon="cloud-upload"></iron-icon>
-        </file-upload>-->
         <vaadin-upload 
           nodrop 
           max-files="1" 
