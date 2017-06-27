@@ -55,7 +55,7 @@
       </template>
       <template is="dom-if" if="[[!isColor]]">
         <template is="dom-if" if="[[isNumber]]">
-          <paper-slider value="50" editable ></paper-slider>
+          <paper-slider value="50" editable on-immediate-value-changed='_sizeChanged'></paper-slider>
         </template>
         <template is="dom-if" if="[[!isNumber]]">
           <paper-toggle-button noink></paper-toggle-button>
@@ -91,6 +91,11 @@
           notify: true
         },
 
+        size: {
+          type: String,
+          notify: true
+        },
+
         mode: {
           type: String
         },
@@ -116,6 +121,18 @@
         '__colorChanged(color)'
       ],
 
+      _modeChanged: function (mode) {
+        this.isCSS = mode == "css" ? true : false;
+      },
+
+      _categoryChanged: function (category) {
+        this.isColor = category == "color" ? true : false;
+      },
+
+      _typeChanged: function (type) {
+        this.isNumber = type == "number" ? true : false;
+      },
+
       _imageChanged: function(e, detail) {
         var cdn = "https://cdn.pinnackl.com/images/";
         var parsedResponse = JSON.parse(detail.xhr.response);
@@ -127,16 +144,8 @@
         console.log(this.image);
       },
 
-      _modeChanged: function (mode) {
-        this.isCSS = mode == "css" ? true : false;
-      },
-
-      _categoryChanged: function (category) {
-        this.isColor = category == "color" ? true : false;
-      },
-
-      _typeChanged: function (type) {
-        this.isNumber = type == "number" ? true : false;
+      _sizeChanged:function(object) {
+        this.set('size', object.detail.value+"px");
       },
 
       // Only triggered when the swatch picker changed
