@@ -55,7 +55,7 @@
       </template>
       <template is="dom-if" if="[[!isColor]]">
         <template is="dom-if" if="[[isNumber]]">
-          <paper-slider value="50" editable on-immediate-value-changed='_sizeChanged'></paper-slider>
+          <paper-slider value="[[default]]" editable on-immediate-value-changed='_sizeChanged'></paper-slider>
         </template>
         <template is="dom-if" if="[[!isNumber]]">
           <paper-toggle-button noink></paper-toggle-button>
@@ -111,6 +111,10 @@
         asBackground: {
           type: Boolean,
           value: false
+        },
+
+        default: {
+          type: String,
         }
       },
 
