@@ -67,7 +67,7 @@
       </div>
 
       <div class="number" name="number">
-        <paper-slider value="50" editable on-immediate-value-changed='_sizeChanged'></paper-slider>
+        <paper-slider value="[[default]]" editable on-immediate-value-changed='_sizeChanged'></paper-slider>
       </div>
 
       <div class="toggle" name="toggle">
@@ -102,6 +102,10 @@
         asBackground: {
           type: Boolean,
           value: false
+        },
+ 
+        default: {
+          type: String,
         }
       },
 
