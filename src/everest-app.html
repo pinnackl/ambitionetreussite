@@ -18,7 +18,8 @@
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
-
+<link rel="import" href="../../bower_components/paper-fab-speed-dial/paper-fab-speed-dial.html">
+<link rel="import" href="../../bower_components/paper-fab-speed-dial/paper-fab-speed-dial-action.html">
 
 <!-- Everest Custom Elements -->
 <link rel="lazy-import" href="my-view404.html">
@@ -173,7 +174,22 @@
       }
 
       #drawerAdmin {
-        --app-drawer-width: 350px;
+        --app-drawer-width: 30%;
+      }
+
+      .flexbox-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 16px;
+        text-align: left;
+      }
+
+      paper-fab-speed-dial {
+        --paper-fab-speed-dial-background: #3eb7e9;
+      }
+      paper-fab-speed-dial-action {
+        --paper-fab-speed-dial-action-background: #3eb7e9;
       }
 
     </style>
@@ -223,9 +239,8 @@
               <a title href="/"><iron-image src="//placehold.it/48/48"></iron-image>Everest</a>
             </div>
 
-            <!-- Admin Drawer Button -->
-            <paper-icon-button class="profileBtn" icon="menu" on-tap="_toggleDrawer"></paper-icon-button>
-
+            <!-- User avatar -->
+            <!-- ... -->
           </app-toolbar>
 
           <template is="dom-if" if={{largeScreen}}>
@@ -273,85 +288,93 @@
         
       </app-header-layout>
 
-        <!-- Drawer Admin Content -->
-        <app-drawer id="drawerAdmin" align="end" swipe-open>
-          <div style="height:100%; overflow:auto;">
-            <app-toolbar>
-              <paper-tabs class="paper-tabs-admin" selected="{{selected}}">
-                <paper-tab>Theme</paper-tab>
-                <paper-tab>Admin</paper-tab>
-              </paper-tabs>
-            </app-toolbar>
-            <iron-pages selected="{{selected}}" fallback-selection="0">
-              <div>
-                <paper-button raised on-tap="_downloadTheme" hidden="[[!showDownload]]"><iron-icon icon="file-download"></iron-icon>Download</paper-button>
-                <!-- Banner Upload -->
-                <div class="flexbox-container">
-                  <span>Banner</span>
-                  <everest-swatch-picker mode="image" image="{{appHeaderBanner}}" as-background></everest-swatch-picker>
-                </div>
-                <!-- Logo Upload -->
-                <div class="flexbox-container">
-                  <span>Logo</span>
-                  <everest-swatch-picker mode="image" image="{{appLogo}}"></everest-swatch-picker>
-                </div>
-                <!-- Color Picker -->
-                <div class="flexbox-container">
-                  <span>Primary Color</span>
-                  <everest-swatch-picker mode="css" category="color" color="{{appPrimaryColor}}"></everest-swatch-picker>
-                </div>
-                <div class="flexbox-container">
-                  <span>Header Text Color</span>
-                  <everest-swatch-picker mode="css" category="color" color="{{appHeaderTextColor}}"></everest-swatch-picker>
-                </div>
-                <div class="flexbox-container">
-                  <span>Icon Color</span>
-                  <everest-swatch-picker mode="css" category="color" color="{{appIconColor}}"></everest-swatch-picker>
-                </div>
-                <div class="flexbox-container">
-                  <span>Logo Title Color</span>
-                  <everest-swatch-picker mode="css" category="color" color="{{appLogoTitleColor}}"></everest-swatch-picker>
-                </div>
-                <div class="flexbox-container">
-                  <span>Tab Color</span>
-                  <everest-swatch-picker mode="css" category="color" color="{{appTabColor}}"></everest-swatch-picker>
-                </div>
-                <div class="flexbox-container">
-                  <span>Selected Tab Color</span>
-                  <everest-swatch-picker mode="css" category="color" color="{{appTabSelectedColor}}"></everest-swatch-picker>
-                </div>
-                <!-- Size Settings -->
-                <div class="flexbox-container">
-                  <span>Title Font Size</span>
-                  <everest-swatch-picker mode="css" category="position" type="number" size="{{appTitleSize}}"></everest-swatch-picker>
-                </div>
-                <div class="flexbox-container">
-                  <span>Condensed Title Font Size</span>
-                  <everest-swatch-picker mode="css" category="position" type="number" size="{{appCondensedTitleSize}}"></everest-swatch-picker>
-                </div>
-
-                <div class="flexbox-container">
-                  <span>Logo Position</span>
-                  <everest-swatch-picker mode="css" category="position" type="number" size="{{appLogoPosition}}"></everest-swatch-picker>
-                </div>
-                <div class="flexbox-container">
-                  <span>Condensed Logo Position</span>
-                  <everest-swatch-picker mode="css" category="position" type="number" size="{{appCondensedLogoPosition}}"></everest-swatch-picker>
-                </div>
-
-                <!-- Boolean Settings -->
-                <div class="flexbox-container">
-                  <span>Ipsum</span>
-                  <everest-swatch-picker mode="css" category="position" type="boolean"></everest-swatch-picker>
-                </div>
+      <!-- Drawer Admin Content -->
+      <app-drawer id="drawerAdmin" align="end" swipe-open>
+        <div style="height:100%; overflow:auto;">
+          <app-toolbar>
+            <paper-tabs class="paper-tabs-admin" selected="{{selected}}">
+              <paper-tab>Theme</paper-tab>
+              <paper-tab>Admin</paper-tab>
+            </paper-tabs>
+          </app-toolbar>
+          <iron-pages selected="{{selected}}" fallback-selection="0">
+            <div>
+              <paper-button raised on-tap="_downloadTheme" hidden="[[!showDownload]]"><iron-icon icon="file-download"></iron-icon>Download</paper-button>
+              <!-- Banner Upload -->
+              <div class="flexbox-container">
+                <span>Banner</span>
+                <everest-swatch-picker mode="image" image="{{appHeaderBanner}}" as-background></everest-swatch-picker>
+              </div>
+              <!-- Logo Upload -->
+              <div class="flexbox-container">
+                <span>Logo</span>
+                <everest-swatch-picker mode="image" image="{{appLogo}}"></everest-swatch-picker>
+              </div>
+              <!-- Color Picker -->
+              <div class="flexbox-container">
+                <span>Primary Color</span>
+                <everest-swatch-picker mode="css" category="color" color="{{appPrimaryColor}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Header Text Color</span>
+                <everest-swatch-picker mode="css" category="color" color="{{appHeaderTextColor}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Icon Color</span>
+                <everest-swatch-picker mode="css" category="color" color="{{appIconColor}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Logo Title Color</span>
+                <everest-swatch-picker mode="css" category="color" color="{{appLogoTitleColor}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Tab Color</span>
+                <everest-swatch-picker mode="css" category="color" color="{{appTabColor}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Selected Tab Color</span>
+                <everest-swatch-picker mode="css" category="color" color="{{appTabSelectedColor}}"></everest-swatch-picker>
+              </div>
+              <!-- Size Settings -->
+              <div class="flexbox-container">
+                <span>Title Font Size</span>
+                <everest-swatch-picker mode="css" category="position" type="number" size="{{appTitleSize}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Condensed Title Font Size</span>
+                <everest-swatch-picker mode="css" category="position" type="number" size="{{appCondensedTitleSize}}"></everest-swatch-picker>
               </div>
 
-              <div>
-                Admin Page
+              <div class="flexbox-container">
+                <span>Logo Position</span>
+                <everest-swatch-picker mode="css" category="position" type="number" size="{{appLogoPosition}}"></everest-swatch-picker>
               </div>
-            </iron-pages>
-          </div>
-        </app-drawer>
+              <div class="flexbox-container">
+                <span>Condensed Logo Position</span>
+                <everest-swatch-picker mode="css" category="position" type="number" size="{{appCondensedLogoPosition}}"></everest-swatch-picker>
+              </div>
+
+              <!-- Boolean Settings -->
+              <div class="flexbox-container">
+                <span>Ipsum</span>
+                <everest-swatch-picker mode="css" category="position" type="boolean"></everest-swatch-picker>
+              </div>
+            </div>
+
+            <div>
+              Admin Page
+            </div>
+          </iron-pages>
+        </div>
+      </app-drawer>
+
+      <paper-fab-speed-dial icon="add" id="fab">
+        <a style="display: block;" href="" on-tap="_toggleDrawer"><paper-fab-speed-dial-action icon="settings-brightness">Manage theme</paper-fab-speed-dial-action></a>
+        <a style="display: block;" href="/new/article"><paper-fab-speed-dial-action icon="create">New Article</paper-fab-speed-dial-action></a>
+        <a style="display: block;" href="/new/page"><paper-fab-speed-dial-action icon="description">New Page</paper-fab-speed-dial-action></a>
+        <a style="display: block;" href="/new/category"><paper-fab-speed-dial-action icon="label">New Category</paper-fab-speed-dial-action></a>
+        <a style="display: block;" href="/new/tag"><paper-fab-speed-dial-action icon="loyalty">New Tag</paper-fab-speed-dial-action></a>
+      </paper-fab-speed-dial>
 
     </app-drawer-layout>
   </template>
@@ -414,6 +437,9 @@
           this.$.drawer.close();
         }
 
+        // Close fab button
+        this._closeFab();
+
         Polymer.AppLayout.scroll({ top: 0, behavior: 'silent' });
       }
 
@@ -433,6 +459,11 @@
 
       _toggleDrawer() {
         this.$.drawerAdmin.toggle();
+        this._closeFab();
+      }
+
+      _closeFab() {
+        Polymer.dom(this.root).querySelector('#fab').close();
       }
 
       _downloadTheme(e) {
