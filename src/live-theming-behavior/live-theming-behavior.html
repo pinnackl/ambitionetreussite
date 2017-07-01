@@ -55,15 +55,84 @@
         observer: '_appCondensedLogoPositionChanged'
       },
 
+      appHeaderBanner: {
+        value: "",
+        observer: "_appHeaderBannerChanged"
+      },
+
       /* JS Properties */
+
+      appHeaderBannerBase64: {
+        value: "",
+        observer: "_appHeaderBannerBase64Changed"
+      },
 
       appLogo: {
         observer: "_appLogoChanged"
       },
 
-      appHeaderBanner: {
-        value: "",
-        observer: "_appHeaderBannerChanged"
+      appLogoBase64: {
+        observer: "_appLogoBase64Changed"
+      },
+
+      appCondenses: {
+        type: Boolean,
+        value: true,
+        observer: '_appCondensesChanged'
+      },
+
+      appFixed: {
+        type: Boolean,
+        value: true,
+        observer: '_appFixedChanged'
+      },
+
+      appReveals: {
+        type: Boolean,
+        value: false,
+        observer: '_appRevealsChanged'
+      },
+
+      appShadow: {
+        type: Boolean,
+        value: false,
+        observer: '_appShadowChanged'
+      },
+
+      appBlendBackground: {
+        type: Boolean,
+        value: true,
+        observer: '_appBlendBackgroundChanged'
+      },
+
+      appFadeBackground: {
+        type: Boolean,
+        value: false,
+        observer: '_appFadeBackgroundChanged'
+      },
+
+      appParallaxBackground: {
+        type: Boolean,
+        value: true,
+        observer: '_appParallaxBackgroundChanged'
+      },
+
+      appResizeSnappedTitle: {
+        type: Boolean,
+        value:false,
+        observer: '_appResizeSnappedTitleChanged'
+      },
+
+      appResizeTitle: {
+        type: Boolean,
+        value:true,
+        observer: '_appResizeTitleChanged'
+      },
+
+      appWaterfall: {
+        type: Boolean,
+        value:true,
+        observer: '_appWaterfallChanged'
       },
 
       showDownload: {
@@ -82,7 +151,34 @@
     listeners: {
       'download-theme': '_download'
     },
+    
+    observers: [
+      '_removeIf("appFixed", appReveals)',
+      '_removeIf("appReveals", appFixed)',
+      '_removeIf("appShadow", appWaterfall)',
+      '_removeIf("appBlendBackground", appFadeBackground)',
+      '_removeIf("appFadeBackground", appBlendBackground)',
+      '_removeIf("appResizeSnappedTitle", appResizeTitle)',
+      '_removeIf("appResizeTitle", appResizeSnappedTitle)',
+      '_removeIf("appWaterfall", appShadow)'
+    ],
 
+    _removeIf: function(propName, value) {
+      if (this[propName] && value) {
+        this[propName] = false;
+      }
+    },
+
+    _computeEffects: function() {
+      return [
+        this.appblendBackground ? 'blend-background ' : '',
+        this.appFadeBackground ? 'fade-background ' : '',
+        this.appParallaxBackground ? 'parallax-background ' : '',
+        this.appResizeSnappedTitle ? 'resize-snapped-title ' : '',
+        this.appResizeTitle ? 'resize-title ' : '',
+        this.appWaterfall ? 'waterfall ' : ''
+      ].join('');
+    },
 
     /**
      * The list of CSS properties
@@ -127,15 +223,63 @@
       this.__updateCustomProperty('--app-condensed-logo-position', e);
     },
 
+    _appHeaderBannerChanged: function (e) {
+      this.__updateCustomProperty('--app-header-banner', e);
+    },
+
     /**
      * The list of JS properties
      */
+    _appHeaderBannerBase64Changed: function (e) {
+      this.__updateThemeVariable('appHeaderBannerBase64', e);
+    },
+
     _appLogoChanged: function (e) {
       this.__updateThemeVariable('appLogo', e);
     },
 
-    _appHeaderBannerChanged: function (e) {
-      this.__updateCustomProperty('--app-header-banner', e);
+    _appLogoBase64Changed: function (e) {
+      this.__updateThemeVariable('appLogoBase64', e);
+    },
+
+    _appCondensesChanged:function(e) {
+      this.__updateThemeVariable('appCondenses', e);
+    },
+
+    _appFixedChanged:function(e) {
+      this.__updateThemeVariable('appFixed', e);
+    },
+
+    _appRevealsChanged:function(e) {
+      this.__updateThemeVariable('appReveals', e);
+    },
+
+    _appShadowChanged:function(e) {
+      this.__updateThemeVariable('appShadow', e);
+    },
+
+    _appBlendBackgroundChanged:function(e) {
+      this.__updateThemeVariable('appBlendBackground', e);
+    },
+
+    _appFadeBackgroundChanged:function(e) {
+      this.__updateThemeVariable('appFadeBackground', e);
+    },
+
+    _appParallaxBackgroundChanged:function(e) {
+      this.__updateThemeVariable('appParallaxBackground', e);
+    },
+
+    _appResizeSnappedTitleChanged:function(e) {
+      this.__updateThemeVariable('appResizeSnappedTitle', e);
+    },
+
+    _appResizeTitleChanged:function(e) {
+      this.__updateThemeVariable('appResizeTitle', e);
+    },
+
+    _appWaterfallChanged:function(e) {
+      this.__updateThemeVariable('appWaterfall', e);
     },
 
     // Live updates
@@ -150,7 +294,6 @@
 
     __updateThemeVariable: function (name, value) {
       this.set(name, value);
-
       this.__setTheme(name, value);
     },
 
