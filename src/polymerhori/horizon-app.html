@@ -92,7 +92,10 @@
                                 authType: 'unauthenticated'
                             });
                         }
+
                         window.horizon = hz;
+                        _this.fire('dbconnection');
+
                         window.horizon.status(function (status) {
                             window.horizon.currentUser().fetch().subscribe((user) => {
                                 _this.fire('user', { user: user });
@@ -122,6 +125,7 @@
                             host: 'localhost:8181',
                             authType: 'unauthenticated'
                         });
+                        console.log("onupgade");
                         window.horizon = hz;
                         return hz;
                     }

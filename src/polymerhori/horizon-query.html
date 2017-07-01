@@ -126,12 +126,24 @@
 
                         this.ref.findAll(aOrder).watch().subscribe(data => {
                             this.set('data', data);
+                            console.log(data);
                         });
                     } else {
                         this.ref.order(this.orderLimit).limit(this.limit).watch().subscribe(data => {
                             this.set('data', data);
+                            console.log(data);
                         });
                     }
+                } else {
+                    var _this = this;
+                    window.addEventListener('dbconnection', function (e) {
+                        var horizon = window.horizon;
+                        var table = path.split('/').slice(1, 2).join('');
+                        _this.ref = horizon(table);
+                        _this.ref.order(_this.orderLimit).limit(_this.limit).watch().subscribe(data => {
+                            _this.set('data', data);
+                        });
+                    });
                 }
             },
 
