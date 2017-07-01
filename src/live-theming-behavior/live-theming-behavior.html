@@ -55,15 +55,25 @@
         observer: '_appCondensedLogoPositionChanged'
       },
 
+      appHeaderBanner: {
+        value: "",
+        observer: "_appHeaderBannerChanged"
+      },
+
       /* JS Properties */
+
+      appHeaderBannerBase64: {
+        value: "",
+        observer: "_appHeaderBannerBase64Changed"
+      },
 
       appLogo: {
         observer: "_appLogoChanged"
       },
 
-      appHeaderBanner: {
-        value: "",
-        observer: "_appHeaderBannerChanged"
+      appLogoBase64: {
+        observer: "_appLogoBase64Changed"
+      },
       },
 
       showDownload: {
@@ -127,10 +137,19 @@
       this.__updateCustomProperty('--app-condensed-logo-position', e);
     },
 
+    _appHeaderBannerChanged: function (e) {
+      this.__updateCustomProperty('--app-header-banner', e);
+    },
+
     /**
      * The list of JS properties
      */
+    _appHeaderBannerBase64Changed: function (e) {
+      this.__updateThemeVariable('appHeaderBannerBase64', e);
+    },
+
     _appLogoChanged: function (e) {
+      console.log(e);
       this.__updateThemeVariable('appLogo', e);
     },
 
@@ -150,7 +169,6 @@
 
     __updateThemeVariable: function (name, value) {
       this.set(name, value);
-
       this.__setTheme(name, value);
     },
 

@@ -90,6 +90,11 @@
           notify: true
         },
 
+        imageBase64: {
+          type: String,
+          notify: true
+        },
+
         size: {
           type: String,
           notify: true
@@ -114,13 +119,15 @@
       ],
 
       _imageChanged: function(e, detail) {
-        var cdn = "https://cdn.pinnackl.com/images/";
+        var cdn = "http://localhost:3000/images/";
         var parsedResponse = JSON.parse(detail.xhr.response);
-        var image = cdn + parsedResponse.name;
+        var image = cdn + parsedResponse.imageName;
+        var base64Image = cdn + parsedResponse.imageBase64;
         if(this.asBackground)
           this.set('image', 'url("'+ image +'")');
         else
           this.set('image', image);
+        this.set('imageBase64', base64Image);
       },
 
       _sizeChanged:function(object) {
