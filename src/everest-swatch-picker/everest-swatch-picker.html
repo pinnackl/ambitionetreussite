@@ -90,7 +90,7 @@
           notify: true
         },
 
-        imageBase64: {
+        imageBaseSf: {
           type: String,
           notify: true
         },
@@ -127,12 +127,13 @@
         var cdn = "http://localhost:3000/images/";
         var parsedResponse = JSON.parse(detail.xhr.response);
         var image = cdn + parsedResponse.imageName;
-        var base64Image = cdn + parsedResponse.imageBase64;
+        var base64Image = parsedResponse.imageBase64;
         if(this.asBackground)
           this.set('image', 'url("'+ image +'")');
         else
           this.set('image', image);
-        this.set('imageBase64', base64Image);
+        this.set('imageBaseSf', base64Image);
+        console.log(this.imageBase64);
       },
 
       _sizeChanged:function(object) {
