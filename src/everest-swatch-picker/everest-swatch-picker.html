@@ -71,7 +71,7 @@
       </div>
 
       <div class="toggle" name="toggle">
-        <paper-toggle-button noink></paper-toggle-button>
+        <paper-toggle-button noink checked="{{check}}"></paper-toggle-button>
       </div>
     </iron-pages>
   </template>
@@ -97,6 +97,11 @@
 
         size: {
           type: String,
+          notify: true
+        },
+
+        check: {
+          type: Boolean,
           notify: true
         },
 

@@ -51,10 +51,20 @@
         display: none;
       }
 
-      app-header {
+      /*app-header {
         color: var(--app-header-text-color);
         background-color: var(--app-primary-color);
         background-image: var(--app-header-banner);
+      }*/
+
+      app-header {
+        color: var(--app-header-text-color);
+        background-color: var(--app-primary-color);
+            background-image: var(--app-header-banner);
+            background-position: center; /* from selector */ /*TOP or CENTER or BOTTOM*/
+            background-size: cover; /* from button*/ /*COVER or CONTAINS*/
+            background-repeat: no-repeat; /* checkbox */
+        
       }
 
       app-header paper-icon-button {
@@ -217,21 +227,15 @@
       <!-- Main content -->
       <app-header-layout>
 
-        <!-- <app-header
-          condenses="[[condenses]]"
-          fixed="[[fixed]]"
-          reveals="[[reveals]]"
-          shadow="[[shadow]]"
-          effects="[[_computeEffects(blendBackground, fadeBackground, parallaxBackground, resizeSnappedTitle, resizeTitle, waterfall)]]"
-          slot="header"> -->
+         <app-header
+          condenses="[[appCondenses]]"
+          fixed="[[appFixed]]"
+          reveals="[[appReveals]]"
+          shadow="[[appShadow]]"
+          effects="[[_computeEffects(appBlendBackground, appFadeBackground, appParallaxBackground, appResizeSnappedTitle, appResizeTitle, appWaterfall)]]"
+          slot="header"> 
 
         <!-- FIXME : Dev purpose -->
-        <app-header
-          condenses
-          reveals
-          fixed="[[largeScreen]]"
-          effects="resize-title"
-          slot="header">
 
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
@@ -356,8 +360,44 @@
 
               <!-- Boolean Settings -->
               <div class="flexbox-container">
-                <span>Ipsum</span>
-                <everest-swatch-picker mode="toggle"></everest-swatch-picker>
+                <span>Condenses</span>
+                <everest-swatch-picker mode="toggle" check="{{appCondenses}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Fixed</span>
+                <everest-swatch-picker mode="toggle" check="{{appFixed}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Reveals</span>
+                <everest-swatch-picker mode="toggle" check="{{appReveals}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Shadow</span>
+                <everest-swatch-picker mode="toggle" check="{{appShadow}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Blend Background</span>
+                <everest-swatch-picker mode="toggle" check="{{appBlendBackground}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Fade Background</span>
+                <everest-swatch-picker mode="toggle" check="{{appFadeBackground}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Parallax Background</span>
+                <everest-swatch-picker mode="toggle" check="{{appParallaxBackground}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Resize Snapped Title</span>
+                <everest-swatch-picker mode="toggle" check="{{appResizeSnappedTitle}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Resize Title</span>
+                <everest-swatch-picker mode="toggle" check="{{appResizeTitle}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Waterfall</span>
+                <everest-swatch-picker mode="toggle" check="{{appWaterfall}}"></everest-swatch-picker>
               </div>
             </div>
 
