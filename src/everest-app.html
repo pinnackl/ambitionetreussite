@@ -297,13 +297,15 @@
         <div style="height:100%; overflow:auto;">
           <app-toolbar>
             <paper-tabs class="paper-tabs-admin" selected="{{selected}}">
-              <paper-tab>Theme</paper-tab>
-              <paper-tab>Admin</paper-tab>
+              <paper-tab>Images</paper-tab>
+              <paper-tab>Colors</paper-tab>
+              <paper-tab>Sizes</paper-tab>
+              <paper-tab>Header</paper-tab>
             </paper-tabs>
           </app-toolbar>
+          <paper-button raised on-tap="_downloadTheme" hidden="[[!showDownload]]"><iron-icon icon="file-download"></iron-icon>Download Theme</paper-button>
           <iron-pages selected="{{selected}}" fallback-selection="0">
             <div>
-              <paper-button raised on-tap="_downloadTheme" hidden="[[!showDownload]]"><iron-icon icon="file-download"></iron-icon>Download</paper-button>
               <!-- Banner Upload -->
               <div class="flexbox-container">
                 <span>Banner</span>
@@ -314,6 +316,8 @@
                 <span>Logo</span>
                 <everest-swatch-picker mode="image" image="{{appLogo}}" image-base-sf="{{appLogoBase64}}" ></everest-swatch-picker>
               </div>
+            </div>
+            <div>
               <!-- Color Picker -->
               <div class="flexbox-container">
                 <span>Primary Color</span>
@@ -339,6 +343,8 @@
                 <span>Selected Tab Color</span>
                 <everest-swatch-picker mode="color" color="{{appTabSelectedColor}}"></everest-swatch-picker>
               </div>
+            </div>
+            <div>
               <!-- Size Settings -->
               <div class="flexbox-container">
                 <span>Title Font Size</span>
@@ -357,7 +363,8 @@
                 <span>Condensed Logo Position</span>
                 <everest-swatch-picker mode="number" size="{{appCondensedLogoPosition}}"></everest-swatch-picker>
               </div>
-
+            </div>
+            <div>
               <!-- Boolean Settings -->
               <div class="flexbox-container">
                 <span>Condenses</span>
@@ -401,9 +408,9 @@
               </div>
             </div>
 
-            <div>
+            <!--<div>
               Admin Page
-            </div>
+            </div>-->
           </iron-pages>
         </div>
       </app-drawer>
