@@ -112,7 +112,6 @@
                 if (path != null && typeof horizon != "undefined") {
                     var table = path.split('/').slice(1, 2).join('');
                     this.ref = horizon(table);
-
                     if (orderByChild != null && equalTo != null) {
                         var keys = orderByChild.split("_");
                         var values = equalTo.split("~");
@@ -126,12 +125,10 @@
 
                         this.ref.findAll(aOrder).watch().subscribe(data => {
                             this.set('data', data);
-                            console.log(data);
                         });
                     } else {
                         this.ref.order(this.orderLimit).limit(this.limit).watch().subscribe(data => {
                             this.set('data', data);
-                            console.log(data);
                         });
                     }
                 } else {
@@ -148,7 +145,7 @@
             },
 
             __computeRef: function (path) {
-                // console.log(path);
+                console.log("compute ref");
             }
         });
     </script>

@@ -4,7 +4,6 @@
 <link rel="import" href="../everest-horizon/everest-horizon.html">
 <dom-module id="everest-data">
     <template>
-        <everest-horizon></everest-horizon>
         <horizon-auth id="auth" user="{{user}}" signed-in="{{signedIn}}" on-error="_handleError">
         </horizon-auth>
 
@@ -12,13 +11,6 @@
           path="/alpinists/[[uid]]"
           data="{{userData}}">
         </horizon-document>-->
-
-        <firebase-document path="/editors" data="{{editors}}">
-        </firebase-document>
-        <firebase-document path="/moderators" data="{{moderators}}">
-        </firebase-document>
-        <firebase-document path="/administrators" data="{{administrators}}">
-        </firebase-document>
 
         <!--<horizon-query
             id="alpinists"

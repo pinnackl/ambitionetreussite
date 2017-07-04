@@ -1,6 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-
-<!-- <link rel="import" href="../everest-article-card/everest-article-card.html"> -->
+<link rel="import" href="../everest-article-card/everest-article-card.html">
 <link rel="import" href="../shared-styles.html">
 <dom-module id="everest-home">
     <template>
@@ -37,7 +36,6 @@
         <div class="material">
             <div class="app-grid">
                 <template is="dom-repeat" items=[[data]] as=item index-as=index>
-                    <!-- <p>[[item.text]]</p> -->
                     <everest-article-card class="item" article="[[item]]"></everest-article-card>
                 </template>
             </div>

@@ -79,6 +79,7 @@
 
                     getToken.onsuccess = function (event) {
                         if (getToken.result && getToken.result.token) {
+                            console.log("connection 3")
                             var hz = new Horizon({
                                 host: 'localhost:8181',
                                 authType: {
@@ -87,6 +88,7 @@
                                 }
                             });
                         } else {
+                            console.log("connection 4")
                             var hz = new Horizon({
                                 host: 'localhost:8181',
                                 authType: 'unauthenticated'
@@ -100,8 +102,10 @@
                             window.horizon.currentUser().fetch().subscribe((user) => {
                                 _this.fire('user', { user: user });
                             }, (err) => {
-                                _this.$.auth.signOut();
-                                var hz = new Horizon({ host: 'localhost:8181', authType: 'unauthenticated' });
+                                // console.log(err);
+                                // _this.$.auth.signOut();
+                                // console.log("connection 5")
+                                // var hz = new Horizon({ host: 'localhost:8181', authType: 'unauthenticated' });
                             });
                         });
                         return hz;
@@ -109,6 +113,7 @@
                 };
 
                 request.onerror = function (event) {
+                    console.log("connection 6")
                     var hz = new Horizon({
                         host: 'localhost:8181',
                         authType: 'unauthenticated'
@@ -121,11 +126,11 @@
                     window.db = event.target.result;
                     var objectStore = db.createObjectStore("token", { keyPath: "id" });
                     objectStore.transaction.oncomplete = function (event) {
+                        console.log("connection 7")
                         var hz = new Horizon({
                             host: 'localhost:8181',
                             authType: 'unauthenticated'
                         });
-                        console.log("onupgade");
                         window.horizon = hz;
                         return hz;
                     }

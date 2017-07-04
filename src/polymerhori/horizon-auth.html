@@ -114,7 +114,7 @@
                             window.horizon.onDisconnected(function (status) {
                                 _this.storeToken(token);
                             });
-
+                            console.log('connection 1');
                             var hz = new Horizon({
                                 host: 'localhost:8181',
                                 authType: {
@@ -160,7 +160,7 @@
                         }).then(function (e) {
                             var token = JSON.parse(e.response).token;
                             window.horizon.disconnect();
-
+                            console.log("connection 2")
                             var hz = new Horizon({
                                 host: 'localhost:8181',
                                 authType: {
