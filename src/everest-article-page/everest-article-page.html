@@ -19,42 +19,42 @@
 <dom-module id="everest-article-page">
     <template>
         <style include="shared-styles">
-            :host {
+             :host {
                 display: block;
                 height: 100%;
             }
-
+            
             .post .cover {
                 position: relative;
                 width: 100%;
                 height: 60vh;
             }
-
+            
             .post .cover iron-image {
                 width: 100%;
                 height: 100%;
             }
-
+            
             .post .filter {
                 position: absolute;
                 top: 0;
                 left: 0;
                 z-index: 1;
-                width : 100%;
+                width: 100%;
                 height: 100%;
                 color: #ffffff;
                 font-weight: 400;
                 font-size: 12px;
-                background-color: rgba(0,0,0,0);
-                background-image: -webkit-linear-gradient(rgba(0,0,0,0.4) 0%,rgba(0,0,0,.4) 75%,rgba(0,0,0,.4) 100%);
-                background-image: linear-gradient(rgba(0,0,0,0.4) 0%,rgba(0,0,0,.4) 75%,rgba(0,0,0,.4) 100%);
+                background-color: rgba(0, 0, 0, 0);
+                background-image: -webkit-linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, .4) 75%, rgba(0, 0, 0, .4) 100%);
+                background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, .4) 75%, rgba(0, 0, 0, .4) 100%);
                 display: flex;
                 flex-direction: column;
                 flex-wrap: nowrap;
                 justify-content: center;
                 align-items: center;
             }
-
+            
             .post .filter h1.title {
                 color: #f7f7f7;
                 font-size: 47px;
@@ -64,13 +64,12 @@
                 text-transform: none;
                 letter-spacing: 0px;
             }
-
+            
             .post .filter .article-info {
                 display: block;
                 width: 90%;
                 margin: 20px 0;
                 font-size: 20px;
-
                 display: -ms-flexbox;
                 display: -webkit-flex;
                 display: flex;
@@ -89,9 +88,8 @@
                 -webkit-align-items: center;
                 -ms-flex-align: center;
                 align-items: center;
-
             }
-
+            
             .post .filter .article-info .avatar-ctn,
             .post .material.footer .comment .avatar-ctn {
                 width: 64px;
@@ -103,14 +101,14 @@
                 display: inline-block;
                 vertical-align: middle;
             }
-
+            
             .post .filter .article-info .author-ctn,
             .post .material.footer .comment .author-ctn {
                 display: inline-block;
                 vertical-align: middle;
                 padding-left: 12px;
             }
-
+            
             .post .filter .article-info .social {
                 /*height: 64px;*/
                 padding: 0 8px;
@@ -127,7 +125,7 @@
                 -ms-flex-item-align: auto;
                 align-self: auto;
             }
-
+            
             .post .cover-position {
                 position: absolute;
                 top: 0;
@@ -135,29 +133,28 @@
                 z-index: 4;
                 width: 98%;
             }
-
-            .post .secton-header {
-            }
-
+            
+            .post .secton-header {}
+            
             .post .filter .article-info .autor-name a {
                 text-decoration: none;
                 color: #f7f7f7;
             }
-
+            
             .post .material.footer .comment a {
                 text-decoration: none;
                 color: #56585c;
             }
-
+            
             .post .filter .article-info .autor-name a:hover,
             .post .material.footer .comment a:hover {
                 text-decoration: underline;
             }
-
+            
             .post .filter .article-info .published {
                 font-size: 0.6em;
             }
-
+            
             .post .filter .article-info .category {
                 /*height: 64px;*/
                 padding-left: 12px;
@@ -172,7 +169,7 @@
                 -ms-flex-item-align: auto;
                 align-self: auto;
             }
-
+            
             .post .filter .article-info .category a.tag {
                 display: inline-block;
                 background-color: #3eb7e9;
@@ -183,17 +180,17 @@
                 border-radius: 2px;
                 box-sizing: border-box;
             }
-
+            
             .post .filter .article-info .category .tag:hover {
                 background-color: #3eb7e9;
             }
-
+            
             .post .filter .avatar-ctn iron-image.avatar,
-            .post .footer .comment .author .avatar-ctn iron-image.avatar {
+            .post .footer .comment .author .avatar-ctn iron-image.avatar {
                 width: 64px;
                 height: 64px;
             }
-
+            
             .post .material.content {
                 position: relative;
                 background-color: #ffffff;
@@ -208,88 +205,88 @@
                 -ms-transform: translateY(-100px);
                 transform: translateY(-100px);
             }
-
+            
             .post .material.content article .section-header {
                 text-align: right;
             }
-
+            
             .post .material.footer {
                 min-height: 128px;
                 margin: 0;
             }
-
+            
             .post .material.footer h2 {
                 color: #56585c;
             }
-
+            
             .post .material.footer h2 .icon {
                 padding-right: 12px;
             }
-
+            
             .post .material.footer:before {
                 display: block;
                 content: '';
                 width: 30%;
                 border-bottom: solid 1px #56585c
             }
-
+            
             .post .material.footer .social paper-button {
                 color: #ffffff;
             }
-
+            
             .post .material.footer .social paper-button a {
                 display: inline-block;
                 color: #ffffff;
                 text-decoration: none;
             }
-
+            
             .post .material.footer .social paper-button.facebook {
                 background-color: #3B5998;
             }
-
+            
             .post .material.footer .social paper-button.facebook social-media-icons {
                 margin-right: 8px;
                 vertical-align: middle;
             }
-
+            
             .post .material.footer .comment .material {
                 background-color: #F7F7F7;
                 min-height: 128px;
                 margin: 0 0 12px 0;
             }
-
+            
             .post .material.footer .comment .material .comment {
                 margin-top: 8px;
             }
-
+            
             .post .material.footer .comment .material .published {
                 font-size: 0.6em;
             }
-
+            
             .post .material.footer .comment .avatar-ctn {
                 display: inline-block;
             }
-
+            
             .post .material paper-menu {
                 height: 144px;
                 background-color: #f7F7F7;
                 overflow-y: scroll;
                 padding: 0 6px;
             }
-
+            
             .post .material paper-menu paper-item {
                 cursor: pointer;
             }
-
+            
             .post .material paper-menu paper-item.iron-selected {
                 background-color: #179BD7;
                 color: #ffffff;
             }
-
+            
             .post .material.footer .tags {
                 margin-top: 20px;
             }
-
+            
             .post .material.footer .tags .tag {
                 display: inline-block;
                 background-color: #56585c;
@@ -302,34 +299,32 @@
                 border-radius: 2px;
                 box-sizing: border-box;
             }
-
+            
             .post .material.footer .tags .tag:hover {
                 background-color: #3eb7e9;
             }
-
+            
             .save-button {
                 background-color: #179BD7;
                 color: #FFFFFF;
             }
-
+            
             .comment .commentEditor {
                 margin-bottom: 1em;
             }
-
+            
             .comment .commentEditor .commentButton {
                 text-align: right;
             }
-
             /* Mobil */
+            
             @media (max-width: 799px) {
                 .post .material {
                     margin-top: 0;
                 }
-
                 .post .filter h1.title {
                     font-size: 27px;
                 }
-
                 .post .material.content {
                     -moz-transform: translateY(0px);
                     -webkit-transform: translateY(0px);
@@ -344,57 +339,32 @@
             <page-title base-title="Everest" title="[[article.title]] - [[_ucfirst(article.category)]]" direction="reversed"></page-title>
         </template>
 
-        <firebase-document
-            id="article"
-            path="/articles/[[uid]]">
-        </firebase-document>
-        <firebase-document
-            id="users"
-            path="/users/[[article.authorID]]"
-            data="{{author}}">
-        </firebase-document>
-        <firebase-query
-            id="categories"
-            path="/categories"
-            data="{{categories}}">
-        </firebase-query>
-        <firebase-query
-            id="tags"
-            path="/tags"
-            data="{{tags}}">
-        </firebase-query>
+        <horizon-document id="article" path="/articles/[[uid]]" index="slug">
+        </horizon-document>
+        <horizon-document id="users" path="/alpinists/[[article.authorID]]" data="{{author}}">
+        </horizon-document>
+        <horizon-query id="categories" path="/categories" data="{{categories}}">
+        </horizon-query>
+        <horizon-query id="tags" path="/tags" data="{{tags}}">
+        </horizon-query>
 
-        <firebase-query
-            id="comments"
-            order-by-child="published_signaled_trash"
-            equal-to="[[published]]~[[signaled]]~[[trash]]"
-            path="/comments/[[uid]]"
-            data="{{comments}}"
-        ></firebase-query>
+        <firebase-query id="comments" order-by-child="published_signaled_trash" equal-to="[[published]]~[[signaled]]~[[trash]]" path="/comments/[[uid]]"
+            data="{{comments}}"></firebase-query>
 
-        <firebase-auth
-            user="{{fireUser}}"
-            signed-in="{{signedIn}}">
+        <firebase-auth user="{{fireUser}}" signed-in="{{signedIn}}">
         </firebase-auth>
         <!-- User data -->
-        <firebase-document
-            path="/users/[[fireUser.uid]]/basicInfo"
-            data="{{user}}">
+        <firebase-document path="/users/[[fireUser.uid]]/basicInfo" data="{{user}}">
         </firebase-document>
         <div class="post">
             <div class="cover">
-                <iron-image
-                    style="background: #3eb7e9;"
-                    src$="https://cdn.pinnackl.com/images/[[article.cover]]"
-                    position="{{article.position}}"
+                <iron-image style="background: #3eb7e9;" src$="https://cdn.pinnackl.com/images/[[article.cover]]" position="{{article.position}}"
                     preload fade sizing="cover"></iron-image>
                 <div id="filter" class="filter">
                     <h1 class="title">[[article.title]]</h1>
                     <div class="article-info">
                         <div class="avatar-ctn">
-                            <iron-image class="avatar"
-                                style="background-color: lightgray;"
-                                src="https://cdn.pinnackl.com/avatars/[[author.basicInfo.avatar]]"
+                            <iron-image class="avatar" style="background-color: lightgray;" src="https://cdn.pinnackl.com/avatars/[[author.basicInfo.avatar]]"
                                 preload fade sizing="cover"></iron-image>
                         </div>
                         <div class="author-ctn">
@@ -422,9 +392,12 @@
                                 <paper-menu-button horizontal-align="right">
                                     <paper-icon-button icon="open-with" class="dropdown-trigger"></paper-icon-button>
                                     <paper-menu class="dropdown-content" selected="{{article.position}}" attr-for-selected="value">
-                                        <paper-item value="top"><iron-icon icon="editor:vertical-align-top"></iron-icon>Top</paper-item>
-                                        <paper-item value="center"><iron-icon icon="editor:vertical-align-center"></iron-icon>Center</paper-item>
-                                        <paper-item value="bottom"><iron-icon icon="editor:vertical-align-bottom"></iron-icon>Bottom</paper-item>
+                                        <paper-item value="top">
+                                            <iron-icon icon="editor:vertical-align-top"></iron-icon>Top</paper-item>
+                                        <paper-item value="center">
+                                            <iron-icon icon="editor:vertical-align-center"></iron-icon>Center</paper-item>
+                                        <paper-item value="bottom">
+                                            <iron-icon icon="editor:vertical-align-bottom"></iron-icon>Bottom</paper-item>
                                     </paper-menu>
                                 </paper-menu-button>
                             </div>
@@ -436,55 +409,35 @@
                 <div class="section-header">
                     <span></span>
                     <template is="dom-if" if={{isAdmin}}>
-                        <paper-icon-button icon="create" raised on-tap="edit"
-                            hidden$="[[editMode]]"></paper-icon-button>
-                        <paper-icon-button icon="close" raised on-tap="close"
-                            hidden$="[[!editMode]]"></paper-icon-button>
+                        <paper-icon-button icon="create" raised on-tap="edit" hidden$="[[editMode]]"></paper-icon-button>
+                        <paper-icon-button icon="close" raised on-tap="close" hidden$="[[!editMode]]"></paper-icon-button>
                     </template>
                 </div>
                 <!-- Edit content -->
                 <template is="dom-if" if={{editMode}}>
                     <div class="edit">
                         <div class="section-header">
-                            <paper-input
-                                id="articleTitle"
-                                label="Titre"
-                                value="{{article.title}}"></paper-input>
+                            <paper-input id="articleTitle" label="Titre" value="{{article.title}}"></paper-input>
                             <div class="sub-align"><span>Publish</span>
-                                <paper-toggle-button checked="{{article.published}}"></paper-toggle-button></div>
-                            <paper-button
-                                class="save-button"
-                                raised
-                                on-tap="updateArticle">
+                                <paper-toggle-button checked="{{article.published}}"></paper-toggle-button>
+                            </div>
+                            <paper-button class="save-button" raised on-tap="updateArticle">
                                 <iron-icon icon="done"></iron-icon>Save</paper-button>
                         </div>
                         <div class="section-header">
-                            <paper-input
-                                style="width: 90%;"
-                                id="articleTitle"
-                                label="Link to the article"
-                                value="{{article.slug}}">
+                            <paper-input style="width: 90%;" id="articleTitle" label="Link to the article" value="{{article.slug}}">
                                 <div prefix><span>[[origin]]/[[article.category]]/</span></div>
                             </paper-input>
                         </div>
                         <div class="section-header">
                             <!-- FIXME : Get the target from config -->
-                            <file-upload
-                                droppable="true"
-                                raised="true"
-                                accept="image/*"
-                                method="POST"
-                                file-data-name="cover"
-                                target="https://cdn.pinnackl.com/api/images/upload"
+                            <file-upload droppable="true" raised="true" accept="image/*" method="POST" file-data-name="cover" target="https://cdn.pinnackl.com/api/images/upload"
                                 on-success="fileUploaded">Choose a cover</file-upload>
-                            <paper-input
-                                label="Add a category"
-                                value="{{newCategory}}"></paper-input>
+                            <paper-input label="Add a category" value="{{newCategory}}"></paper-input>
                             <paper-button raised class="save-button" on-tap="addCategory">Add</paper-button>
                             <paper-dropdown-menu label="Choose a category" value="{{article.category}}">
                                 <paper-listbox class="dropdown-content">
-                                    <template is="dom-repeat" items={{categories}}
-                                        as=item index-as=index>
+                                    <template is="dom-repeat" items={{categories}} as=item index-as=index>
                                         <paper-item>[[item.name]]</paper-item>
                                     </template>
                                 </paper-listbox>
@@ -492,12 +445,8 @@
                         </div>
                     </div>
                 </template>
-                <polymer-tinymce id="editor"
-                    base-url="[[origin]]/bower_components/tinymce"
-                    hidden$="[[!editMode]]"
-                    tinytoolbar="insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
-                    tinyplugins='["advlist autolink lists link image charmap print preview anchor","searchreplace visualblocks code fullscreen","insertdatetime media table contextmenu paste"]'
-                ></polymer-tinymce>
+                <polymer-tinymce id="editor" base-url="[[origin]]/bower_components/tinymce" hidden$="[[!editMode]]" tinytoolbar="insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+                    tinyplugins='["advlist autolink lists link image charmap print preview anchor","searchreplace visualblocks code fullscreen","insertdatetime media table contextmenu paste"]'></polymer-tinymce>
 
                 <article id="content"></article>
                 <div class="material footer">
@@ -509,34 +458,37 @@
                                 <paper-button raised class="save-button" on-tap="addTag">Add</paper-button>
                             </div>
                             <paper-menu multi attr-for-selected="name" selected-values="{{article.tags}}">
-                                <template is="dom-repeat" items={{tags}}
-                                    as=item index-as=index>
+                                <template is="dom-repeat" items={{tags}} as=item index-as=index>
                                     <paper-item name="[[item.name]]">[[item.name]]</paper-item>
                                 </template>
                             </paper-menu>
                         </div>
                     </template>
                     <div class="tags">
-                        <template is="dom-repeat" items={{article.tags}}
-                            as=item index-as=index>
+                        <template is="dom-repeat" items={{article.tags}} as=item index-as=index>
                             <a class="tag" href="#">[[item]]</a>
                         </template>
                     </div>
                     <div class="social">
                         <h2><span class="icon"><iron-icon icon="social:share"></iron-icon></span> SHARE ON SOCIAL NETWORKS</h2>
                         <paper-button class="facebook" raised>
-                            <a href="https://www.facebook.com/sharer/sharer.php?u=" title=""><social-media-icons icon="facebook" color="#ffffff"></social-media-icons>facebook</paper-button></a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=" title="">
+                                <social-media-icons icon="facebook" color="#ffffff"></social-media-icons>facebook</paper-button>
+                        </a>
                     </div>
                     <div class="comment">
                         <h2><span class="icon"><iron-icon icon="question-answer"></iron-icon></span>COMMENTS</h2>
                         <template is="dom-if" if={{isAdmin}}>
                             <div class="section-header">
                                 <div class="sub-align"><span>Published</span>
-                                    <paper-toggle-button checked="{{published}}"></paper-toggle-button></div>
+                                    <paper-toggle-button checked="{{published}}"></paper-toggle-button>
+                                </div>
                                 <div class="sub-align"><span>Reported</span>
-                                    <paper-toggle-button checked="{{signaled}}"></paper-toggle-button></div>
+                                    <paper-toggle-button checked="{{signaled}}"></paper-toggle-button>
+                                </div>
                                 <div class="sub-align"><span>Trash</span>
-                                    <paper-toggle-button checked="{{trash}}"></paper-toggle-button></div>
+                                    <paper-toggle-button checked="{{trash}}"></paper-toggle-button>
+                                </div>
                             </div>
                         </template>
                         <template is="dom-if" if={{signedIn}}>
@@ -544,10 +496,8 @@
                             <div class="commentEditor">
                                 <div class="author">
                                     <div class="avatar-ctn">
-                                        <iron-image class="avatar"
-                                            style="background-color: lightgray;"
-                                            src="https://cdn.pinnackl.com/avatars/[[user.avatar]]"
-                                            preload fade sizing="cover"></iron-image>
+                                        <iron-image class="avatar" style="background-color: lightgray;" src="https://cdn.pinnackl.com/avatars/[[user.avatar]]" preload
+                                            fade sizing="cover"></iron-image>
                                     </div>
                                     <paper-textarea label="Write a comment" value="{{commentContent}}"></paper-textarea>
                                 </div>
@@ -556,13 +506,8 @@
                                 </div>
                             </div>
                         </template>
-                        <template is="dom-repeat" items={{comments}}
-                            as=comment index-as=index>
-                            <everest-comment-card
-                                is-admin="[[isAdmin]]"
-                                comment="[[comment]]"
-                                on-update-comment="updateComment"
-                                on-signal-comment="signalComment"
+                        <template is="dom-repeat" items={{comments}} as=comment index-as=index>
+                            <everest-comment-card is-admin="[[isAdmin]]" comment="[[comment]]" on-update-comment="updateComment" on-signal-comment="signalComment"
                                 on-trash-comment="trashComment"></everest-comment-card>
                         </template>
                     </div>

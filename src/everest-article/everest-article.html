@@ -89,11 +89,8 @@
         <horizon-query id="query" path="/articles" order-by-child="category_published_trash" equal-to="[[combinedFilters]]" data="{{data}}">
         </horizon-query>
 
-        <!--<horizon-document
-            id="query"
-            path="/articles/[[match.0.$key]]"
-            data="{{article}}">
-        </horizon-document>-->
+        <horizon-document id="query" path="/articles/[[slug]]" data="{{article}}" index="slug">
+        </horizon-document>
 
         <iron-pages selected="[[view]]" attr-for-selected="name" fallback-selection="spinner">
             <section name="list">
@@ -123,8 +120,8 @@
                 </div>
             </section>
             <section name="read">
-                <template is="dom-if" if={{match.0.$key}}>
-                    <everest-article-page article="[[article]]" uid="[[match.0.$key]]" is-admin="{{isAdmin}}"></everest-article-page>
+                <template is="dom-if" if={{slug}}>
+                    <everest-article-page article="[[article]]" uid="[[slug]]" is-admin="{{isAdmin}}"></everest-article-page>
                 </template>
             </section>
             <section name="spinner">
@@ -142,10 +139,6 @@
             properties: {
                 view: {
                     type: String
-                },
-
-                slug: {
-                    type: String,
                 },
 
                 category: {
