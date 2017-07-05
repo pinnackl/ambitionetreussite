@@ -4,31 +4,27 @@
 <dom-module id="everest-new">
     <template>
         <style>
-            :host {
+             :host {
                 display: block;
                 min-height: 100vh;
                 width: 100%;
             }
-
+            
             iron-pages {
                 min-height: 100vh;
             }
-
+            
             iron-pages section {
                 min-height: 50vh;
             }
-
+            
             [name=spinner] {
                 display: flex;
                 justify-content: center;
                 align-items: center;
             }
         </style>
-        <app-route
-            route="{{route}}"
-            pattern="/:page"
-            data="{{routeData}}"
-            tail="{{subroute}}"></app-route>
+        <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
 
         <template is="dom-if" if={{isAdmin}}>
             <page-title base-title="Everest" title="New [[page]]" direction="reversed"></page-title>
@@ -39,13 +35,13 @@
                 <everest-article-create edit-mode="true" user="{{user}}" is-admin="{{isAdmin}}"></everest-article-create>
             </section>
             <section name="categorie">
-                <everest-category-create user="{{user}}" is-admin="{{isAdmin}}"></everest-category-create>
+                <everest-category-create user="{{user}}" is-admin="true"></everest-category-create>
             </section>
             <section name="tag">
-                <everest-tag-create user="{{user}}" is-admin="{{isAdmin}}"></everest-tag-create>
+                <everest-tag-create user="{{user}}" is-admin="true"></everest-tag-create>
             </section>
             <section name="page">
-                <everest-page-create user="{{user}}" is-admin="{{isAdmin}}"></everest-page-create>
+                <everest-page-create user="{{user}}" is-admin="true"></everest-page-create>
             </section>
             <section name="spinner">
                 <paper-spinner active alt="Chargement des contenu"></paper-spinner>
@@ -98,8 +94,8 @@
 
             _routePageChanged: function (page) {
                 // if (this.isAdmin) {
-                    this.page = page || '';
-                    this.subpage = this.page;
+                this.page = page || '';
+                this.subpage = this.page;
                 // } else {
                 //     this.tempPage = page;
                 // }
