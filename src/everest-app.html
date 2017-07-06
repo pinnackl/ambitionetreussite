@@ -584,6 +584,10 @@
 
       ready() {
         super.ready();
+        var _this = this;
+        window.addEventListener('user', function (e) {
+          _this.horizonUser = e.detail.user;
+        });
         this.addEventListener('route-changed', e => this.__routeChanged(e));
         let appTitleSizeDefault = null;
         let appTheme = this.$.appTheme;
