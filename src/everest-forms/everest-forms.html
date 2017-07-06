@@ -10,29 +10,29 @@
 <dom-module id="everest-forms">
     <template>
         <style include="shared-styles">
-            :host {
+             :host {
                 display: block;
             }
-
+            
             paper-dialog {
                 width: 70vw;
             }
-
+            
             h1 {
                 color: #3eb7e9;
             }
-
+            
             .section-header-vertical {
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
             }
-
+            
             paper-material {
                 margin: 1em;
             }
-
+            
             iron-image {
                 width: 100px;
                 height: 100px;
@@ -75,8 +75,8 @@
             },
 
             observers: [
-                'firebaseErrorChanged(firebaseError)',
-                'firebaseSuccessChanged(firebaseSuccess)',
+                'horizonErrorChanged(horizonError)',
+                'horizonSuccessChanged(horizonSuccess)',
             ],
 
             openDialog: function (name) {
@@ -96,9 +96,9 @@
                 this.$.formDialog.open();
             },
 
-            firebaseErrorChanged: function (error) {
+            horizonErrorChanged: function (error) {
                 if (this.name == 'signUp') {
-                    switch(error.code) {
+                    switch (error.code) {
                         case "auth/invalid-email":
                             this.$.signUp.errorMsg = "The email address is not valid.";
                             break;
@@ -109,10 +109,10 @@
                             this.$.signUp.errorMsg = "The e-mail address is already used by another account.";
                             break;
                         default:
-                            // ...
+                        // ...
                     }
                 } else {
-                    switch(error.code) {
+                    switch (error.code) {
                         case "auth/invalid-email":
                             this.$.signIn.errorMsg = "The email address is not valid.";
                             break;
@@ -126,12 +126,12 @@
                             this.$.signIn.errorMsg = "The password is not valid or the user does not have a password.";
                             break;
                         default:
-                            // ...
+                        // ...
                     }
                 }
             },
 
-            firebaseSuccessChanged: function (success) {
+            horizonSuccessChanged: function (success) {
                 if (success) {
                     this.$.formDialog.close();
                     this.$.signUp.clear();
@@ -146,7 +146,7 @@
 
             _confirm: function (e) {
                 if (this.name == 'signIn' && this.$.signIn.user.email) {
-                    this.fire('everest-login-event', {user: this.$.signIn.user});
+                    this.fire('everest-login-event', { user: this.$.signIn.user });
                 }
 
                 if (this.name == 'signUp'
@@ -159,16 +159,16 @@
                     this.$.signUp.emailErr = !this.$.signUp.user.email;
                     this.$.signUp.passwordErr = !this.$.signUp.user.password;
                     this.$.signUp.passwordConfirmErr = !(this.$.signUp.user.password
-                                                        && this.$.signUp.user.passwordConfirm
-                                                        && this.$.signUp.user.password == this.$.signUp.user.passwordConfirm);
-                    this.fire('everest-signup-event', {user: this.$.signUp.user});
+                        && this.$.signUp.user.passwordConfirm
+                        && this.$.signUp.user.password == this.$.signUp.user.passwordConfirm);
+                    this.fire('everest-signup-event', { user: this.$.signUp.user });
                 } else {
                     this.$.signUp.nameErr = !this.$.signUp.user.name;
                     this.$.signUp.emailErr = !this.$.signUp.user.email;
                     this.$.signUp.passwordErr = !this.$.signUp.user.password;
                     this.$.signUp.passwordConfirmErr = !(this.$.signUp.user.password
-                                                        && this.$.signUp.user.passwordConfirm
-                                                        && this.$.signUp.user.password == this.$.signUp.user.passwordConfirm);
+                        && this.$.signUp.user.passwordConfirm
+                        && this.$.signUp.user.password == this.$.signUp.user.passwordConfirm);
                 }
             }
         });

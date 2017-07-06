@@ -5,17 +5,6 @@
     <template>
         <horizon-auth id="auth" user="{{user}}" signed-in="{{signedIn}}" on-error="_handleError">
         </horizon-auth>
-
-        <!--<horizon-document
-          path="/alpinists/[[uid]]"
-          data="{{userData}}">
-        </horizon-document>-->
-
-        <!--<horizon-query
-            id="alpinists"
-            path="/alpinists">
-        </horizon-query>-->
-
         <paper-toast id="dataToast" horizontal-align="left" always-on-top duration="5000" text=""></paper-toast>
     </template>
     <script>
@@ -107,7 +96,6 @@
              * @return void
              */
             createUser: function (userObject) {
-                console.info("Register");
                 var _this = this;
                 var name = typeof userObject.name ? userObject.name : "";
                 var email = typeof userObject.email ? userObject.email : "";
@@ -127,19 +115,16 @@
                         email: email
                     }).subscribe(
                         (data) => {
-                            console.log("id value:", data.id)
                             _this.uid = data.id;
                             _this.set('horizonSuccess', Date.now());
                             _this.$.dataToast.text = _this.stateMessage.registerSuccess.text;
                             _this.$.dataToast.open();
                         },
                         (err) => {
-                            console.error(err);
                             _this.set('horizonError', err);
                         }
                         );
                 }).catch(function (e) {
-                    console.error(e);
                     _this.set('horizonError', e);
                 });
             },
