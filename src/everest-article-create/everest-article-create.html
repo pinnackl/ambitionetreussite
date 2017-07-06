@@ -429,13 +429,15 @@
                             <!-- FIXME : Get the target from config -->
                             <file-upload droppable="true" raised="true" accept="image/*" method="POST" file-data-name="cover" target="https://cdn.pinnackl.com/api/images/upload"
                                 on-success="fileUploaded">Choose a cover</file-upload>
-                            <paper-dropdown-menu label="Choose a category" value="{{category}}">
-                                <paper-listbox class="dropdown-content">
-                                    <template is="dom-repeat" items={{categories}} as=item index-as=index>
-                                        <paper-item>[[item.name]]</paper-item>
-                                    </template>
-                                </paper-listbox>
-                            </paper-dropdown-menu>
+                            <template is="dom-if" if="{{categories}}">
+                                <paper-dropdown-menu label="Choose a category" value="{{category}}">
+                                    <paper-listbox slot="dropdown-content" class="dropdown-content">
+                                        <template is="dom-repeat" items={{categories}} as=item index-as=index>
+                                            <paper-item>[[item.name]]</paper-item>
+                                        </template>
+                                    </paper-listbox>
+                                </paper-dropdown-menu>
+                            </template>
                             <paper-input label="Add a new category" value="{{newCategory}}"></paper-input>
                             <paper-button raised class="save-button" on-tap="addCategory">Add</paper-button>
                         </div>
@@ -659,7 +661,6 @@
             },
 
             _categoriesChanged: function (categories) {
-
             },
 
             _toastClosed: function (e) {
