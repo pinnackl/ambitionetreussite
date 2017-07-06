@@ -65,6 +65,11 @@
         observer: "_appHeaderBannerPositionChanged"
       },
 
+      appHeaderBannerSize: {
+        value: "",
+        observer: "_appHeaderBannerSizeChanged"
+      },
+
       /* JS Properties */
 
       appHeaderBannerBase64: {
@@ -234,6 +239,10 @@
 
     _appHeaderBannerPositionChanged:function(e) {
       this.__updateCustomProperty('--app-header-banner-position', e);
+    },
+
+    _appHeaderBannerSizeChanged:function(e) {
+      this.__updateCustomProperty('--app-header-banner-size', e);
     },
 
     /**

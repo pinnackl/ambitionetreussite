@@ -129,6 +129,11 @@
           notify: true
         },
 
+        display: {
+          type: Boolean,
+          notify: true
+        },
+
         mode: {
           type: String
         },
@@ -144,7 +149,8 @@
       },
 
       observers: [
-        '__colorChanged(color)'
+        '__colorChanged(color)',
+        '__bannerSizeChanged(check)'
       ],
 
       _imageChanged: function(e, detail) {
@@ -162,6 +168,13 @@
 
       _sizeChanged:function(object) {
         this.set('size', object.detail.value+"px");
+      },
+
+      __bannerSizeChanged:function(e) {
+        if(e == true)
+          this.set('display', 'cover');
+        else
+          this.set('display', 'contains');
       },
 
       // Only triggered when the swatch picker changed
