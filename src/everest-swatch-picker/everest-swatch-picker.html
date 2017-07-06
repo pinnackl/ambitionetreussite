@@ -5,6 +5,7 @@
 <link rel="import" href="../../bower_components/vaadin-upload/vaadin-upload.html">
 <link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
 <link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 
 <dom-module id="everest-swatch-picker">
   <template>
@@ -45,25 +46,9 @@
          display: none;
        }
     </style>
-    <template is="dom-if" if="[[isCSS]]">
-      <template is="dom-if" if="[[isColor]]">
-        <div class="color">
-          <div class="swatch-picker">
-            <paper-swatch-picker color="{{color}}" noink horizontal-align="right"></paper-swatch-picker>
-          </div>
-        </div>
-      </template>
-      <template is="dom-if" if="[[!isColor]]">
-        <template is="dom-if" if="[[isNumber]]">
-          <paper-slider value="[[default]]" editable on-immediate-value-changed='_sizeChanged'></paper-slider>
-        </template>
-        <template is="dom-if" if="[[!isNumber]]">
-          <paper-toggle-button noink></paper-toggle-button>
-        </template>
-      </template>
-    </template>
-    <template is="dom-if" if="[[!isCSS]]">
-      <div class="image">
+    <iron-pages selected="{{mode}}" attr-for-selected="name">
+
+      <div class="image" name="image">
         <vaadin-upload 
           nodrop 
           max-files="1" 
@@ -74,7 +59,21 @@
           on-upload-success="_imageChanged">
         </vaadin-upload>
       </div>
-    </template>
+
+      <div class="color" name="color">
+        <div class="swatch-picker">
+          <paper-swatch-picker color="{{color}}" noink horizontal-align="right"></paper-swatch-picker>
+        </div>
+      </div>
+
+      <div class="number" name="number">
+        <paper-slider value="[[default]]" editable on-immediate-value-changed='_sizeChanged'></paper-slider>
+      </div>
+
+      <div class="toggle" name="toggle">
+        <paper-toggle-button noink checked="{{check}}"></paper-toggle-button>
+      </div>
+    </iron-pages>
   </template>
   <script>
     Polymer({
@@ -91,8 +90,18 @@
           notify: true
         },
 
+        imageBaseSf: {
+          type: String,
+          notify: true
+        },
+
         size: {
           type: String,
+          notify: true
+        },
+
+        check: {
+          type: Boolean,
           notify: true
         },
 
@@ -100,52 +109,31 @@
           type: String
         },
 
-        category: {
-          type: String
-        },
-
-        type: {
-          type: String
-        },
-
         asBackground: {
           type: Boolean,
           value: false
         },
-
+ 
         default: {
           type: String,
         }
       },
 
       observers: [
-        '_modeChanged(mode)',
-        '_categoryChanged(category)',
-        '_typeChanged(type)',
         '__colorChanged(color)'
       ],
 
-      _modeChanged: function (mode) {
-        this.isCSS = mode == "css" ? true : false;
-      },
-
-      _categoryChanged: function (category) {
-        this.isColor = category == "color" ? true : false;
-      },
-
-      _typeChanged: function (type) {
-        this.isNumber = type == "number" ? true : false;
-      },
-
       _imageChanged: function(e, detail) {
-        var cdn = "https://cdn.pinnackl.com/images/";
+        var cdn = "http://localhost:3000/images/";
         var parsedResponse = JSON.parse(detail.xhr.response);
-        var image = cdn + parsedResponse.name;
+        var image = cdn + parsedResponse.imageName;
+        var base64Image = parsedResponse.imageBase64;
         if(this.asBackground)
           this.set('image', 'url("'+ image +'")');
         else
           this.set('image', image);
-        console.log(this.image);
+        this.set('imageBaseSf', base64Image);
+        console.log(this.imageBase64);
       },
 
       _sizeChanged:function(object) {

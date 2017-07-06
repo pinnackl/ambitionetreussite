@@ -4,11 +4,11 @@
 <dom-module id="horizon-query">
     <template>
         <style>
-            :host {
+             :host {
                 display: block;
             }
         </style>
-        
+
     </template>
     <script>
         Polymer({
@@ -18,7 +18,7 @@
                 ref: {
                     type: Object
                 },
-            
+
                 /**
                  * Horizon data query
                  * object computed by the following parameters.
@@ -101,18 +101,17 @@
                 data: {
                     type: Array,
                     notify: true,
-                    value: function() {
+                    value: function () {
                         return [];
                     }
                 }
             },
 
-            __computeQuery: function(orderByChild, orderLimit, limit, startAt, endAt, equalTo, path) {
+            __computeQuery: function (orderByChild, orderLimit, limit, startAt, endAt, equalTo, path) {
                 var horizon = window.horizon;
                 if (path != null && typeof horizon != "undefined") {
                     var table = path.split('/').slice(1, 2).join('');
                     this.ref = horizon(table);
-
                     if (orderByChild != null && equalTo != null) {
                         var keys = orderByChild.split("_");
                         var values = equalTo.split("~");
@@ -132,11 +131,21 @@
                             this.set('data', data);
                         });
                     }
+                } else {
+                    var _this = this;
+                    window.addEventListener('dbconnection', function (e) {
+                        var horizon = window.horizon;
+                        var table = path.split('/').slice(1, 2).join('');
+                        _this.ref = horizon(table);
+                        _this.ref.order(_this.orderLimit).limit(_this.limit).watch().subscribe(data => {
+                            _this.set('data', data);
+                        });
+                    });
                 }
             },
 
-            __computeRef: function(path) {
-                // console.log(path);
+            __computeRef: function (path) {
+                console.log("compute ref");
             }
         });
     </script>

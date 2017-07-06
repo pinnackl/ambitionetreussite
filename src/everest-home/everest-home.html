@@ -1,50 +1,41 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-
-<!-- <link rel="import" href="../everest-article-card/everest-article-card.html"> -->
+<link rel="import" href="../everest-article-card/everest-article-card.html">
 <link rel="import" href="../shared-styles.html">
 <dom-module id="everest-home">
     <template>
         <style include="shared-styles">
-            :host {
+             :host {
                 display: block;
-
                 min-height: 100vh;
                 width: 100%;
-
                 --app-grid-columns: 3;
                 --app-grid-item-height: 200px;
             }
-
+            
             .material {
                 background-color: #ffffff;
             }
-
+            
             .material h2 {
                 text-align: center;
                 color: #757575;
             }
-
+            
             .item {
                 padding: 0 0.5em 1em 0.5em;
             }
-
+            
             @media (max-width: 799px) {
-                :host {
+                 :host {
                     --app-grid-columns: 1;
                 }
             }
         </style>
-        <!-- <horizon-query
-            id="query"
-            path="/articles"
-            order-by-child="published_trash"
-            data="{{data}}">
-        </horizon-query> -->
+        <horizon-query id="query" path="/articles" order-by-child="published_trash" data="{{data}}">
+        </horizon-query>
         <div class="material">
             <div class="app-grid">
-                <template is="dom-repeat" items=[[data]]
-                    as=item index-as=index>
-                    <!-- <p>[[item.text]]</p> -->
+                <template is="dom-repeat" items=[[data]] as=item index-as=index>
                     <everest-article-card class="item" article="[[item]]"></everest-article-card>
                 </template>
             </div>

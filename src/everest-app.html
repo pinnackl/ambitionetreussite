@@ -28,16 +28,26 @@
 <link rel="import" href="everest-common-behaviors/everest-behaviors.html">
 <link rel="import" href="everest-footer/everest-footer.html">
 <link rel="import" href="live-theming-behavior/live-theming-behavior.html">
-<link rel="import" href="everest-swatch-picker/everest-swatch-picker.html">
+<link rel="import" href="everest-swatch-picker/everest-swatch-picker.html" async>
 <link rel="import" href="everest-forms/everest-forms.html">
 
+<link rel="import" href="polymerhori/horizon-app.html">
+<link rel="import" href="everest-horizon/everest-horizon.html">
+<link rel="import" href="polymerhori/horizon-query.html">
+<link rel="import" href="polymerhori/horizon-document.html">
+<link rel="import" href="polymerhori/horizon-auth.html">
+<link rel="import" href="everest-data/everest-data.html">
+
+<!-- App Theme -->
+<link rel="import" href="app-theme.html">
 
 <dom-module id="everest-app">
   <template>
-    <style>
+    <style include="app-theme">
       /* Polymer Starter Kit */
-      :host {
-        --app-primary-color: #4285f4;
+      
+       :host {
+        /*--app-primary-color: #4285f4;
         --app-icon-color: black;
         --app-header-text-color: #ffffff;
         --app-tab-color: #ffffff;
@@ -45,29 +55,41 @@
         --app-condensed-title-size: 16px;
         --app-title-size: 32px;
         --app-logo-position: 64px;
-        --app-condensed-logo-position: 48px;
-
+        --app-condensed-logo-position: 48px;*/
         display: block;
       }
-
+      
       app-drawer-layout:not([narrow]) [drawer-toggle] {
         display: none;
       }
-
+      /*app-header {
+        color: var(--app-header-text-color);
+        background-color: var(--app-primary-color);
+        background-image: var(--app-header-banner);
+      }*/
+      
       app-header {
         color: var(--app-header-text-color);
         background-color: var(--app-primary-color);
         background-image: var(--app-header-banner);
+        background-position: center;
+        /* from selector */
+        /*TOP or CENTER or BOTTOM*/
+        background-size: cover;
+        /* from button*/
+        /*COVER or CONTAINS*/
+        background-repeat: no-repeat;
+        /* checkbox */
       }
-
+      
       app-header paper-icon-button {
         --paper-icon-button-ink-color: white;
       }
-
+      
       .drawer-list {
         margin: 0 20px;
       }
-
+      
       .drawer-list a {
         display: block;
         padding: 0 16px;
@@ -75,26 +97,28 @@
         color: var(--app-secondary-color);
         line-height: 40px;
       }
-
+      
       .drawer-list a.iron-selected {
         color: black;
         font-weight: bold;
       }
-
+      
       iron-pages {
-        height: 200vh;/* FIXME : Dev purpose */
+        height: 200vh;
+        /* FIXME : Dev purpose */
       }
-
       /* Everest Main CSS */
-      :host([large-screen]) [drawer-toggle] {
+      
+       :host([large-screen]) [drawer-toggle] {
         display: none;
       }
-
+      
       paper-tabs {
         --paper-tabs-selection-bar-color: var(--app-tab-selected-color);
       }
-
-      paper-tab[link] a, paper-tab[link] span {
+      
+      paper-tab[link] a,
+      paper-tab[link] span {
         /* These mixins (from iron-flex-layout) center the link text. */
         @apply(--layout-horizontal);
         @apply(--layout-center-center);
@@ -102,19 +126,19 @@
         pointer-events: auto;
         color: var(--app-tab-color);
       }
-
+      
       paper-tab[aria-selected=true] a {
         color: var(--app-tab-selected-color);
       }
-
       /* Logo display */
+      
       [condensed-title] [title] {
         position: relative;
         top: 228%;
         left: var(--app-condensed-logo-position);
         pointer-events: auto;
       }
-
+      
       [condensed-title] {
         height: 64px;
         position: relative;
@@ -125,19 +149,20 @@
         /* The difference in font size is used to calculate the scale of the title in the transition. */
         font-size: var(--app-condensed-title-size);
       }
-
+      
       [main-title] [title] {
         position: relative;
-        top: -80%; /* Title position (-25%, -50%, -80%) */
+        top: -80%;
+        /* Title position (-25%, -50%, -80%) */
         left: var(--app-logo-position);
         pointer-events: auto;
       }
-
+      
       [main-title] [title] img,
       [condensed-title] [title] img {
         vertical-align: middle;
       }
-
+      
       [main-title] {
         height: 64px;
         position: relative;
@@ -150,22 +175,24 @@
         /* The difference in font size is used to calculate the scale of the title in the transition. */
         font-size: var(--app-title-size);
       }
-
+      
       [condensed-title][mobile] {
         top: 0;
         display: flex;
         justify-content: center;
         align-items: center;
       }
-
+      
       [condensed-title][mobile] [title] {
         top: 0;
         left: 0;
       }
-
+      
       paper-tabs.menu-tab {
-        width: 60%; /* Tabs size (50%, ...) */
-        margin-left: 40%; /* The rest of Tabs size to go to 100% */
+        width: 60%;
+        /* Tabs size (50%, ...) */
+        margin-left: 40%;
+        /* The rest of Tabs size to go to 100% */
       }
 
       /* Profil button */
@@ -210,15 +237,15 @@
         color: #56585c;
         text-decoration: none;
       }
-
+      
       .paper-tabs-admin {
         width: 100%;
       }
-
+      
       #drawerAdmin {
         --app-drawer-width: 30%;
       }
-
+      
       .flexbox-container {
         display: flex;
         justify-content: space-between;
@@ -226,22 +253,26 @@
         padding: 8px 16px;
         text-align: left;
       }
-
+      
       paper-fab-speed-dial {
         --paper-fab-speed-dial-background: #3eb7e9;
       }
+      
       paper-fab-speed-dial-action {
         --paper-fab-speed-dial-action-background: #3eb7e9;
       }
-
     </style>
+    <app-theme id="appTheme"></app-theme>
+    <everest-horizon></everest-horizon>
+    <everest-data id="everestData" signed-in="{{signedIn}}" rights="{{rights}}" user="{{horizonUser}}" horizon-error="{{horizonError}}"
+      horizon-success="{{horizonSuccess}}">
+    </everest-data>
+
+    <horizon-document path="/alpinists/[[horizonUser.id]]" data="{{user}}">
+    </horizon-document>
 
     <app-location route="{{route}}"></app-location>
-    <app-route
-        route="{{route}}"
-        pattern="[[rootPattern]]:page"
-        data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
+    <app-route route="{{route}}" pattern="[[rootPattern]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
 
     <iron-media-query query="(min-width: 600px)" query-matches="{{largeScreen}}"></iron-media-query>
 
@@ -259,26 +290,16 @@
       <!-- Main content -->
       <app-header-layout>
 
-        <!-- <app-header
-          condenses="[[condenses]]"
-          fixed="[[fixed]]"
-          reveals="[[reveals]]"
-          shadow="[[shadow]]"
-          effects="[[_computeEffects(blendBackground, fadeBackground, parallaxBackground, resizeSnappedTitle, resizeTitle, waterfall)]]"
-          slot="header"> -->
-
-        <!-- FIXME : Dev purpose -->
-        <app-header
-          condenses
-          reveals
-          fixed="[[largeScreen]]"
-          effects="resize-title"
+        <app-header condenses="[[appCondenses]]" fixed="[[appFixed]]" reveals="[[appReveals]]" shadow="[[appShadow]]" effects="[[_computeEffects(appBlendBackground, appFadeBackground, appParallaxBackground, appResizeSnappedTitle, appResizeTitle, appWaterfall)]]"
           slot="header">
+
+          <!-- FIXME : Dev purpose -->
 
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div condensed-title mobile$=[[!largeScreen]]>
-              <a title href="/"><iron-image src="//placehold.it/48/48"></iron-image>Everest</a>
+              <a title href="/">
+                <iron-image src="//placehold.it/48/48"></iron-image>Everest</a>
             </div>
 
             <!-- Right menu button -->
@@ -336,22 +357,18 @@
           <template is="dom-if" if={{largeScreen}}>
             <app-toolbar>
               <div main-title>
-                <a title href="/"><iron-image src="//placehold.it/64/64"></iron-image>Everest</a>
+                <a title href="/">
+                  <iron-image src="//placehold.it/64/64"></iron-image>Everest</a>
               </div>
             </app-toolbar>
-            <paper-tabs class="menu-tab" selected="[[page]]" attr-for-selected="name"
-              fit-container scrollable sticky$="[[largeScreen]]">
+            <paper-tabs class="menu-tab" selected="[[page]]" attr-for-selected="name" fit-container scrollable sticky$="[[largeScreen]]">
               <paper-tab link name="home"><a href="/home" title="Home">Home</a></paper-tab>
               <paper-tab link name="category"><a href="/category" title="Category">Category</a></paper-tab>
             </paper-tabs>
           </template>
         </app-header>
 
-        <iron-pages
-            selected="[[page]]"
-            attr-for-selected="name"
-            fallback-selection="404"
-            role="main">
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" role="main">
 
           <!-- Home view -->
           <everest-home name="home" rights="[[rights]]"></everest-home>
@@ -376,6 +393,7 @@
         <everest-footer rights="[[rights]]" user="{{fireUser}}"></everest-footer>
 
         <everest-forms id="formDialog" name="signIn" firebase-error="{{fireError}}" firebase-success="{{fireSuccess}}"></everest-forms>
+
       </app-header-layout>
 
       <!-- Drawer Admin Content -->
@@ -383,87 +401,140 @@
         <div style="height:100%; overflow:auto;">
           <app-toolbar>
             <paper-tabs class="paper-tabs-admin" selected="{{selected}}">
-              <paper-tab>Theme</paper-tab>
-              <paper-tab>Admin</paper-tab>
+              <paper-tab>Images</paper-tab>
+              <paper-tab>Colors</paper-tab>
+              <paper-tab>Sizes</paper-tab>
+              <paper-tab>Header</paper-tab>
             </paper-tabs>
           </app-toolbar>
+          <paper-button raised on-tap="_downloadTheme" hidden="[[!showDownload]]"><iron-icon icon="file-download"></iron-icon>Download Theme</paper-button>
           <iron-pages selected="{{selected}}" fallback-selection="0">
             <div>
-              <paper-button raised on-tap="_downloadTheme" hidden="[[!showDownload]]"><iron-icon icon="file-download"></iron-icon>Download</paper-button>
               <!-- Banner Upload -->
               <div class="flexbox-container">
                 <span>Banner</span>
-                <everest-swatch-picker mode="image" image="{{appHeaderBanner}}" as-background></everest-swatch-picker>
+                <everest-swatch-picker mode="image" image="{{appHeaderBanner}}" image-base-sf="{{appHeaderBannerBase64}}" as-background></everest-swatch-picker>
               </div>
               <!-- Logo Upload -->
               <div class="flexbox-container">
                 <span>Logo</span>
-                <everest-swatch-picker mode="image" image="{{appLogo}}"></everest-swatch-picker>
+                <everest-swatch-picker mode="image" image="{{appLogo}}" image-base-sf="{{appLogoBase64}}"></everest-swatch-picker>
               </div>
+            </div>
+            <div>
               <!-- Color Picker -->
               <div class="flexbox-container">
                 <span>Primary Color</span>
-                <everest-swatch-picker mode="css" category="color" color="{{appPrimaryColor}}"></everest-swatch-picker>
+                <everest-swatch-picker mode="color" color="{{appPrimaryColor}}"></everest-swatch-picker>
               </div>
               <div class="flexbox-container">
                 <span>Header Text Color</span>
-                <everest-swatch-picker mode="css" category="color" color="{{appHeaderTextColor}}"></everest-swatch-picker>
+                <everest-swatch-picker mode="color" color="{{appHeaderTextColor}}"></everest-swatch-picker>
               </div>
               <div class="flexbox-container">
                 <span>Icon Color</span>
-                <everest-swatch-picker mode="css" category="color" color="{{appIconColor}}"></everest-swatch-picker>
+                <everest-swatch-picker mode="color" color="{{appIconColor}}"></everest-swatch-picker>
               </div>
               <div class="flexbox-container">
                 <span>Logo Title Color</span>
-                <everest-swatch-picker mode="css" category="color" color="{{appLogoTitleColor}}"></everest-swatch-picker>
+                <everest-swatch-picker mode="color" color="{{appLogoTitleColor}}"></everest-swatch-picker>
               </div>
               <div class="flexbox-container">
                 <span>Tab Color</span>
-                <everest-swatch-picker mode="css" category="color" color="{{appTabColor}}"></everest-swatch-picker>
+                <everest-swatch-picker mode="color" color="{{appTabColor}}"></everest-swatch-picker>
               </div>
               <div class="flexbox-container">
                 <span>Selected Tab Color</span>
-                <everest-swatch-picker mode="css" category="color" color="{{appTabSelectedColor}}"></everest-swatch-picker>
+                <everest-swatch-picker mode="color" color="{{appTabSelectedColor}}"></everest-swatch-picker>
               </div>
+            </div>
+            <div>
               <!-- Size Settings -->
               <div class="flexbox-container">
                 <span>Title Font Size</span>
-                <everest-swatch-picker mode="css" category="position" type="number" size="{{appTitleSize}}"></everest-swatch-picker>
+                <everest-swatch-picker mode="number" default="[[appTitleSizeDefault]]" size="{{appTitleSize}}"></everest-swatch-picker>
               </div>
               <div class="flexbox-container">
                 <span>Condensed Title Font Size</span>
-                <everest-swatch-picker mode="css" category="position" type="number" size="{{appCondensedTitleSize}}"></everest-swatch-picker>
+                <everest-swatch-picker mode="number" default="16" size="{{appCondensedTitleSize}}"></everest-swatch-picker>
               </div>
 
               <div class="flexbox-container">
                 <span>Logo Position</span>
-                <everest-swatch-picker mode="css" category="position" type="number" size="{{appLogoPosition}}"></everest-swatch-picker>
+                <everest-swatch-picker mode="number" size="{{appLogoPosition}}"></everest-swatch-picker>
               </div>
               <div class="flexbox-container">
                 <span>Condensed Logo Position</span>
-                <everest-swatch-picker mode="css" category="position" type="number" size="{{appCondensedLogoPosition}}"></everest-swatch-picker>
+                <everest-swatch-picker mode="number" size="{{appCondensedLogoPosition}}"></everest-swatch-picker>
               </div>
-
+            </div>
+            <div>
               <!-- Boolean Settings -->
               <div class="flexbox-container">
-                <span>Ipsum</span>
-                <everest-swatch-picker mode="css" category="position" type="boolean"></everest-swatch-picker>
+                <span>Condenses</span>
+                <everest-swatch-picker mode="toggle" check="{{appCondenses}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Fixed</span>
+                <everest-swatch-picker mode="toggle" check="{{appFixed}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Reveals</span>
+                <everest-swatch-picker mode="toggle" check="{{appReveals}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Shadow</span>
+                <everest-swatch-picker mode="toggle" check="{{appShadow}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Blend Background</span>
+                <everest-swatch-picker mode="toggle" check="{{appBlendBackground}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Fade Background</span>
+                <everest-swatch-picker mode="toggle" check="{{appFadeBackground}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Parallax Background</span>
+                <everest-swatch-picker mode="toggle" check="{{appParallaxBackground}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Resize Snapped Title</span>
+                <everest-swatch-picker mode="toggle" check="{{appResizeSnappedTitle}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Resize Title</span>
+                <everest-swatch-picker mode="toggle" check="{{appResizeTitle}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Waterfall</span>
+                <everest-swatch-picker mode="toggle" check="{{appWaterfall}}"></everest-swatch-picker>
               </div>
             </div>
 
-            <div>
+            <!--<div>
               Admin Page
-            </div>
+            </div>-->
           </iron-pages>
         </div>
       </app-drawer>
 
       <paper-fab-speed-dial icon="add" id="fab">
-        <a style="display: block;" href="" on-tap="_toggleDrawer"><paper-fab-speed-dial-action icon="settings-brightness">Manage theme</paper-fab-speed-dial-action></a>
-        <a style="display: block;" href="/new/article"><paper-fab-speed-dial-action icon="create">New Article</paper-fab-speed-dial-action></a>
-        <a style="display: block;" href="/new/page"><paper-fab-speed-dial-action icon="description">New Page</paper-fab-speed-dial-action></a>
-        <a style="display: block;" href="/new/category"><paper-fab-speed-dial-action icon="label">New Category</paper-fab-speed-dial-action></a>
-        <a style="display: block;" href="/new/tag"><paper-fab-speed-dial-action icon="loyalty">New Tag</paper-fab-speed-dial-action></a>
+        <a style="display: block;" href="" on-tap="_toggleDrawer">
+          <paper-fab-speed-dial-action icon="settings-brightness">Manage theme</paper-fab-speed-dial-action>
+        </a>
+        <a style="display: block;" href="/new/article">
+          <paper-fab-speed-dial-action icon="create">New Article</paper-fab-speed-dial-action>
+        </a>
+        <a style="display: block;" href="/new/page">
+          <paper-fab-speed-dial-action icon="description">New Page</paper-fab-speed-dial-action>
+        </a>
+        <a style="display: block;" href="/new/category">
+          <paper-fab-speed-dial-action icon="label">New Category</paper-fab-speed-dial-action>
+        </a>
+        <a style="display: block;" href="/new/tag">
+          <paper-fab-speed-dial-action icon="loyalty">New Tag</paper-fab-speed-dial-action>
+        </a>
       </paper-fab-speed-dial>
 
     </app-drawer-layout>
@@ -513,6 +584,20 @@
         super.ready();
         console.log("ready");
         this.addEventListener('route-changed', e => this.__routeChanged(e));
+        let appTitleSizeDefault = null;
+        let appTheme = this.$.appTheme;
+        
+        // if(ShadyCSS){
+        //   appTitleSizeDefault = ShadyCSS.getComputedStyleValue(('--app-title-size'));
+        //   console.log(appTitleSizeDefault);
+        // }else {
+        //   appTitleSizeDefault = getComputedStyle(appTheme, '--app-title-size');
+        //   console.log(appTitleSizeDefault);
+        // }
+        
+        // this.appTitleSizeDefault = parseInt(appTheme.getComputedStyleValue(('--app-title-size')),10) || 32;
+
+        // console.log(appTitleSizeDefault);
       }
 
       login(e, detail) {
@@ -565,10 +650,10 @@
         // Load page import on demand. Show 404 page if fails
         var resolvedPageUrl = this.resolveUrl('everest-' + page + '/everest-' + page + '.html');
         Polymer.importHref(
-            resolvedPageUrl,
-            null,
-            this._showPage404.bind(this),
-            true);
+          resolvedPageUrl,
+          null,
+          this._showPage404.bind(this),
+          true);
       }
 
       _showPage404() {

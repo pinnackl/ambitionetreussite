@@ -8,24 +8,24 @@
 <dom-module id="everest-tag-create">
     <template>
         <style include="shared-styles">
-            :host {
+             :host {
                 display: block;
             }
-
+            
             .material {
                 background-color: #ffffff;
             }
-
+            
             paper-input {
                 width: 30%
             }
-
+            
             .tags {
                 height: 291px;
                 overflow-y: scroll;
                 background-color: #f7f7f7;
             }
-
+            
             .tags li.tag {
                 list-style: none;
                 display: flex;
@@ -34,22 +34,16 @@
                 margin: 3px 0;
             }
         </style>
-        <firebase-query
-            id="tags"
-            path="/tags"
-            data="{{tags}}">
-        </firebase-query>
+        <horizon-query id="tags" path="/tags" data="{{tags}}">
+        </horizon-query>
         <div class="material">
             <h1>Manage tags</h1>
             <div class="section-header">
-                <paper-input
-                    label="Create a new tag"
-                    value="{{newtag}}"></paper-input>
+                <paper-input label="Create a new tag" value="{{newtag}}"></paper-input>
                 <paper-button raised class="save-button" on-tap="addtag">Add</paper-button>
             </div>
             <ul class="tags">
-                <template is="dom-repeat" items={{tags}}
-                    as=item index-as=index>
+                <template is="dom-repeat" items={{tags}} as=item index-as=index>
                     <li class="tag">
                         <span>[[item.name]]</span>
                         <paper-button raised tag="[[item]]" class="delete-button" on-tap="removetag">Delete</paper-button>
@@ -107,15 +101,16 @@
             addtag: function (e) {
                 if (this.newtag && this.isAdmin) {
                     var _this = this;
-                    this.$.tags.ref.push({
+                    const newRef = window.horizon('tags');
+                    newRef.store({
                         slug: getSlug(this.newtag),
                         name: this.newtag
-                    }).then(function (value) {
+                    }).subscribe(function (value) {
                         _this.stateMessageIcon = _this.stateMessage.success.icon;
                         _this.$.stateMessage.text = _this.stateMessage.success.text;
                         _this.$.stateMessage.open();
                         _this.newtag = null;
-                    }).catch(function (error) {
+                    }, function (error) {
                         _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
                         _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
                         _this.$.stateMessage.open();
@@ -124,18 +119,18 @@
             },
 
             removetag: function (e) {
-                var key = e.currentTarget.tag.$key;
+                var key = e.currentTarget.tag.id;
                 var _this = this;
-                this.$.tags.ref.child(key).remove().then(
-                function (value) {
-                    console.log(value);
+                const newRef = window.horizon('tags');
+                newRef.remove(key).subscribe(function (value) {
                     _this.stateMessageIcon = _this.stateMessage.success.icon;
                     _this.$.stateMessage.text = _this.stateMessage.success.text;
                     _this.$.stateMessage.open();
-                }).catch(function (error) {
+                }, function (error) {
                     _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
                     _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
                     _this.$.stateMessage.open();
+
                 });
             },
 
