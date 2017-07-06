@@ -10,36 +10,36 @@
 <dom-module id="everest-article-card">
     <template>
         <style include="shared-styles paper-material-styles">
-            :host {
+             :host {
                 display: block;
             }
             
             .item {
                 height: 100%;
             }
-
+            
             .paper-material {
                 display: block;
                 position: relative;
                 height: 100%;
             }
-
+            
             .paper-material[elevation="5"] {
                 @apply --paper-material-elevation-5;
             }
-
+            
             .paper-material iron-image.thumbnail {
-                width : 40%;
+                width: 40%;
                 height: 100%;
                 vertical-align: top;
             }
-
+            
             .paper-material .description {
-                width : 40%;
+                width: 40%;
                 height: 100%;
                 display: inline-block;
             }
-
+            
             article .paper-material {
                 overflow: hidden;
                 border-radius: 3px;
@@ -62,7 +62,7 @@
                 display: block;
                 height: 100%;
             }
-
+            
             article .paper-material:hover .filter {
                 cursor: pointer;
                 transform: translateX(0%);
@@ -219,7 +219,7 @@
                             <paper-badge label="[[comments.length]]"></paper-badge></span>
                     </div>
                 </footer>
-            </paper-material>
+                </paper-material>
         </article>
     </template>
     <script>

@@ -197,21 +197,20 @@
         margin-left: 40%;
         /* The rest of Tabs size to go to 100% */
       }
-
       /* Profil button */
-      .profileBtn {
-      }
-
+      
+      .profileBtn {}
+      
       .user-menu paper-button {
         color: #000;
         text-decoration: none;
         font-size: small
       }
-
+      
       .user-menu paper-button iron-icon {
         margin-right: .4em;
       }
-
+      
       .user-menu.user-card {
         padding: 16px;
         color: #56585c;
@@ -222,7 +221,7 @@
         align-items: center;
         text-align: center;
       }
-
+      
       .user-menu.user-card .circle {
         overflow: hidden;
         width: 64px;
@@ -230,12 +229,12 @@
         display: block;
         border-radius: 50%;
       }
-
+      
       .user-menu.user-card img {
         height: 64px;
         width: 64px;
       }
-
+      
       .user-menu.user-card a {
         color: #56585c;
         text-decoration: none;
@@ -308,50 +307,45 @@
             <!-- Right menu button -->
             <span>
               <span class="user-pseudo" hidden$="[[!user.name]]">[[user.name]]</span>
-              <paper-menu-button id="userMenu" allow-outside-scroll horizontal-align="right">
+            <paper-menu-button id="userMenu" allow-outside-scroll horizontal-align="right">
 
-                <!-- User not authenticated -->
-                <template is="dom-if" if={{!signedIn}}>
-                  <paper-icon-button
-                    class="profileBtn"
-                    slot="dropdown-trigger"
-                    icon="perm-identity">
-                  </paper-icon-button>
-                  <paper-listbox class="user-menu" slot="dropdown-content">
-                    <paper-item>
-                      <paper-button on-tap="_signIn">
-                        <iron-icon icon="lock-open"></iron-icon>Sign In</paper-button></paper-item>
-                    <paper-item>
-                      <paper-button on-tap="_signUp">
-                        <iron-icon icon="input"></iron-icon>Sign Up</paper-button>
-                    </paper-item>
-                  </paper-listbox>
-                </template>
+              <!-- User not authenticated -->
+              <template is="dom-if" if={{!signedIn}}>
+                <paper-icon-button class="profileBtn" slot="dropdown-trigger" icon="perm-identity">
+                </paper-icon-button>
+                <paper-listbox class="user-menu" slot="dropdown-content">
+                  <paper-item>
+                    <paper-button on-tap="_signIn">
+                      <iron-icon icon="lock-open"></iron-icon>Sign In</paper-button>
+                  </paper-item>
+                  <paper-item>
+                    <paper-button on-tap="_signUp">
+                      <iron-icon icon="input"></iron-icon>Sign Up</paper-button>
+                  </paper-item>
+                </paper-listbox>
+              </template>
 
-                <!-- User authenticated -->
-                <template is="dom-if" if={{signedIn}}>
-                  <!-- <template is="dom-if" if={{!user.avatar}}> -->
-                    <paper-icon-button
-                      class="profileBtn"
-                      slot="dropdown-trigger"
-                      src="https://cdn.pinnackl.com/avatars/[[user.avatar]]">
-                    </paper-icon-button>
-                  <!-- </template> -->
-                  <div class="user-menu user-card" slot="dropdown-content">
-                    <div>
-                      <a href="/user/[[fireUser.uid]]" class="email user-menu user-card" title="Profile">
-                        <!-- <template is="dom-if" if={{user.avatar}}> -->
-                          <span class="circle"><img src="https://cdn.pinnackl.com/avatars/[[user.avatar]]"></span>
-                        <!-- </template> -->
-                        <span>[[user.name]]</span>
-                      </a>
-                      <hr>
-                      <div class="signout"><a href="#" title="Logout" on-tap="logout">Logout</a></div>
-                    </div>
+              <!-- User authenticated -->
+              <template is="dom-if" if={{signedIn}}>
+                <!-- <template is="dom-if" if={{!user.avatar}}> -->
+                <paper-icon-button class="profileBtn" slot="dropdown-trigger" src="https://cdn.pinnackl.com/avatars/[[user.avatar]]">
+                </paper-icon-button>
+                <!-- </template> -->
+                <div class="user-menu user-card" slot="dropdown-content">
+                  <div>
+                    <a href="/user/[[fireUser.uid]]" class="email user-menu user-card" title="Profile">
+                      <!-- <template is="dom-if" if={{user.avatar}}> -->
+                      <span class="circle"><img src="https://cdn.pinnackl.com/avatars/[[user.avatar]]"></span>
+                      <!-- </template> -->
+                      <span>[[user.name]]</span>
+                    </a>
+                    <hr>
+                    <div class="signout"><a href="#" title="Logout" on-tap="logout">Logout</a></div>
                   </div>
-                </template>
+                </div>
+              </template>
 
-              </paper-menu-button>
+            </paper-menu-button>
             </span>
 
 
@@ -410,7 +404,8 @@
               <paper-tab>Header</paper-tab>
             </paper-tabs>
           </app-toolbar>
-          <paper-button raised on-tap="_downloadTheme" hidden="[[!showDownload]]"><iron-icon icon="file-download"></iron-icon>Download Theme</paper-button>
+          <paper-button raised on-tap="_downloadTheme" hidden="[[!showDownload]]">
+            <iron-icon icon="file-download"></iron-icon>Download Theme</paper-button>
           <iron-pages selected="{{selected}}" fallback-selection="0">
             <div>
               <!-- Banner Upload -->
@@ -565,6 +560,10 @@
           signedIn: {
             type: Boolean,
             value: false
+          },
+          listeners: {
+            'everest-login-event': 'login',
+            'everest-signup-event': 'signup'
           }
         };
       }
@@ -577,6 +576,8 @@
 
       constructor() {
         super();
+        this.addEventListener('everest-login-event', this.login);
+        this.addEventListener('everest-signup-event', this.signup);
 
         // Get root pattern for app-route, for more info about `rootPath` see:
         // https://www.polymer-project.org/2.0/docs/upgrade#urls-in-templates
@@ -585,11 +586,14 @@
 
       ready() {
         super.ready();
-        console.log("ready");
+        var _this = this;
+        window.addEventListener('user', function (e) {
+          _this.horizonUser = e.detail.user;
+        });
         this.addEventListener('route-changed', e => this.__routeChanged(e));
         let appTitleSizeDefault = null;
         let appTheme = this.$.appTheme;
-        
+
         // if(ShadyCSS){
         //   appTitleSizeDefault = ShadyCSS.getComputedStyleValue(('--app-title-size'));
         //   console.log(appTitleSizeDefault);
@@ -597,22 +601,22 @@
         //   appTitleSizeDefault = getComputedStyle(appTheme, '--app-title-size');
         //   console.log(appTitleSizeDefault);
         // }
-        
+
         // this.appTitleSizeDefault = parseInt(appTheme.getComputedStyleValue(('--app-title-size')),10) || 32;
 
         // console.log(appTitleSizeDefault);
       }
 
-      login(e, detail) {
-        // this.$.arData.loginUser(detail.user);
+      login(e) {
+        this.$.everestData.loginUser(e.detail.user);
       }
 
-      signup(e, detail) {
-        // this.$.arData.createUser(detail.user);
+      signup(e) {
+        this.$.everestData.createUser(e.detail.user);
       }
 
       logout() {
-        // this.$.arData.logoutUser();
+        this.$.everestData.logoutUser();
       }
 
       _signIn(e) {
