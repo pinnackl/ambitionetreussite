@@ -1,0 +1,244 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
+
+<dom-module id="footer-tile">
+    <template>
+        <style>
+            :host {
+
+                min-height: 30vh;
+                height: 100%;
+
+                -webkit-order: 0;
+                -ms-flex-order: 0;
+                order: 0;
+                -webkit-flex: 1 1 auto;
+                -ms-flex: 1 1 auto;
+                flex: 1 1 auto;
+                -webkit-align-self: auto;
+                -ms-flex-item-align: auto;
+                align-self: auto;
+
+                display: flex;
+                align-items: stretch;
+                box-sizing: border-box;
+            }
+
+            :host .handle {
+                display: none;
+            }
+
+            :host([edit]) .handle {
+                color: #ffffff;
+                background-color: #179bd7;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                -webkit-order: 0;
+                -ms-flex-order: 0;
+                order: 0;
+                -webkit-flex: 0 1 auto;
+                -ms-flex: 0 1 auto;
+                flex: 0 1 auto;
+                -webkit-align-self: center;
+                -ms-flex-item-align: center;
+                align-self: auto;
+            }
+
+            :host([edit]) {
+                padding: 3px;
+                min-height: 30vh;
+                background-color: #F1F1F1;
+                border: dotted 3px #fbc009;
+                margin: 0 3px;
+                cursor: pointer;
+
+                -webkit-user-select: none !important;
+                -moz-user-select: none !important;
+                -ms-user-select: none !important;
+                user-select: none !important;
+
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -webkit-flex-direction: row;
+                -ms-flex-direction: row;
+                flex-direction: row;
+                -webkit-flex-wrap: nowrap;
+                -ms-flex-wrap: nowrap;
+                flex-wrap: nowrap;
+                -webkit-justify-content: flex-start;
+                -ms-flex-pack: start;
+                justify-content: flex-start;
+                -webkit-align-content: stretch;
+                -ms-flex-line-pack: stretch;
+                align-content: stretch;
+                -webkit-align-items: stretch;
+                -ms-flex-align: stretch;
+                align-items: stretch;
+            }
+
+            :host(:hover) .delete {
+                display: block;
+            }
+
+            [icon="create"] {
+                color: #444444
+            }
+
+            [icon="close"] {
+                color: #e83b3b;
+            }
+
+            .section-header {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                margin-bottom: 1em;
+                align-items: center;
+            }
+
+            .content {
+                padding: 8px;
+                width: 100%;
+            }
+
+            .content .footer-cln-header {
+                font-weight: bold;
+                font-size: 12px;
+                line-height: 24px;
+                color: #179BD7;
+            }
+
+            .delete {
+                position: absolute;
+                left: 8px;
+                bottom: 8px;
+                background: #e83b3b;
+            }
+
+            iron-pages {
+                /*height: 100%;*/
+            }
+
+            paper-fab {
+                /*background: #179bd7;
+                position: absolute;
+                right: 8px;
+                bottom: 8px;*/
+            }
+
+            paper-item {
+                min-height: 48px;
+                padding: 0px;
+            }
+
+            paper-item paper-button {
+                background: #179bd7;
+                color: #ffffff;
+            }
+
+            .subItems {
+                --items-container-mixin: {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    align-items: center;
+                };
+            }
+
+            [hidden] {
+                display: none;
+            }
+        </style>
+        <div class$="handle [[editClass]]"><iron-icon icon="more-vert"></iron-icon></div>
+        <div class="content">
+            <div class="footer-cln-header section-header">
+                <div class="section-header">
+                    <template is="dom-if" if={{edit}}>
+                        <paper-icon-button icon="close" column="[[column]]" on-tap="removeFooter"></paper-icon-button>
+                    </template>
+                    <template is="dom-if" if={{!editColumns}}>
+                        <span>[[column.title]]</span>
+                    </template>
+                    <template is="dom-if" if={{editColumns}}>
+                        <paper-input label="Name of the column" value="{{column.title}}"></paper-input>
+                    </template>
+                </div>
+                <template is="dom-if" if={{edit}}>
+                    <div class="section-header">
+                        <paper-icon-button icon="create" raised on-tap="editCol"
+                            hidden$="[[editColumns]]"></paper-icon-button>
+                        <paper-icon-button icon="close" raised on-tap="closeCol"
+                            hidden$="[[!editColumns]]"></paper-icon-button>
+                        <paper-menu-button>
+                            <paper-icon-button icon="add" slot="dropdown-trigger"></paper-icon-button>
+                            <paper-listbox slot="dropdown-content">
+                                <paper-item><paper-button class="">Pages</paper-button></paper-item>
+                                <paper-item><paper-button class="">Categories</paper-button></paper-item>
+                                <paper-item><paper-button class="">Articles</paper-button></paper-item>
+                            </paper-listbox>
+                        </paper-menu-button>
+                    </div>
+                </template>
+            </div>
+            <iron-pages selected="{{type}}" attr-for-selected="name" fallback-selection="article">
+                <section name="article">
+                    <everest-sortable-grid class="subItems">
+                        <div><a href="#">Plop is the new plop1!</a></div>
+                        <div><a href="#">Plop is the new plop2!</a></div>
+                        <div><a href="#">Plop is the new plop3!</a></div>
+                    </everest-sortable-grid>
+                </section>
+                <section name="page">
+                </section>
+            </iron-pages>
+            <!-- <paper-fab class="delete" mini icon="delete" on-tap="deleteTile"></paper-fab> -->
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'footer-tile',
+
+            properties: {
+                edit: {
+                    type: Boolean,
+                    value: false
+                },
+
+                editColumns: {
+                    type: Boolean,
+                    value: false
+                },
+
+                column: {
+                    type: Object,
+                    notify: true
+                }
+
+            },
+
+            ready: function () {
+                // console.log(this.tile);
+            },
+
+            editCol: function (e) {
+                this.editColumns = true;
+            },
+
+            closeCol: function (e) {
+                this.editColumns = false;
+            },
+
+            deleteTile: function (e) {
+                this.fire('delete-tile', {});
+            }
+        });
+    </script>
+</dom-module>
