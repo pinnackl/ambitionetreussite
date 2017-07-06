@@ -1,13 +1,15 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
+<link rel="import" href="../../bower_components/paper-styles/element-styles/paper-material-styles.html">
 <link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/paper-styles/element-styles/paper-material-styles.html">
 
 <link rel="import" href="../imports/imports-moment.html">
 <link rel="import" href="../shared-styles.html">
 <dom-module id="everest-article-card">
     <template>
-        <style include="shared-styles">
+        <style include="shared-styles paper-material-styles">
             :host {
                 display: block;
             }
@@ -16,23 +18,29 @@
                 height: 100%;
             }
 
-            paper-material {
+            .paper-material {
+                display: block;
+                position: relative;
                 height: 100%;
             }
 
-            paper-material iron-image.thumbnail {
+            .paper-material[elevation="5"] {
+                @apply --paper-material-elevation-5;
+            }
+
+            .paper-material iron-image.thumbnail {
                 width : 40%;
                 height: 100%;
                 vertical-align: top;
             }
 
-            paper-material .description {
+            .paper-material .description {
                 width : 40%;
                 height: 100%;
                 display: inline-block;
             }
 
-            article paper-material {
+            article .paper-material {
                 overflow: hidden;
                 border-radius: 3px;
                 background-color: #ffffff;
@@ -55,7 +63,7 @@
                 height: 100%;
             }
 
-            article paper-material:hover .filter{
+            article .paper-material:hover .filter{
                 cursor: pointer;
                 transform: translateX(0%);
             }
@@ -164,20 +172,20 @@
             article .social .circle > paper-badge {
             }
         </style>
-        <firebase-document
+        <!-- <firebase-document
             id="users"
             path="/users/[[article.authorID]]"
             data="{{user}}">
-        </firebase-document>
-        <firebase-query
+        </firebase-document> -->
+        <!-- <firebase-query
             id="comments"
             order-by-child="published_signaled_trash"
             equal-to="true~false~false"
             path="/comments/[[article.$key]]"
             data="{{comments}}"
-        ></firebase-query>
+        ></firebase-query> -->
         <article class="item">
-            <paper-material elevation="1">
+            <div class="paper-material" elevation="5">
                 <a class="article" href="/lire/[[_lowerCase(article.category)]]/[[article.slug]]" title="[[article.title]]">
                     <div class="filter">
                         <div class="avatar-ctn">
@@ -247,7 +255,8 @@
             },
 
             ready: function () {
-                this.date = moment(this.article.edited).fromNow();
+                // FIXME : Need to get data to enable this
+                // this.date = moment(this.article.edited).fromNow();
             },
 
             _limiteTags: function (tags) {
