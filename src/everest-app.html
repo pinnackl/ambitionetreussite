@@ -22,15 +22,17 @@
 <link rel="import" href="../bower_components/paper-fab-speed-dial/paper-fab-speed-dial-action.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 
 <!-- Everest Custom Elements -->
 <link rel="lazy-import" href="my-view404.html">
 <link rel="import" href="everest-common-behaviors/everest-behaviors.html">
 <link rel="import" href="everest-footer/everest-footer.html">
 <link rel="import" href="live-theming-behavior/live-theming-behavior.html">
-<!-- Lazy load -->
-<!-- <link rel="import" href="everest-swatch-picker/everest-swatch-picker.html" async> -->
 <link rel="import" href="everest-forms/everest-forms.html">
+<!-- Lazy load -->
+<link rel="preload" href="everest-swatch-picker/everest-swatch-picker.html">
 
 <link rel="import" href="polymerhori/horizon-app.html">
 <link rel="import" href="everest-horizon/everest-horizon.html">
@@ -299,7 +301,7 @@
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div condensed-title mobile$=[[!largeScreen]]>
               <a title href="/">
-                <iron-image src="//placehold.it/48/48"></iron-image>Everest</a>
+                <iron-image placeholder="[[appLogoBase64]]" src="[[appLogo]]"></iron-image>Everest</a>
             </div>
 
             <!-- Right menu button -->
@@ -353,12 +355,14 @@
             <app-toolbar>
               <div main-title>
                 <a title href="/">
-                  <iron-image src="//placehold.it/64/64"></iron-image>Everest</a>
+                  <iron-image placeholder="[[appLogoBase64]]" src="[[appLogo]]"></iron-image>Everest</a>
               </div>
             </app-toolbar>
             <paper-tabs class="menu-tab" selected="[[page]]" attr-for-selected="name" fit-container scrollable sticky$="[[largeScreen]]">
-              <paper-tab link name="home"><a href="/home" title="Home">Home</a></paper-tab>
-              <paper-tab link name="category"><a href="/category" title="Category">Category</a></paper-tab>
+              <template is="dom-repeat" items={{menu}} 
+                as=menuItem index-as=index sort="sortMenu">
+                  <paper-tab link name="[[menuItem.name]]"><a href="[[menuItem.link]]" title="[[menuItem.name]]">[[menuItem.name]]</a></paper-tab>
+              </template>
             </paper-tabs>
           </template>
         </app-header>
@@ -516,7 +520,7 @@
       </app-drawer>
 
       <paper-fab-speed-dial icon="add" id="fab">
-        <a style="display: block;" href="" on-tap="_toggleDrawer">
+        <a style="display: block;" on-tap="_toggleDrawer">
           <paper-fab-speed-dial-action icon="settings-brightness">Manage theme</paper-fab-speed-dial-action>
         </a>
         <a style="display: block;" href="/new/article">
@@ -584,6 +588,8 @@
 
       ready() {
         super.ready();
+        console.info("Our app is ready to rock!");
+
         var _this = this;
         window.addEventListener('user', function (e) {
           _this.horizonUser = e.detail.user;
@@ -603,6 +609,13 @@
         // this.appTitleSizeDefault = parseInt(appTheme.getComputedStyleValue(('--app-title-size')),10) || 32;
 
         // console.log(appTitleSizeDefault);
+
+        // FIXME : Posible way to fix this loading perf issue issue
+        Polymer.importHref(
+          this.resolveUrl("everest-swatch-picker/everest-swatch-picker.html"),
+          null,
+          null,
+          true);
       }
 
       login(e) {
