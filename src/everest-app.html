@@ -75,7 +75,7 @@
         color: var(--app-header-text-color);
         background-color: var(--app-primary-color);
         background-image: var(--app-header-banner);
-        background-position: center;
+        background-position: var(--app-header-banner-position);
         /* from selector */
         /*TOP or CENTER or BOTTOM*/
         background-size: cover;
@@ -466,6 +466,10 @@
               <div class="flexbox-container">
                 <span>Condensed Logo Position</span>
                 <everest-swatch-picker mode="number" size="{{appCondensedLogoPosition}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                  <span>Banner Position <iron-icon icon="editor:vertical-align-[[appHeaderBannerPosition]]"></iron-icon></span>
+                  <everest-swatch-picker mode="selector" position="{{appHeaderBannerPosition}}"></everest-swatch-picker>
               </div>
             </div>
             <div>

@@ -6,6 +6,12 @@
 <link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
 <link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 
 <dom-module id="everest-swatch-picker">
   <template>
@@ -73,6 +79,20 @@
       <div class="toggle" name="toggle">
         <paper-toggle-button noink checked="{{check}}"></paper-toggle-button>
       </div>
+
+      <div class="selector" name="selector">
+        <paper-menu-button>
+            <paper-icon-button icon="icons:open-with" slot="dropdown-trigger" horizontal-align="right"></paper-icon-button>
+            <paper-listbox slot="dropdown-content" selected="{{position}}" attr-for-selected="value">
+                <paper-item value="top">
+                    <iron-icon icon="editor:vertical-align-top"></iron-icon>Top</paper-item>
+                <paper-item value="center">
+                    <iron-icon icon="editor:vertical-align-center"></iron-icon>Center</paper-item>
+                <paper-item value="bottom">
+                    <iron-icon icon="editor:vertical-align-bottom"></iron-icon>Bottom</paper-item>
+            </paper-listbox>
+        </paper-menu-button>
+      </div>
     </iron-pages>
   </template>
   <script>
@@ -96,6 +116,11 @@
         },
 
         size: {
+          type: String,
+          notify: true
+        },
+
+        position: {
           type: String,
           notify: true
         },
