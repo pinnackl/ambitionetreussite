@@ -296,19 +296,19 @@
       // [FIXME][CRITICAL] : Defer this execution till the page fully loaded
       // HUGE PERFORMANCE FLOW !!!
 
-      // const customStyle = this._customStyle || document.createElement('custom-style');
-      // const style = customStyle && customStyle.querySelector('style') || document.createElement('style');
-      // let styleRules = "";
-      // for (key in this.themeBuffer) {
-      //   styleRules += `${key}:${this.themeBuffer[key]};`;
-      // }
+      const customStyle = this._customStyle || document.createElement('custom-style');
+      const style = customStyle && customStyle.querySelector('style') || document.createElement('style');
+      let styleRules = "";
+      for (key in this.themeBuffer) {
+        styleRules += `${key}:${this.themeBuffer[key]};`;
+      }
 
-      // style.textContent = `:host > * {${styleRules}}`;
+      style.textContent = `:host > * {${styleRules}}`;
 
-      // this._customStyle = customStyle;
+      this._customStyle = customStyle;
 
-      // customStyle.appendChild(style);
-      // this.root.appendChild(customStyle);
+      customStyle.appendChild(style);
+      this.root.appendChild(customStyle);
 
       this.updateStyles(property);
       this.__setTheme(name, value);

@@ -30,9 +30,9 @@
 <link rel="import" href="everest-common-behaviors/everest-behaviors.html">
 <link rel="import" href="everest-footer/everest-footer.html">
 <link rel="import" href="live-theming-behavior/live-theming-behavior.html">
-<!-- Lazy load -->
-<!-- <link rel="import" href="everest-swatch-picker/everest-swatch-picker.html" async> -->
 <link rel="import" href="everest-forms/everest-forms.html">
+<!-- Lazy load -->
+<link rel="preload" href="everest-swatch-picker/everest-swatch-picker.html">
 
 <link rel="import" href="polymerhori/horizon-app.html">
 <link rel="import" href="everest-horizon/everest-horizon.html">
@@ -359,8 +359,10 @@
               </div>
             </app-toolbar>
             <paper-tabs class="menu-tab" selected="[[page]]" attr-for-selected="name" fit-container scrollable sticky$="[[largeScreen]]">
-              <paper-tab link name="home"><a href="/home" title="Home">Home</a></paper-tab>
-              <paper-tab link name="category"><a href="/category" title="Category">Category</a></paper-tab>
+              <template is="dom-repeat" items={{menu}} 
+                as=menuItem index-as=index sort="sortMenu">
+                  <paper-tab link name="[[menuItem.name]]"><a href="[[menuItem.link]]" title="[[menuItem.name]]">[[menuItem.name]]</a></paper-tab>
+              </template>
             </paper-tabs>
           </template>
         </app-header>
@@ -586,6 +588,8 @@
 
       ready() {
         super.ready();
+        console.info("Our app is ready to rock!");
+
         var _this = this;
         window.addEventListener('user', function (e) {
           _this.horizonUser = e.detail.user;
@@ -605,6 +609,13 @@
         // this.appTitleSizeDefault = parseInt(appTheme.getComputedStyleValue(('--app-title-size')),10) || 32;
 
         // console.log(appTitleSizeDefault);
+
+        // FIXME : Posible way to fix this loading perf issue issue
+        Polymer.importHref(
+          this.resolveUrl("everest-swatch-picker/everest-swatch-picker.html"),
+          null,
+          null,
+          true);
       }
 
       login(e) {
