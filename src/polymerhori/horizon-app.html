@@ -99,13 +99,15 @@
                         _this.fire('dbconnection');
 
                         window.horizon.status(function (status) {
+                            if (status.type == "error") {
+                                _this.$.auth.signOut();
+                                console.log("connection 5")
+                                var hz = new Horizon({ host: 'localhost:8181', authType: 'unauthenticated' });
+                                window.horizon = hz;
+                                _this.fire('dbconnection');
+                            }
                             window.horizon.currentUser().fetch().subscribe((user) => {
                                 _this.fire('user', { user: user });
-                            }, (err) => {
-                                // console.log(err);
-                                // _this.$.auth.signOut();
-                                // console.log("connection 5")
-                                // var hz = new Horizon({ host: 'localhost:8181', authType: 'unauthenticated' });
                             });
                         });
                         return hz;
@@ -119,6 +121,7 @@
                         authType: 'unauthenticated'
                     });
                     window.horizon = hz;
+                    _this.fire('dbconnection');
                     return hz;
                 };
 
