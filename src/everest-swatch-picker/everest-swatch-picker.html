@@ -103,6 +103,10 @@
             </paper-listbox>
         </paper-menu-button>
       </div>
+
+      <div class="text" name="text">
+        <paper-input on-value-changed='_textChanged'></paper-input>
+      </div>
     </iron-pages>
   </template>
   <script>
@@ -155,6 +159,11 @@
           notify: true
         },
 
+        text: {
+          type: Boolean,
+          notify: true
+        },
+
         mode: {
           type: String
         },
@@ -190,6 +199,10 @@
 
       _sizeChanged:function(object) {
         this.set('size', object.detail.value+"px");
+      },
+
+      _textChanged:function(object) {
+        this.set('text', object.detail.value);
       },
 
       __bannerSizeChanged:function(e) {

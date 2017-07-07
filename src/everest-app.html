@@ -395,6 +395,7 @@
               <paper-tab>Colors</paper-tab>
               <paper-tab>Sizes</paper-tab>
               <paper-tab>Header</paper-tab>
+              <paper-tab>Admin</paper-tab>
             </paper-tabs>
           </app-toolbar>
           <paper-button raised on-tap="_downloadTheme" hidden="[[!showDownload]]">
@@ -510,10 +511,13 @@
                 <everest-swatch-picker mode="toggle" check="{{appWaterfall}}"></everest-swatch-picker>
               </div>
             </div>
-
-            <!--<div>
-              Admin Page
-            </div>-->
+            <!--Admin-->
+            <div>
+              <div class="flexbox-container">
+                <span>CDN</span>
+                <everest-swatch-picker mode="text" text="{{appCDN}}"></everest-swatch-picker>
+              </div>
+            </div>
           </iron-pages>
         </div>
       </app-drawer>

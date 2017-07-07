@@ -85,6 +85,11 @@
         observer: "_appLogoBase64Changed"
       },
 
+      appCDN: {
+        value: "",
+        observer: "_appCDNChanged"
+      },
+
       appCondenses: {
         type: Boolean,
         value: true,
@@ -258,6 +263,10 @@
 
     _appLogoBase64Changed: function (e) {
       this.__updateThemeVariable('appLogoBase64', e);
+    },
+
+    _appCDNChanged: function (e) {
+      this.__updateThemeVariable('appCDN', e);
     },
 
     _appCondensesChanged:function(e) {
