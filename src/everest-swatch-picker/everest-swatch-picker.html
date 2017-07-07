@@ -91,6 +91,17 @@
                     <iron-icon icon="editor:vertical-align-bottom"></iron-icon>Bottom</paper-item>
             </paper-listbox>
         </paper-menu-button>
+        <paper-menu-button>
+            <paper-icon-button icon="swap-horiz" slot="dropdown-trigger" horizontal-align="right"></paper-icon-button>
+            <paper-listbox slot="dropdown-content" selected="{{horizontal}}" attr-for-selected="value">
+                <paper-item value="left">
+                    <iron-icon icon="editor:format-align-left"></iron-icon>Left</paper-item>
+                <paper-item value="center">
+                    <iron-icon icon="editor:format-align-center"></iron-icon>Center</paper-item>
+                <paper-item value="right">
+                    <iron-icon icon="editor:format-align-right"></iron-icon>Right</paper-item>
+            </paper-listbox>
+        </paper-menu-button>
       </div>
     </iron-pages>
   </template>
@@ -124,6 +135,16 @@
           notify: true
         },
 
+        vertical: {
+          type: String,
+          notify: true
+        },
+
+        horizontal: {
+          type: String,
+          notify: true
+        },
+
         check: {
           type: Boolean,
           notify: true
@@ -150,7 +171,8 @@
 
       observers: [
         '__colorChanged(color)',
-        '__bannerSizeChanged(check)'
+        '__bannerSizeChanged(check)',
+        '__positionChanged(vertical, horizontal)'
       ],
 
       _imageChanged: function(e, detail) {
@@ -175,6 +197,15 @@
           this.set('display', 'cover');
         else
           this.set('display', 'contains');
+      },
+
+      __positionChanged:function(vert, horiz){
+        if(vert && horiz)
+          this.set('position', vert + " " + horiz); 
+        else if(vert && !horiz)
+          this.set('position', vert);
+        else if(!vert && horiz)
+          this.set('position', horiz);
       },
 
       // Only triggered when the swatch picker changed
