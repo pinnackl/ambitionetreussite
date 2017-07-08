@@ -2,9 +2,8 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
-<!-- <link rel="import" href="../../bower_components/paper-menu/paper-submenu.html"> -->
 
-<link rel="import" href="../everest-sortable-grid/everest-sortable-grid.html">
+<link rel="import" href="../../bower_components/the-grid/the-grid.html">
 <link rel="import" href="footer-tile.html">
 
 <link rel="import" href="../shared-styles.html">
@@ -40,7 +39,7 @@
 
             .end.footer > .end.right {
                 width: 100%;
-                position: absolute;
+                /*position: absolute;*/
                 bottom: 0;
                 -webkit-order: 0;
                 -ms-flex-order: 0;
@@ -69,6 +68,10 @@
 
             [hidden] {
                 display: none;
+            }
+
+            the-grid > div[placeholder] {
+                background: #afafaf;
             }
 
             @media (max-width: 799px) {
@@ -118,14 +121,40 @@
                         hidden$="[[!editMode]]"></paper-icon-button>
                 </div>
             <!-- </template> -->
+            <div>
+                <the-grid
+                    id="footerGrid"
+                    draggable="[[editMode]]"
+                    resizable="[[editMode]]"
+                    animated
+                    overlappable="[[editMode]]"
+                    row-autogrow
+                    col-count="{{nbCol}}"
+                    row-count="{{nbRow}}"
+                    cell-width="{{cellWidth}}"
+                    cell-height="{{cellHeight}}"
+                    cell-margin="8">
 
-            <everest-sortable-grid disabled="[[!editMode]]">
-                <template is="dom-repeat" items=[[footers]] as=column index-as=index sort="_sortFooter">
-
-                    <footer-tile edit$="[[editMode]]" column="{{column}}" position="{{column.position}}"></footer-tile>
-
-                </template>
-            </everest-sortable-grid>
+                    <template is="dom-repeat" items=[[footers]] as=column index-as=index sort="_sortFooter">
+                        <footer-tile
+                            edit$="[[editMode]]"
+                            col$="{{column.col}}"
+                            row$="{{column.row}}"
+                            height$="{{column.height}}"
+                            width$="{{column.width}}"
+                            min-height="2"
+                            column="{{column}}"
+                            index="[[index]]"
+                            on-move="_handleMove"
+                            on-resize="_handleMove"
+                            on-delete-tile="_handleDeleteTile">
+                            <span resize="top"></span>
+                            <span resize="bottom"></span>
+                        </footer-tile>
+                    </template>
+                    <div placeholder></div>
+                </the-grid>
+            </div>
             <div class="end right">EVEREST<iron-icon icon="copyright"></iron-icon>{{year}}</div>
         </div>
         <paper-toast id="stateMessage" horizontal-align="left" always-on-top duration="5000" text="" on-iron-overlay-closed="_toastClosed">
@@ -143,23 +172,111 @@
                         return [
                             {
                                 title: "column 1",
-                                position: 0,
-                                items: []
+                                col: 0,
+                                row: 0,
+                                height: 6,
+                                width: 3,
+                                items: [
+                                    {
+                                        title: 'Some link',
+                                        link: '#',
+                                        type: 'page',
+                                        position: 0
+                                    },
+                                    {
+                                        title: 'Some link',
+                                        link: '#',
+                                        type: 'article',
+                                        position: 1
+                                    },
+                                    {
+                                        title: 'Some link',
+                                        link: '#',
+                                        type: 'category',
+                                        position: 2
+                                    },
+                                ]
                             },
                             {
                                 title: "column 2",
-                                position: 2,
-                                items: []
+                                col: 3,
+                                row: 0,
+                                height: 6,
+                                width: 3,
+                                items: [
+                                    {
+                                        title: 'Some link',
+                                        link: '#',
+                                        type: 'page',
+                                        position: 0
+                                    },
+                                    {
+                                        title: 'Some link',
+                                        link: '#',
+                                        type: 'article',
+                                        position: 1
+                                    },
+                                    {
+                                        title: 'Some link',
+                                        link: '#',
+                                        type: 'category',
+                                        position: 2
+                                    },
+                                ]
                             },
                             {
                                 title: "column 3",
-                                position: 1,
-                                items: []
+                                col: 6,
+                                row: 0,
+                                height: 6,
+                                width: 3,
+                                items: [
+                                    {
+                                        title: 'Some link',
+                                        link: '#',
+                                        type: 'page',
+                                        position: 0
+                                    },
+                                    {
+                                        title: 'Some link',
+                                        link: '#',
+                                        type: 'article',
+                                        position: 1
+                                    },
+                                    {
+                                        title: 'Some link',
+                                        link: '#',
+                                        type: 'category',
+                                        position: 2
+                                    },
+                                ]
                             },
                             {
                                 title: "column 4",
-                                position: 3,
-                                items: []
+                                col: 9,
+                                row: 0,
+                                height: 6,
+                                width: 3,
+                                items: [
+                                    {
+                                        title: 'Some link',
+                                        link: '#',
+                                        type: 'page',
+                                        position: 0
+                                    },
+                                    {
+                                        title: 'Some link',
+                                        link: '#',
+                                        type: 'article',
+                                        position: 1
+                                    },
+                                    {
+                                        title: 'Some link',
+                                        link: '#',
+                                        type: 'category',
+                                        position: 2
+                                    },
+                                ]
                             },
                         ];
                     }
@@ -213,6 +330,33 @@
                     }
                 },
 
+
+                nbCol: {
+                    type: Number,
+                    value: 12,
+                    obsever: '_computeCellWidth'
+                },
+
+                nbRow: {
+                    type: Number,
+                    value: 6
+                },
+
+                cellHeight: {
+                    type: Number,
+                    value: 100
+                },
+
+                cellWidth: {
+                    type: Number,
+                    value: 100
+                },
+
+                cellMargin: {
+                    type: Number,
+                    value: 9
+                },
+
                 stateMessage: {
                     type: Object,
                     value: function () {
@@ -239,6 +383,7 @@
                             },
                         }
                     }
+
                 },
             },
 
@@ -251,15 +396,6 @@
                 this._computeCellWidth();
 
                 window.addEventListener('resize', this._computeCellWidth.bind(this));
-            },
-
-            _computeCellWidth: function () {
-                this.cellMargin = 10;
-                this.nbCol = 12;
-                this.nbRow = 6;
-
-                this.cellHeight = ((window.innerHeight * 30) / 100 - this.cellMargin * ( this.nbRow - 1)) / this.nbRow;
-                this.cellWidth = (window.innerWidth - (2*8) - this.cellMargin * ( this.nbCol - 1)) / this.nbCol;
             },
 
             edit: function (e) {
@@ -287,7 +423,7 @@
                 const items = Polymer.dom(this.root).querySelectorAll('footer-tile');
                 items.forEach((item, idx) => {
                     // Set new position
-                    item.column.position = idx;
+                    // item.column.position = idx;
                     console.log(item.column);
                 });
 
@@ -321,20 +457,62 @@
             },
 
             addColumn: function (e) {
-                if (this.columnTitle) {
-                    this.push('footers', {
-                        title: this.columnTitle,
-                        postion: this.footers.length,
-                        items: []
+                // Max col number = 4
+                if (this.columnTitle && this.footers.length < 4) {
+                    let len = this.footers.length;
+                    
+                    // Cumpute the tile width
+                    // Add +1 to update len before push into array
+                    let width = this.nbCol/(len+1);
+
+                    // Loop to set new metrics
+                    var pos;
+                    this.footers.forEach((item, idx) => {
+                        this.set(['footers', idx, 'width'], width);
+                        if (item.col > 0) {
+                            this.set(['footers', idx, 'col'], pos*idx);
+                        }
+                        pos = parseInt(width);
                     });
 
-                    // this.$.footer.ref.push({
-                    //     title: this.columnTitle,
-                    //     position: this.footer.length ? this.footer.length : this.postionCounter++
-                    // });
+                    this.push('footers', {
+                        title: this.columnTitle,
+                        col: len*width,
+                        row: 0,
+                        width: width,
+                        height: 6,
+                        items: []
+                    });
                 }
 
                 this.columnTitle = null;
+            },
+
+
+            deleteColumn: function (e) {
+                if (this.footers.length) {
+                    this.arrayDelete('footers', e.detail.column);
+
+                    let len = this.footers.length;
+
+                    // Cumpute the tile width
+                    let width = this.nbCol/len;
+
+                    // Loop to set new metrics
+                    var pos = 0;
+                    let _rectif = 0;
+                    this.footers.forEach((item, idx) => {
+                        if (idx == 0)
+                            this.set(['footers', idx, 'col'], 0);
+                        else
+                            this.set(['footers', idx, 'col'], pos*idx);
+
+                        pos = parseInt(width);
+
+                        this.set(['footers', idx, 'width'], width);
+                    });
+
+                }
             },
 
             addToFooter: function (e) {
@@ -354,10 +532,31 @@
                 }
             },
 
-            removeFooter: function (e) {
-                var column = e.currentTarget.column;
-                var key = column.$key;
-                this.$.footer.ref.child(key).remove();
+            _computeCellWidth: function () {
+                this.cellHeight = ((window.innerHeight * 30) / 100 - this.cellMargin * ( this.nbRow - 1)) / this.nbRow;
+                this.cellWidth = (window.innerWidth - (2*8) - this.cellMargin * ( this.nbCol - 1)) / this.nbCol;
+            },
+
+            /**
+             * Handle any tile move and save it new props
+             *
+             * @param      {Event}  event   the move event object
+             */
+            _handleMove: function (event) {
+                let idx = event.detail.tile.index;
+                if (this.footers[idx]) {
+                    if (event.detail.tile.col)
+                        this.footers[idx].col = event.detail.tile.col;
+
+                    if (event.detail.tile.row)
+                        this.footers[idx].row = event.detail.tile.row;
+
+                    if (event.detail.tile.height)
+                        this.footers[idx].height = event.detail.tile.height;
+
+                    if (event.detail.tile.width)
+                        this.footers[idx].width = event.detail.tile.width;
+                }
             },
 
             checkRights: function (role) {
