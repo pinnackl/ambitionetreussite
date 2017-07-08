@@ -60,6 +60,16 @@
         observer: "_appHeaderBannerChanged"
       },
 
+      appHeaderBannerPosition: {
+        value: "",
+        observer: "_appHeaderBannerPositionChanged"
+      },
+
+      appHeaderBannerSize: {
+        value: "",
+        observer: "_appHeaderBannerSizeChanged"
+      },
+
       /* JS Properties */
 
       appHeaderBannerBase64: {
@@ -68,11 +78,18 @@
       },
 
       appLogo: {
+        value:"",
         observer: "_appLogoChanged"
       },
 
       appLogoBase64: {
+        value:"",
         observer: "_appLogoBase64Changed"
+      },
+
+      appCDN: {
+        value: "",
+        observer: "_appCDNChanged"
       },
 
       appCondenses: {
@@ -227,6 +244,14 @@
       this.__updateCustomProperty('--app-header-banner', e);
     },
 
+    _appHeaderBannerPositionChanged:function(e) {
+      this.__updateCustomProperty('--app-header-banner-position', e);
+    },
+
+    _appHeaderBannerSizeChanged:function(e) {
+      this.__updateCustomProperty('--app-header-banner-size', e);
+    },
+
     /**
      * The list of JS properties
      */
@@ -240,6 +265,10 @@
 
     _appLogoBase64Changed: function (e) {
       this.__updateThemeVariable('appLogoBase64', e);
+    },
+
+    _appCDNChanged: function (e) {
+      this.__updateThemeVariable('appCDN', e);
     },
 
     _appCondensesChanged:function(e) {
@@ -292,7 +321,7 @@
       property[name] = value;
       this.themeBuffer[name] = value;
 
-      console.warn("[FIXME][CRITICAL] Defer the __updateCustomProperty execution till the page fully loaded, HUGE PERFORMANCE FLOW");
+      // console.warn("[FIXME][CRITICAL] Defer the __updateCustomProperty execution till the page fully loaded, HUGE PERFORMANCE FLOW");
       // [FIXME][CRITICAL] : Defer this execution till the page fully loaded
       // HUGE PERFORMANCE FLOW !!!
 
@@ -315,6 +344,8 @@
     },
 
     __updateThemeVariable: function (name, value) {
+      console.log(name, value);
+      
       this.set(name, value);
       this.__setTheme(name, value);
     },

@@ -65,22 +65,13 @@
       app-drawer-layout:not([narrow]) [drawer-toggle] {
         display: none;
       }
-      /*app-header {
-        color: var(--app-header-text-color);
-        background-color: var(--app-primary-color);
-        background-image: var(--app-header-banner);
-      }*/
       
       app-header {
         color: var(--app-header-text-color);
         background-color: var(--app-primary-color);
         background-image: var(--app-header-banner);
-        background-position: center;
-        /* from selector */
-        /*TOP or CENTER or BOTTOM*/
-        background-size: cover;
-        /* from button*/
-        /*COVER or CONTAINS*/
+        background-position: var(--app-header-banner-position);
+        background-size: var(--app-header-banner-size);
         background-repeat: no-repeat;
         /* checkbox */
       }
@@ -301,7 +292,7 @@
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div condensed-title mobile$=[[!largeScreen]]>
               <a title href="/">
-                <iron-image src="//placehold.it/48/48"></iron-image>Everest</a>
+                <iron-image placeholder="[[appLogoBase64]]" src="[[appLogo]]"></iron-image>Everest</a>
             </div>
 
             <!-- Right menu button -->
@@ -355,7 +346,7 @@
             <app-toolbar>
               <div main-title>
                 <a title href="/">
-                  <iron-image src="//placehold.it/64/64"></iron-image>Everest</a>
+                  <iron-image placeholder="[[appLogoBase64]]" src="[[appLogo]]"></iron-image>Everest</a>
               </div>
             </app-toolbar>
             <paper-tabs class="menu-tab" selected="[[page]]" attr-for-selected="name" fit-container scrollable sticky$="[[largeScreen]]">
@@ -404,6 +395,7 @@
               <paper-tab>Colors</paper-tab>
               <paper-tab>Sizes</paper-tab>
               <paper-tab>Header</paper-tab>
+              <paper-tab>Admin</paper-tab>
             </paper-tabs>
           </app-toolbar>
           <paper-button raised on-tap="_downloadTheme" hidden="[[!showDownload]]">
@@ -467,6 +459,14 @@
                 <span>Condensed Logo Position</span>
                 <everest-swatch-picker mode="number" size="{{appCondensedLogoPosition}}"></everest-swatch-picker>
               </div>
+              <div class="flexbox-container">
+                  <span>Banner Position</iron-icon></span>
+                  <everest-swatch-picker mode="selector" position="{{appHeaderBannerPosition}}"></everest-swatch-picker>
+              </div>
+              <div class="flexbox-container">
+                <span>Full Size Banner</span>
+                <everest-swatch-picker mode="toggle" display="{{appHeaderBannerSize}}"></everest-swatch-picker>
+              </div>
             </div>
             <div>
               <!-- Boolean Settings -->
@@ -511,10 +511,13 @@
                 <everest-swatch-picker mode="toggle" check="{{appWaterfall}}"></everest-swatch-picker>
               </div>
             </div>
-
-            <!--<div>
-              Admin Page
-            </div>-->
+            <!--Admin-->
+            <div>
+              <div class="flexbox-container">
+                <span>CDN</span>
+                <everest-swatch-picker mode="text" text="{{appCDN}}"></everest-swatch-picker>
+              </div>
+            </div>
           </iron-pages>
         </div>
       </app-drawer>
