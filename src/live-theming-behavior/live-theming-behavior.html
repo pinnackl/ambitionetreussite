@@ -78,10 +78,12 @@
       },
 
       appLogo: {
+        value:"",
         observer: "_appLogoChanged"
       },
 
       appLogoBase64: {
+        value:"",
         observer: "_appLogoBase64Changed"
       },
 
@@ -319,7 +321,7 @@
       property[name] = value;
       this.themeBuffer[name] = value;
 
-      console.warn("[FIXME][CRITICAL] Defer the __updateCustomProperty execution till the page fully loaded, HUGE PERFORMANCE FLOW");
+      // console.warn("[FIXME][CRITICAL] Defer the __updateCustomProperty execution till the page fully loaded, HUGE PERFORMANCE FLOW");
       // [FIXME][CRITICAL] : Defer this execution till the page fully loaded
       // HUGE PERFORMANCE FLOW !!!
 
@@ -342,6 +344,8 @@
     },
 
     __updateThemeVariable: function (name, value) {
+      console.log(name, value);
+      
       this.set(name, value);
       this.__setTheme(name, value);
     },
