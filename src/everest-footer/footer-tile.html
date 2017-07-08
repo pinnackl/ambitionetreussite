@@ -1,17 +1,17 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
-
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 
 <dom-module id="footer-tile">
     <template>
         <style>
             :host {
 
-                min-height: 30vh;
+                /*min-height: 30vh;*/
                 height: 100%;
 
                 -webkit-order: 0;
@@ -33,7 +33,7 @@
                 display: none;
             }
 
-            :host([edit]) .handle {
+            :host([edit]) .flex .handle {
                 color: #ffffff;
                 background-color: #179bd7;
                 display: flex;
@@ -51,9 +51,9 @@
                 align-self: auto;
             }
 
-            :host([edit]) {
+            :host([edit]) .flex {
                 padding: 3px;
-                min-height: 30vh;
+                /*min-height: 30vh;*/
                 background-color: #F1F1F1;
                 border: dotted 3px #fbc009;
                 margin: 0 3px;
@@ -104,9 +104,17 @@
                 align-items: center;
             }
 
+            .flex {
+                height: 100%;
+                box-sizing: border-box;
+            }
+
             .content {
                 padding: 8px;
                 width: 100%;
+                height: 100%;
+                overflow: hidden;
+                box-sizing: border-box;
             }
 
             .content .footer-cln-header {
@@ -134,7 +142,7 @@
                 bottom: 8px;*/
             }
 
-            paper-item {
+            .section-header paper-item {
                 min-height: 48px;
                 padding: 0px;
             }
@@ -144,62 +152,186 @@
                 color: #ffffff;
             }
 
-            .subItems {
-                --items-container-mixin: {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-between;
-                    align-items: center;
+            .sub-item paper-dropdown-menu {
+                width: 80px;
+            }
+
+            .sub-item paper-listbox {
+                width: 40px;
+            }
+
+            .sub-item paper-item {
+                --paper-item: {
+                    text-align: right;
                 };
             }
 
             [hidden] {
                 display: none;
             }
+
+            /* The grid */
+                :host(:not([edit])) div ::slotted([resize]) {
+                    display: none;
+                }
+
+                div ::slotted([resize]) {
+                    position: absolute;
+                    display: block;
+                    width: 15px;
+                    height: 15px;
+                    bottom: 0;
+                    right: 0;
+                    border-radius: 50%;
+                    background-color: #03a9f4;
+                    border: solid thin #ffffff;
+                }
+
+                div ::slotted([resize="top"]),
+                div ::slotted([resize="bottom"]) {
+                    left: 50%;
+                    -webkit-transform: translateX(-50%);
+                    transform: translateX(-50%);
+                }
+
+                div ::slotted([resize="bottom-right"]) {
+                    bottom: 0;
+                    right: 0;
+                    cursor: nwse-resize;
+                }
+
+                div ::slotted([resize="bottom-left"]) {
+                    bottom: 0;
+                    left: 0;
+                    cursor: nesw-resize;
+                }
+
+                div ::slotted([resize="top-right"]) {
+                    top: 0;
+                    right: 0;
+                    cursor: nesw-resize;
+                }
+
+                div ::slotted([resize="top-left"]) {
+                    top: 0;
+                    left: 0;
+                    cursor: nwse-resize;
+                }
+
+                div ::slotted([resize="left"]) {
+                    top: 50%;
+                    left: 0;
+                    cursor: ew-resize;
+                    margin-top: -10px;
+                }
+
+                div ::slotted([resize="top"]) {
+                    top: 0%;
+                    text-align: center;
+                    cursor: ns-resize;
+                }
+
+                div ::slotted([resize="right"]) {
+                    top: 50%;
+                    right: 0;
+                    cursor: ew-resize;
+                    margin-top: -10px;
+                }
+
+                div ::slotted([resize="bottom"]) {
+                    bottom: 0;
+                    text-align: center;
+                    cursor: ns-resize;
+                }
+
+                div ::slotted([resize="bottom-right"]) {
+                    -webkit-transform: translateX(8px) translateY(8px);
+                    transform: translateX(8px) translateY(8px);
+                }
+
+                div ::slotted([resize="bottom-left"]) {
+                    -webkit-transform: translateX(-8px) translateY(8px);
+                    transform: translateX(-8px) translateY(8px);
+                }
+
+                div ::slotted([resize="top-right"]) {
+                    -webkit-transform: translateX(8px) translateY(-8px);
+                    transform: translateX(8px) translateY(-8px);
+                }
+
+                div ::slotted([resize="top-left"]) {
+                    -webkit-transform: translateX(-8px) translateY(-8px);
+                    transform: translateX(-8px) translateY(-8px);
+                }
+
+                div ::slotted([resize="left"]) {
+                    -webkit-transform: translateX(-8px);
+                    transform: translateX(-8px);
+                }
+
+                div ::slotted([resize="top"]) {
+                    -webkit-transform: translateX(-50%) translateY(-8px);
+                    transform: translateX(-50%) translateY(-8px);
+                }
+
+                div ::slotted([resize="right"]) {
+                    -webkit-transform: translateX(8px);
+                    transform: translateX(8px)
+                }
+
+                div ::slotted([resize="bottom"]) {
+                    -webkit-transform: translateX(-50%) translateY(8px);
+                    transform: translateX(-50%) translateY(8px);
+                }
+            /* The grid */
         </style>
-        <div class$="handle [[editClass]]"><iron-icon icon="more-vert"></iron-icon></div>
-        <div class="content">
-            <div class="footer-cln-header section-header">
-                <div class="section-header">
+        <div class="flex">
+            <div class$="handle [[editClass]]"><iron-icon icon="more-vert"></iron-icon></div>
+            <div class="content">
+                <div class="footer-cln-header section-header">
+                    <div class="section-header">
+                        <template is="dom-if" if={{edit}}>
+                            <paper-icon-button icon="close" column="[[column]]" on-tap="deleteTile"></paper-icon-button>
+                        </template>
+                        <template is="dom-if" if={{!editColumns}}>
+                            <span>[[column.title]]</span>
+                        </template>
+                        <template is="dom-if" if={{editColumns}}>
+                            <paper-input label="Name of the column" value="{{column.title}}"></paper-input>
+                        </template>
+                    </div>
                     <template is="dom-if" if={{edit}}>
-                        <paper-icon-button icon="close" column="[[column]]" on-tap="removeFooter"></paper-icon-button>
-                    </template>
-                    <template is="dom-if" if={{!editColumns}}>
-                        <span>[[column.title]]</span>
-                    </template>
-                    <template is="dom-if" if={{editColumns}}>
-                        <paper-input label="Name of the column" value="{{column.title}}"></paper-input>
+                        <div class="section-header">
+                            <paper-icon-button icon="create" raised on-tap="editCol"
+                                hidden$="[[editColumns]]"></paper-icon-button>
+                            <paper-icon-button icon="close" raised on-tap="closeCol"
+                                hidden$="[[!editColumns]]"></paper-icon-button>
+                            <paper-menu-button>
+                                <paper-icon-button icon="add" slot="dropdown-trigger"></paper-icon-button>
+                                <paper-listbox slot="dropdown-content">
+                                    <paper-item><paper-button class="">Pages</paper-button></paper-item>
+                                    <paper-item><paper-button class="">Categories</paper-button></paper-item>
+                                    <paper-item><paper-button class="">Articles</paper-button></paper-item>
+                                </paper-listbox>
+                            </paper-menu-button>
+                        </div>
                     </template>
                 </div>
-                <template is="dom-if" if={{edit}}>
-                    <div class="section-header">
-                        <paper-icon-button icon="create" raised on-tap="editCol"
-                            hidden$="[[editColumns]]"></paper-icon-button>
-                        <paper-icon-button icon="close" raised on-tap="closeCol"
-                            hidden$="[[!editColumns]]"></paper-icon-button>
-                        <paper-menu-button>
-                            <paper-icon-button icon="add" slot="dropdown-trigger"></paper-icon-button>
-                            <paper-listbox slot="dropdown-content">
-                                <paper-item><paper-button class="">Pages</paper-button></paper-item>
-                                <paper-item><paper-button class="">Categories</paper-button></paper-item>
-                                <paper-item><paper-button class="">Articles</paper-button></paper-item>
-                            </paper-listbox>
-                        </paper-menu-button>
-                    </div>
-                </template>
+                <div class="sub-item">
+                    <template is="dom-repeat" items={{column.items}} as=item index-as=index sort="sortSubItem">
+                        <div>[[item.title]] {{item.position}}
+                            <paper-dropdown-menu label="Position" value="{{item.position}}" item="{{item }}">
+                              <paper-listbox slot="dropdown-content" attr-for-selected="value" fallback-selection="[[item.position]]">
+                                <template is="dom-repeat" items=[[column.items]] index-as=position>
+                                    <paper-item value="[[position]]">[[position]]</paper-item>
+                                </template>
+                              </paper-listbox>
+                            </paper-dropdown-menu></div>
+                    </template>
+                </div>
+                <!-- <paper-fab class="delete" mini icon="delete" on-tap="deleteTile"></paper-fab> -->
             </div>
-            <iron-pages selected="{{type}}" attr-for-selected="name" fallback-selection="article">
-                <section name="article">
-                    <everest-sortable-grid class="subItems">
-                        <div><a href="#">Plop is the new plop1!</a></div>
-                        <div><a href="#">Plop is the new plop2!</a></div>
-                        <div><a href="#">Plop is the new plop3!</a></div>
-                    </everest-sortable-grid>
-                </section>
-                <section name="page">
-                </section>
-            </iron-pages>
-            <!-- <paper-fab class="delete" mini icon="delete" on-tap="deleteTile"></paper-fab> -->
+        <div><slot></slot></div>
         </div>
     </template>
     <script>
@@ -220,7 +352,12 @@
                 column: {
                     type: Object,
                     notify: true
-                }
+                },
+
+                col: String,
+                row: String,
+                width: String,
+                height: String,
 
             },
 
@@ -237,7 +374,17 @@
             },
 
             deleteTile: function (e) {
-                this.fire('delete-tile', {});
+                this.fire('delete-tile', {column: this.column, tile: this});
+            },
+
+            sortSubItem: function (a, b) {
+                if (a.position < b.position) {
+                    return -1;
+                }
+                if (a.position > b.position) {
+                    return 1;
+                }
+                return 1;
             }
         });
     </script>
