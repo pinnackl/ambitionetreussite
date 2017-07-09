@@ -135,7 +135,7 @@
                     overlappable="[[editMode]]"
                     row-autogrow
                     col-count="{{nbCol}}"
-                    row-count="{{nbRow}}"
+                    row-count$="{{nbRow}}"
                     cell-width="{{cellWidth}}"
                     cell-height="{{cellHeight}}"
                     cell-margin="8">
@@ -143,10 +143,10 @@
                     <template is="dom-repeat" items=[[footers]] as=column index-as=index sort="_sortFooter">
                         <footer-tile
                             edit$="[[editMode]]"
-                            col$="{{column.col}}"
-                            row$="{{column.row}}"
+                            col$="{{_computeTileProperty('col',column,index)}}"
+                            row$="{{_computeTileProperty('row',column,index)}}"
                             height$="{{column.height}}"
-                            width$="{{column.width}}"
+                            width$="{{_computeTileProperty('width',column,index)}}"
                             min-height="2"
                             column="{{column}}"
                             index="[[index]]"
@@ -238,8 +238,7 @@
 
                 nbRow: {
                     type: Number,
-                    value: 6,
-                    obsever: '_computeCellWidth'
+                    value: 6
                 },
 
                 cellHeight: {
@@ -294,7 +293,7 @@
             ],
 
             ready: function () {
-                // Init the cumpute of the grid
+                // Init the compute of the grid
                 this._computeCellWidth();
 
                 window.addEventListener('resize', this._computeCellWidth.bind(this));
@@ -408,7 +407,9 @@
                             },
                         ]
                     }
-                ); 
+                );
+
+                this.$.footerGrid.computeStyles(); 
             },
 
             edit: function (e) {
@@ -474,7 +475,7 @@
                 if (this.columnTitle && this.footers.length < 4) {
                     let len = this.footers.length;
                     
-                    // Cumpute the tile width
+                    // compute the tile width
                     // Add +1 to update len before push into array
                     let width = this.nbCol/(len+1);
 
@@ -509,7 +510,7 @@
 
                         let len = this.footers.length;
 
-                        // Cumpute the tile width
+                        // compute the tile width
                         let width = this.nbCol/len;
 
                         // Loop to set new metrics
@@ -625,51 +626,51 @@
                 return '';
             },
 
-            _responsiveFooter:function (obj, changeRecord, ls){
+            _responsiveFooter: function (obj, changeRecord, ls) {
                 if (this.footers.length) {
-                    if(!ls){
-                        
-                        // Cumpute the tile width
-                        let width = this.nbCol;
-
-                        // Loop to set new metrics
-                        var pos;
+                    if(!ls) {           
                         var rows=0;
-                        this.footers.forEach((item, idx) => {
-                            this.set(['footers', idx, 'width'], width);
-                            if (item.col > 0) {
-                                this.set(['footers', idx, 'row'], pos*idx);
-                                this.set(['footers', idx, 'col'], 0);
-                            }
-                            pos = parseInt(item.height);
+                        this.footers.forEach((item) => {
                             rows += parseInt(item.height);
                         });
                         this.$.footerGrid.rowCount = rows;
-
+                        this.$.footerGrid.computeStyles();
+                        
                     } else {
-                        let len = this.footers.length;
-
-                        // Cumpute the tile width
-                        let width = this.nbCol/len;
-
-                        // Loop to set new metrics
-                        var pos = 0;
                         var rows = 0;
-                        this.footers.forEach((item, idx) => {
-                            this.set(['footers', idx, 'row'], 0);
-                            if (idx == 0)
-                                this.set(['footers', idx, 'col'], 0);
-                            else
-                                this.set(['footers', idx, 'col'], pos*idx);
-
-                            pos = parseInt(width);
-
-                            this.set(['footers', idx, 'width'], width);
-                            
+                        this.footers.forEach((item) => {                           
                             if(rows<item.height)
                                 rows = parseInt(item.height);
                         });
                         this.$.footerGrid.rowCount = rows;
+                        this.$.footerGrid.computeStyles();
+                    }
+                }
+            },
+
+            _computeTileProperty: function (property, item, idx) {
+                // this.$.footerGrid.style='';
+                if (!this.largeScreen) {
+                    this.$.footerGrid.computeStyles();
+                    switch(property) {
+                        case 'width':
+                            return this.nbCol;
+                        case 'row':
+                            if (item.col >0)
+                                return parseInt(item.height)*idx;
+                            return 0;
+                        case 'col':
+                            return 0;     
+                    }
+                } 
+                else {
+                    switch(property) {
+                        case 'width':
+                            return item.width;
+                        case 'row':
+                            return item.row;
+                        case 'col':
+                            return item.col;     
                     }
                 }
             }
