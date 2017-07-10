@@ -192,6 +192,7 @@
                 },
 
                 signOut: function () {
+                    this.set('user', null);
                     window.horizon.disconnect();
                     var request = db.transaction("token", "readwrite")
                         .objectStore("token")
