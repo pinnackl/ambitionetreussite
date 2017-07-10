@@ -140,7 +140,7 @@
                     cell-height="{{cellHeight}}"
                     cell-margin="8">
 
-                    <template is="dom-repeat" items=[[footers]] as=column index-as=index sort="_sortFooter">
+                    <template is="dom-repeat" items=[[footers]] as=column index-as=index sort="_sortFooter" filter="{{_responsiveFooter(largeScreen)}}">
                         <footer-tile
                             edit$="[[editMode]]"
                             col$="{{_computeTileProperty('col',column,index)}}"
@@ -289,7 +289,7 @@
 
             observers: [
                 '_rightsChanged(rights.ts)',
-                '_responsiveFooter(footers, footers.splices, largeScreen)'
+                '_resizeFooter(footers, footers.splices, largeScreen)'
             ],
 
             ready: function () {
@@ -626,32 +626,36 @@
                 return '';
             },
 
-            _responsiveFooter: function (obj, changeRecord, ls) {
-                if (this.footers.length) {
-                    if(!ls) {           
-                        var rows=0;
-                        this.footers.forEach((item) => {
-                            rows += parseInt(item.height);
-                        });
-                        this.$.footerGrid.rowCount = rows;
-                        this.$.footerGrid.computeStyles();
+            _resizeFooter: function (obj, changeRecord, ls) {
+                // if (this.footers.length) {
+                //     if(!ls) {           
+                //         var rows=0;
+                //         this.footers.forEach((item) => {
+                //             rows += parseInt(item.height);
+                //         });
+                //         this.$.footerGrid.rowCount = rows;
+                //         this.$.footerGrid.computeStyles();
                         
-                    } else {
-                        var rows = 0;
-                        this.footers.forEach((item) => {                           
-                            if(rows<item.height)
-                                rows = parseInt(item.height);
-                        });
-                        this.$.footerGrid.rowCount = rows;
-                        this.$.footerGrid.computeStyles();
-                    }
-                }
+                //     } else {
+                //         var rows = 0;
+                //         this.footers.forEach((item) => {                           
+                //             if(rows<item.height)
+                //                 rows = parseInt(item.height);
+                //         });
+                //         this.$.footerGrid.rowCount = rows;
+                //         this.$.footerGrid.computeStyles();
+                //     }
+                // }
             },
 
             _computeTileProperty: function (property, item, idx) {
-                // this.$.footerGrid.style='';
                 if (!this.largeScreen) {
                     this.$.footerGrid.computeStyles();
+                    var rows=0;
+                    this.footers.forEach((item) => {
+                        rows += parseInt(item.height);
+                    });
+                    this.$.footerGrid.rowCount = rows;
                     switch(property) {
                         case 'width':
                             return this.nbCol;
@@ -664,6 +668,11 @@
                     }
                 } 
                 else {
+                    var rows=0;
+                    this.footers.forEach((item) => {
+                        rows = parseInt(item.height);
+                    });
+                    this.$.footerGrid.rowCount = rows;
                     switch(property) {
                         case 'width':
                             return item.width;
@@ -673,6 +682,10 @@
                             return item.col;     
                     }
                 }
+            },
+
+            _responsiveFooter: function (ls) {
+                
             }
         });
     </script>
