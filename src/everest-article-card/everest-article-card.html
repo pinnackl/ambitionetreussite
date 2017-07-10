@@ -169,6 +169,23 @@
             }
             
             article .social .circle>paper-badge {}
+
+            :host(:not([selected])) .selected-icon {
+                display: none;
+            }
+
+            article .selected-icon {
+                position: absolute;
+                right: 0px;
+                top: 0px;
+                z-index: 999;
+                background: var(--app-primary-color);
+                width: 24px;
+                height: 24px;
+                overflow: hidden;
+                border-radius: 100%;
+                color: #fff;
+            }
         </style>
         <!-- <firebase-document
             id="users"
@@ -183,8 +200,9 @@
             data="{{comments}}"
         ></firebase-query> -->
         <article class="item">
+            <div class="selected-icon"><iron-icon icon="check"></iron-icon></div>
             <div class="paper-material" elevation="5">
-                <a class="article" href="/read/[[_lowerCase(article.category)]]/[[article.slug]]" title="[[article.title]]">
+                    <a id="link" class="article" href="/read/[[_lowerCase(article.category)]]/[[article.slug]]" title="[[article.title]]" on-tap="_handleSelection">
                     <div class="filter">
                         <div class="avatar-ctn">
                             <iron-image class="avatar" style="background-color: lightgray;" src="https://cdn.pinnackl.com/avatars/[[user.basicInfo.avatar]]"
@@ -243,6 +261,11 @@
 
                 user: {
                     type: Object,
+                },
+
+                selectable: {
+                    type: Boolean,
+                    value: false,
                 }
             },
 
@@ -267,6 +290,12 @@
                 this.expand = "expand-more";
                 if (opened) {
                     this.expand = "expand-less";
+                }
+            },
+
+            _handleSelection: function (e) {
+                if (this.selectable) {
+                    e.preventDefault();
                 }
             },
 
