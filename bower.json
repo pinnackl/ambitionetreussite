@@ -71,7 +71,8 @@
     "iron-form-element-behavior": "1 - 2",
     "webcomponentsjs": "^v1.0.0",
     "paper-button": "^2.0.0",
-    "iron-collapse": "^2.0.0"
+    "iron-collapse": "^2.0.0",
+    "iron-scroll-target-behavior": "1 - 2"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0-prerelease.7"
