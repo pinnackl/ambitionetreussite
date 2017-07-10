@@ -5,13 +5,15 @@
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 
+<link rel="import" href="../everest-search-list/everest-search-list.html">
+<link rel="import" href="../everest-article-card/everest-article-card.html">
 <dom-module id="footer-tile">
     <template>
         <style>
             :host {
-
-                /*min-height: 30vh;*/
                 height: 100%;
 
                 -webkit-order: 0;
@@ -53,7 +55,6 @@
 
             :host([edit]) .flex {
                 padding: 3px;
-                /*min-height: 30vh;*/
                 background-color: #F1F1F1;
                 border: dotted 3px #fbc009;
                 margin: 0 3px;
@@ -131,17 +132,6 @@
                 background: #e83b3b;
             }
 
-            iron-pages {
-                /*height: 100%;*/
-            }
-
-            paper-fab {
-                /*background: #179bd7;
-                position: absolute;
-                right: 8px;
-                bottom: 8px;*/
-            }
-
             .section-header paper-item {
                 min-height: 48px;
                 padding: 0px;
@@ -150,6 +140,7 @@
             paper-item paper-button {
                 background: #179bd7;
                 color: #ffffff;
+                width: 100%;
             }
 
             .sub-item paper-dropdown-menu {
@@ -164,6 +155,16 @@
                 --paper-item: {
                     text-align: right;
                 };
+            }
+
+            section {
+                width: 100%;
+                height: 300px;
+                @apply --layout-vertical;
+            }
+
+            section paper-dialog-scrollable {
+                @apply --layout-flex;
             }
 
             [hidden] {
@@ -284,6 +285,18 @@
                     transform: translateX(-50%) translateY(8px);
                 }
             /* The grid */
+            the-grid > div[placeholder] {
+                background: #afafaf;
+            }
+
+            #dialog {
+                width: 80%;
+            }
+
+            #dialog [selected] {
+                border: solid var(--app-primary-color) 2px;
+                border-radius: 3px;
+            }
         </style>
         <div class="flex">
             <div class$="handle [[editClass]]"><iron-icon icon="more-vert"></iron-icon></div>
@@ -309,30 +322,84 @@
                             <paper-menu-button>
                                 <paper-icon-button icon="add" slot="dropdown-trigger"></paper-icon-button>
                                 <paper-listbox slot="dropdown-content">
-                                    <paper-item><paper-button class="">Pages</paper-button></paper-item>
-                                    <paper-item><paper-button class="">Categories</paper-button></paper-item>
-                                    <paper-item><paper-button class="">Articles</paper-button></paper-item>
+                                    <paper-item><paper-button on-tap="addPage">Pages</paper-button></paper-item>
+                                    <paper-item><paper-button on-tap="addCategory">Categories</paper-button></paper-item>
+                                    <paper-item><paper-button on-tap="addArticle">Articles</paper-button></paper-item>
                                 </paper-listbox>
                             </paper-menu-button>
                         </div>
                     </template>
                 </div>
                 <div class="sub-item">
-                    <template is="dom-repeat" items={{column.items}} as=item index-as=index sort="sortSubItem">
-                        <div>[[item.title]] {{item.position}}
-                            <paper-dropdown-menu label="Position" value="{{item.position}}" item="{{item }}">
-                              <paper-listbox slot="dropdown-content" attr-for-selected="value" fallback-selection="[[item.position]]">
-                                <template is="dom-repeat" items=[[column.items]] index-as=position>
-                                    <paper-item value="[[position]]">[[position]]</paper-item>
-                                </template>
-                              </paper-listbox>
-                            </paper-dropdown-menu></div>
-                    </template>
+                    <the-grid
+                        id="footerGrid"
+                        draggable="[[editMode]]"
+                        resizable="[[editMode]]"
+                        animated
+                        overlappable="[[editMode]]"
+                        row-autogrow
+                        col-count="{{nbCol}}"
+                        row-count="{{nbRow}}"
+                        cell-width="{{cellWidth}}"
+                        cell-height="{{cellHeight}}"
+                        cell-margin="8">
+
+                        <template is="dom-repeat" items={{column.items}} as=item index-as=index>
+                            <div
+                                edit$="[[editMode]]"
+                                col$="{{column.col}}"
+                                row$="{{column.row}}"
+                                height$="{{column.height}}"
+                                width$="{{column.width}}"
+                                min-height="2"
+                                item="{{item}}"
+                                index="[[index]]"
+                                on-move="_handleMove"
+                                on-resize="_handleMove"
+                                on-delete-tile="deleteColumn">
+                                <span resize="top"></span>
+                                <span resize="bottom"></span>
+                                pplop
+                            </div>
+                        </template>
+                        <div placeholder></div>
+                    </the-grid>
                 </div>
-                <!-- <paper-fab class="delete" mini icon="delete" on-tap="deleteTile"></paper-fab> -->
             </div>
-        <div><slot></slot></div>
+            <div><slot></slot></div>
         </div>
+
+        <paper-dialog id="dialog">
+            <h2>Select an item</h2>
+            <div>
+                <paper-input label="Search" value="{{searchText}}"></paper-input>
+            </div>
+            <paper-dialog-scrollable>
+                <iron-pages selected="[[openType]]" attr-for-selected="name" fallback-selection="pages">
+                    <section name="pages">
+                        <everest-search-list items="[[pages]]" search-term="{{searchText}}">
+                            <template>
+                                <div class="searchItemCtn" data-index$="[[_lowerCase(item.title)]]">
+                                    <everest-article-card
+                                        class="searchtItem"
+                                        style="height: 100%;"
+                                        tabindex$="[[tabIndex]]"
+                                        selectable
+                                        selected$="[[selected]]"></everest-article-card>
+                                </div>
+                            </template>
+                        </everest-search-list>
+                    </section>
+                    <section name="categories"></section>
+                    <section name="articles"></section>
+                </iron-pages>
+            </paper-dialog-scrollable>
+            <div class="buttons">
+              <paper-button dialog-dismiss>Close</paper-button>
+              <paper-button dialog-confirm>Select</paper-button>
+            </div>
+        </paper-dialog>
+
     </template>
     <script>
         Polymer({
@@ -358,6 +425,72 @@
                 row: String,
                 width: String,
                 height: String,
+
+                editMode: {
+                    type: Boolean,
+                    value: true
+                },
+
+                nbCol: {
+                    type: Number,
+                    value: 1,
+                },
+
+                nbRow: {
+                    type: Number,
+                    value: 6
+                },
+
+                cellHeight: {
+                    type: Number,
+                    value: 100
+                },
+
+                cellWidth: {
+                    type: Number,
+                    value: 100
+                },
+
+                cellMargin: {
+                    type: Number,
+                    value: 9
+                },
+
+
+                pages: {
+                    type: Array,
+                    value: function () {
+                        return [
+                            {
+                                title: "Page 1"
+                            },
+                            {
+                                title: "Page 2"
+                            },
+                            {
+                                title: "Page 3"
+                            },
+                            {
+                                title: "Page 43"
+                            },
+                            {
+                                title: "Page 5"
+                            },
+                            {
+                                title: "Page 51"
+                            },
+                            {
+                                title: "Page 234"
+                            },
+                            {
+                                title: "Page 234"
+                            },
+                            {
+                                title: "Page 13555"
+                            },
+                        ];
+                    }
+                }
 
             },
 
@@ -385,6 +518,32 @@
                     return 1;
                 }
                 return 1;
+            },
+
+
+            addPage: function (e) {
+                this._openDialog('page');
+            },
+
+            addCategory: function (e) {
+                this._openDialog('category');
+            },
+
+            addArticle: function (e) {
+                this._openDialog('article');
+            },
+
+            _openDialog: function (mode) {
+                this.$.dialog.open();
+                switch(mode) {
+                    case 'page': this.set('openType', mode); break;
+                    case 'category': this.set('openType', mode); break;
+                    case 'article': this.set('openType', mode); break;
+                }
+            },
+
+            _lowerCase: function (string) {
+                return string.toLowerCase();
             }
         });
     </script>
