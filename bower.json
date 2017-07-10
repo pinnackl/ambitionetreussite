@@ -47,7 +47,9 @@
     "vaadin-upload": "vaadin/vaadin-upload#2.0.0-beta1",
     "file-upload": "https://github.com/pinnackl/file-upload",
     "paper-slider": "PolymerElements/paper-slider#^2.0.1",
-    "horizon-client": "git@github.com:pinnackl/horizon-client.git"
+    "horizon-client": "git@github.com:pinnackl/horizon-client.git",
+    "paper-dialog-scrollable": "^2.1.0",
+    "iron-list": "^2.0.4"
   },
   "resolutions": {
     "polymer": "^2",
