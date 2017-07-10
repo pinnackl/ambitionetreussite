@@ -350,9 +350,8 @@
               </div>
             </app-toolbar>
             <paper-tabs class="menu-tab" selected="[[page]]" attr-for-selected="name" fit-container scrollable sticky$="[[largeScreen]]">
-              <template is="dom-repeat" items={{menu}} 
-                as=menuItem index-as=index sort="sortMenu">
-                  <paper-tab link name="[[menuItem.name]]"><a href="[[menuItem.link]]" title="[[menuItem.name]]">[[menuItem.name]]</a></paper-tab>
+              <template is="dom-repeat" items={{menu}} as=menuItem index-as=index sort="sortMenu">
+                <paper-tab link name="[[menuItem.name]]"><a href="[[menuItem.link]]" title="[[menuItem.name]]">[[menuItem.name]]</a></paper-tab>
               </template>
             </paper-tabs>
           </template>
@@ -369,7 +368,7 @@
           <!-- Page view -->
           <everest-page name="page" rights="[[rights]]" route="{{subroute}}" subpage="{{subpage}}"></everest-page>
           <!-- New view -->
-          <everest-new name="new" rights="{{rights}}" route="{{subroute}}" subpage="{{subpage}}" user="{{fireUser}}"></everest-new>
+          <everest-new name="new" rights="{{rightLevel}}" route="{{subroute}}" subpage="{{subpage}}" user="{{fireUser}}"></everest-new>
           <!-- User view -->
           <everest-user name="user" rights="{{rights}}" route="{{subroute}}" subpage="{{subpage}}" user="{{fireUser}}"></everest-user>
           <!-- Author view -->
@@ -460,8 +459,8 @@
                 <everest-swatch-picker mode="number" size="{{appCondensedLogoPosition}}"></everest-swatch-picker>
               </div>
               <div class="flexbox-container">
-                  <span>Banner Position</iron-icon></span>
-                  <everest-swatch-picker mode="selector" position="{{appHeaderBannerPosition}}"></everest-swatch-picker>
+                <span>Banner Position</iron-icon></span>
+                <everest-swatch-picker mode="selector" position="{{appHeaderBannerPosition}}"></everest-swatch-picker>
               </div>
               <div class="flexbox-container">
                 <span>Full Size Banner</span>
@@ -522,23 +521,42 @@
         </div>
       </app-drawer>
 
-      <paper-fab-speed-dial icon="add" id="fab">
-        <a style="display: block;" on-tap="_toggleDrawer">
-          <paper-fab-speed-dial-action icon="settings-brightness">Manage theme</paper-fab-speed-dial-action>
-        </a>
-        <a style="display: block;" href="/new/article">
-          <paper-fab-speed-dial-action icon="create">New Article</paper-fab-speed-dial-action>
-        </a>
-        <a style="display: block;" href="/new/page">
-          <paper-fab-speed-dial-action icon="description">New Page</paper-fab-speed-dial-action>
-        </a>
-        <a style="display: block;" href="/new/category">
-          <paper-fab-speed-dial-action icon="label">New Category</paper-fab-speed-dial-action>
-        </a>
-        <a style="display: block;" href="/new/tag">
-          <paper-fab-speed-dial-action icon="loyalty">New Tag</paper-fab-speed-dial-action>
-        </a>
-      </paper-fab-speed-dial>
+      <template is="dom-if" if="{{checkRights(rightLevel, '2')}}">
+        <paper-fab-speed-dial icon="add" id="fab">
+
+          <template is="dom-if" if="{{checkRights(rightLevel, '4')}}">
+            <a style="display: block;" on-tap="_toggleDrawer">
+              <paper-fab-speed-dial-action icon="settings-brightness">Manage theme</paper-fab-speed-dial-action>
+            </a>
+          </template>
+
+          <template is="dom-if" if="{{checkRights(rightLevel, '2')}}">
+            <a style="display: block;" href="/new/article">
+              <paper-fab-speed-dial-action icon="create">New Article</paper-fab-speed-dial-action>
+            </a>
+          </template>
+
+          <template is="dom-if" if="{{checkRights(rightLevel, '2')}}">
+            <a style="display: block;" href="/new/page">
+              <paper-fab-speed-dial-action icon="description">New Page</paper-fab-speed-dial-action>
+            </a>
+          </template>
+
+          <template is="dom-if" if="{{checkRights(rightLevel, '2')}}">
+            <a style="display: block;" href="/new/category">
+              <paper-fab-speed-dial-action icon="label">New Category</paper-fab-speed-dial-action>
+            </a>
+          </template>
+
+          <template is="dom-if" if="{{checkRights(rightLevel, '2')}}">
+            <a style="display: block;" href="/new/tag">
+              <paper-fab-speed-dial-action icon="loyalty">New Tag</paper-fab-speed-dial-action>
+            </a>
+          </template>
+
+        </paper-fab-speed-dial>
+      </template>
+
 
     </app-drawer-layout>
   </template>
@@ -562,6 +580,10 @@
           rootPattern: String,
           routeData: Object,
           subroute: String,
+          rightLevel: {
+            type: Number,
+            value: null
+          },
           signedIn: {
             type: Boolean,
             value: false
@@ -593,9 +615,19 @@
         super.ready();
         console.info("Our app is ready to rock!");
 
-        var _this = this;
-        window.addEventListener('user', function (e) {
-          _this.horizonUser = e.detail.user;
+        window.addEventListener('user', (e) => {
+          this.horizonUser = e.detail.user;
+          let groups = e.detail.user.groups;
+          let rightLevel = 0;
+          groups.forEach((element) => {
+            let userRightLevel = 0;
+            if (element == "authenticated") userRightLevel = 1;
+            else if (element == "editor") userRightLevel = 2;
+            else if (element == "moderator") userRightLevel = 3;
+            else if (element == "administrator") userRightLevel = 4;
+            rightLevel = this.rightLevel == null || this.rightLevel < userRightLevel ? userRightLevel : this.rightLevel;
+          }, this);
+          this.set("rightLevel", rightLevel);
         });
         this.addEventListener('route-changed', e => this.__routeChanged(e));
         let appTitleSizeDefault = null;
@@ -619,6 +651,10 @@
           null,
           null,
           true);
+      }
+
+      checkRights(rights, levelNeeded) {
+        return levelNeeded > rights ? false : true;
       }
 
       login(e) {
@@ -687,7 +723,9 @@
       }
 
       _closeFab() {
-        Polymer.dom(this.root).querySelector('#fab').close();
+        if (Polymer.dom(this.root).querySelector('#fab') != null) {
+          Polymer.dom(this.root).querySelector('#fab').close();
+        }
       }
 
       _downloadTheme(e) {
