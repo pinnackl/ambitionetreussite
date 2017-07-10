@@ -685,7 +685,50 @@
             },
 
             _responsiveFooter: function (ls) {
-                
+                // if(!ls){
+                        
+                //     // Cumpute the tile width
+                //     let width = this.nbCol;
+
+                //     // Loop to set new metrics
+                //     var pos;
+                //     var rows=0;
+                //     this.footers.forEach((item, idx) => {
+                //         this.set(['footers', idx, 'width'], width);
+                //         if (item.col > 0) {
+                //             this.set(['footers', idx, 'row'], pos*idx);
+                //             this.set(['footers', idx, 'col'], 0);
+                //         }
+                //         pos = parseInt(item.height);
+                //         rows += parseInt(item.height);
+                //     });
+                //     this.$.footerGrid.rowCount = rows;
+
+                // } else {
+                //     let len = this.footers.length;
+
+                //     // Cumpute the tile width
+                //     let width = this.nbCol/len;
+
+                //     // Loop to set new metrics
+                //     var pos = 0;
+                //     var rows = 0;
+                //     this.footers.forEach((item, idx) => {
+                //         this.set(['footers', idx, 'row'], 0);
+                //         if (idx == 0)
+                //             this.set(['footers', idx, 'col'], 0);
+                //         else
+                //             this.set(['footers', idx, 'col'], pos*idx);
+
+                //         pos = parseInt(width);
+
+                //         this.set(['footers', idx, 'width'], width);
+                        
+                //         if(rows<item.height)
+                //             rows = parseInt(item.height);
+                //     });
+                //     this.$.footerGrid.rowCount = rows;
+                // }
             }
         });
     </script>
