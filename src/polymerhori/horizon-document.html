@@ -203,6 +203,8 @@
           this.ref.find(query).watch().subscribe(data => {
             this.set('data', data);
           });
+        } else {
+          this.set('data', null);
         }
       }
     }

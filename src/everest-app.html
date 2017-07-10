@@ -666,6 +666,7 @@
       }
 
       logout() {
+        this.set('rightLevel', 0);
         this.$.everestData.logoutUser();
       }
 

@@ -105,7 +105,7 @@
                                 var hz = new Horizon({ host: 'localhost:8181', authType: 'unauthenticated' });
                                 window.horizon = hz;
                                 _this.fire('dbconnection');
-                            } else if (status.type == "ready" || status.type == "unconnected") {
+                            } else if (status.type == "ready" /*|| status.type == "unconnected"*/) {
                                 window.horizon.currentUser().fetch().subscribe((user) => {
                                     _this.fire('user', { user: user });
                                 }, err => { });
