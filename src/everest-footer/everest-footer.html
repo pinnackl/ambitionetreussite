@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../bower_components/iron-media-query/iron-media-query.html">
 
 <link rel="import" href="../../bower_components/the-grid/the-grid.html">
 <link rel="import" href="footer-tile.html">
@@ -79,6 +80,10 @@
             }
         </style>
 
+        <iron-media-query query="min-width: 640px" query-matches="{{largeScreen}}">
+        </iron-media-query>
+        
+
         <!-- <firebase-query
             id="footer"
             path="/footer"
@@ -130,18 +135,18 @@
                     overlappable="[[editMode]]"
                     row-autogrow
                     col-count="{{nbCol}}"
-                    row-count="{{nbRow}}"
+                    row-count$="{{nbRow}}"
                     cell-width="{{cellWidth}}"
                     cell-height="{{cellHeight}}"
                     cell-margin="8">
 
-                    <template is="dom-repeat" items=[[footers]] as=column index-as=index sort="_sortFooter">
+                    <template is="dom-repeat" items=[[footers]] as=column index-as=index sort="_sortFooter" filter="{{_responsiveFooter(largeScreen)}}">
                         <footer-tile
                             edit$="[[editMode]]"
-                            col$="{{column.col}}"
-                            row$="{{column.row}}"
+                            col$="{{_computeTileProperty('col',column,index)}}"
+                            row$="{{_computeTileProperty('row',column,index)}}"
                             height$="{{column.height}}"
-                            width$="{{column.width}}"
+                            width$="{{_computeTileProperty('width',column,index)}}"
                             min-height="2"
                             column="{{column}}"
                             index="[[index]]"
@@ -166,119 +171,13 @@
             is: 'everest-footer',
 
             properties: {
+                largeScreen: {
+                    type: Boolean,
+                },
                 footers: {
                     type: Array,
                     value: function () {
-                        return [
-                            {
-                                title: "column 1",
-                                col: 0,
-                                row: 0,
-                                height: 6,
-                                width: 3,
-                                items: [
-                                    {
-                                        title: 'Some link',
-                                        link: '#',
-                                        type: 'page',
-                                        position: 0
-                                    },
-                                    {
-                                        title: 'Some link',
-                                        link: '#',
-                                        type: 'article',
-                                        position: 1
-                                    },
-                                    {
-                                        title: 'Some link',
-                                        link: '#',
-                                        type: 'category',
-                                        position: 2
-                                    },
-                                ]
-                            },
-                            {
-                                title: "column 2",
-                                col: 3,
-                                row: 0,
-                                height: 6,
-                                width: 3,
-                                items: [
-                                    {
-                                        title: 'Some link',
-                                        link: '#',
-                                        type: 'page',
-                                        position: 0
-                                    },
-                                    {
-                                        title: 'Some link',
-                                        link: '#',
-                                        type: 'article',
-                                        position: 1
-                                    },
-                                    {
-                                        title: 'Some link',
-                                        link: '#',
-                                        type: 'category',
-                                        position: 2
-                                    },
-                                ]
-                            },
-                            {
-                                title: "column 3",
-                                col: 6,
-                                row: 0,
-                                height: 6,
-                                width: 3,
-                                items: [
-                                    {
-                                        title: 'Some link',
-                                        link: '#',
-                                        type: 'page',
-                                        position: 0
-                                    },
-                                    {
-                                        title: 'Some link',
-                                        link: '#',
-                                        type: 'article',
-                                        position: 1
-                                    },
-                                    {
-                                        title: 'Some link',
-                                        link: '#',
-                                        type: 'category',
-                                        position: 2
-                                    },
-                                ]
-                            },
-                            {
-                                title: "column 4",
-                                col: 9,
-                                row: 0,
-                                height: 6,
-                                width: 3,
-                                items: [
-                                    {
-                                        title: 'Some link',
-                                        link: '#',
-                                        type: 'page',
-                                        position: 0
-                                    },
-                                    {
-                                        title: 'Some link',
-                                        link: '#',
-                                        type: 'article',
-                                        position: 1
-                                    },
-                                    {
-                                        title: 'Some link',
-                                        link: '#',
-                                        type: 'category',
-                                        position: 2
-                                    },
-                                ]
-                            },
-                        ];
+                        return [];
                     }
                 },
 
@@ -344,7 +243,8 @@
 
                 cellHeight: {
                     type: Number,
-                    value: 100
+                    value: 100,
+                    notify: true
                 },
 
                 cellWidth: {
@@ -389,13 +289,127 @@
 
             observers: [
                 '_rightsChanged(rights.ts)',
+                '_resizeFooter(footers, footers.splices, largeScreen)'
             ],
 
             ready: function () {
-                // Init the cumpute of the grid
+                // Init the compute of the grid
                 this._computeCellWidth();
 
                 window.addEventListener('resize', this._computeCellWidth.bind(this));
+
+                this.push('footers',
+                    {
+                        title: "column 1",
+                        col: 0,
+                        row: 0,
+                        height: 6,
+                        width: 3,
+                        items: [
+                            {
+                                title: 'Some link',
+                                link: '#',
+                                type: 'page',
+                                position: 0
+                            },
+                            {
+                                title: 'Some link',
+                                link: '#',
+                                type: 'article',
+                                position: 1
+                            },
+                            {
+                                title: 'Some link',
+                                link: '#',
+                                type: 'category',
+                                position: 2
+                            },
+                        ]
+                    },
+                    {
+                        title: "column 2",
+                        col: 3,
+                        row: 0,
+                        height: 6,
+                        width: 3,
+                        items: [
+                            {
+                                title: 'Some link',
+                                link: '#',
+                                type: 'page',
+                                position: 0
+                            },
+                            {
+                                title: 'Some link',
+                                link: '#',
+                                type: 'article',
+                                position: 1
+                            },
+                            {
+                                title: 'Some link',
+                                link: '#',
+                                type: 'category',
+                                position: 2
+                            },
+                        ]
+                    },
+                    {
+                        title: "column 3",
+                        col: 6,
+                        row: 0,
+                        height: 6,
+                        width: 3,
+                        items: [
+                            {
+                                title: 'Some link',
+                                link: '#',
+                                type: 'page',
+                                position: 0
+                            },
+                            {
+                                title: 'Some link',
+                                link: '#',
+                                type: 'article',
+                                position: 1
+                            },
+                            {
+                                title: 'Some link',
+                                link: '#',
+                                type: 'category',
+                                position: 2
+                            },
+                        ]
+                    },
+                    {
+                        title: "column 4",
+                        col: 9,
+                        row: 0,
+                        height: 6,
+                        width: 3,
+                        items: [
+                            {
+                                title: 'Some link',
+                                link: '#',
+                                type: 'page',
+                                position: 0
+                            },
+                            {
+                                title: 'Some link',
+                                link: '#',
+                                type: 'article',
+                                position: 1
+                            },
+                            {
+                                title: 'Some link',
+                                link: '#',
+                                type: 'category',
+                                position: 2
+                            },
+                        ]
+                    }
+                );
+
+                this.$.footerGrid.computeStyles(); 
             },
 
             edit: function (e) {
@@ -461,7 +475,7 @@
                 if (this.columnTitle && this.footers.length < 4) {
                     let len = this.footers.length;
                     
-                    // Cumpute the tile width
+                    // compute the tile width
                     // Add +1 to update len before push into array
                     let width = this.nbCol/(len+1);
 
@@ -490,28 +504,47 @@
 
 
             deleteColumn: function (e) {
-                if (this.footers.length) {
-                    this.arrayDelete('footers', e.detail.column);
+                if(this.largeScreen) {
+                    if (this.footers.length) {
+                        this.arrayDelete('footers', e.detail.column);
 
-                    let len = this.footers.length;
+                        let len = this.footers.length;
 
-                    // Cumpute the tile width
-                    let width = this.nbCol/len;
+                        // compute the tile width
+                        let width = this.nbCol/len;
 
-                    // Loop to set new metrics
-                    var pos = 0;
-                    let _rectif = 0;
-                    this.footers.forEach((item, idx) => {
-                        if (idx == 0)
-                            this.set(['footers', idx, 'col'], 0);
-                        else
-                            this.set(['footers', idx, 'col'], pos*idx);
+                        // Loop to set new metrics
+                        var pos = 0;
+                        this.footers.forEach((item, idx) => {
+                            if (idx == 0)
+                                this.set(['footers', idx, 'col'], 0);
+                            else
+                                this.set(['footers', idx, 'col'], pos*idx);
 
-                        pos = parseInt(width);
+                            pos = parseInt(width);
 
-                        this.set(['footers', idx, 'width'], width);
-                    });
+                            this.set(['footers', idx, 'width'], width);
+                        });
 
+                    }
+                } else {
+                    if (this.footers.length) {
+                        console.log(e.detail);
+                        this.arrayDelete('footers', e.detail.column);
+                        // Loop to set new metrics
+                        var pos = 0;
+                        var rows = 0;
+                        this.footers.forEach((item, idx) => {
+                            if (idx == 0)
+                                this.set(['footers', idx, 'row'], 0);
+                            else
+                                this.set(['footers', idx, 'row'], pos*idx);
+
+                            pos = parseInt(item.height);
+                            rows += parseInt(item.height);
+                        });
+                        this.$.footerGrid.rowCount = rows;
+                    }
                 }
             },
 
@@ -591,6 +624,68 @@
                     return string.charAt(0).toUpperCase() + string.slice(1);
                 }
                 return '';
+            },
+
+            _resizeFooter: function (obj, changeRecord, ls) {
+                // if (this.footers.length) {
+                //     if(!ls) {           
+                //         var rows=0;
+                //         this.footers.forEach((item) => {
+                //             rows += parseInt(item.height);
+                //         });
+                //         this.$.footerGrid.rowCount = rows;
+                //         this.$.footerGrid.computeStyles();
+                        
+                //     } else {
+                //         var rows = 0;
+                //         this.footers.forEach((item) => {                           
+                //             if(rows<item.height)
+                //                 rows = parseInt(item.height);
+                //         });
+                //         this.$.footerGrid.rowCount = rows;
+                //         this.$.footerGrid.computeStyles();
+                //     }
+                // }
+            },
+
+            _computeTileProperty: function (property, item, idx) {
+                if (!this.largeScreen) {
+                    this.$.footerGrid.computeStyles();
+                    var rows=0;
+                    this.footers.forEach((item) => {
+                        rows += parseInt(item.height);
+                    });
+                    this.$.footerGrid.rowCount = rows;
+                    switch(property) {
+                        case 'width':
+                            return this.nbCol;
+                        case 'row':
+                            if (item.col >0)
+                                return parseInt(item.height)*idx;
+                            return 0;
+                        case 'col':
+                            return 0;     
+                    }
+                } 
+                else {
+                    var rows=0;
+                    this.footers.forEach((item) => {
+                        rows = parseInt(item.height);
+                    });
+                    this.$.footerGrid.rowCount = rows;
+                    switch(property) {
+                        case 'width':
+                            return item.width;
+                        case 'row':
+                            return item.row;
+                        case 'col':
+                            return item.col;     
+                    }
+                }
+            },
+
+            _responsiveFooter: function (ls) {
+                
             }
         });
     </script>
