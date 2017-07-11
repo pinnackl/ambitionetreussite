@@ -143,10 +143,8 @@
                 var auth = this.$.auth.signInWithEmailAndPassword(email, password);
 
                 auth.then(function (e) {
-                    console.log(e);
-                    _this.set('horizonSuccess', Date.now());
+                    _this.set('horizonSuccess', Date.now()); taToast.open();
                 }).catch(function (e) {
-                    console.error(e);
                     _this.set('horizonError', e);
                 });
             },

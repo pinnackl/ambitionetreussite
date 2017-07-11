@@ -5,34 +5,30 @@
 <dom-module id="everest-read">
     <template>
         <style>
-            :host {
+             :host {
                 display: block;
                 min-height: 100vh;
                 width: 100%;
             }
-
+            
             iron-pages {
                 min-height: 100vh;
             }
-
+            
             iron-pages section {
                 min-height: 50vh;
             }
-
+            
             [name=spinner] {
                 display: flex;
                 justify-content: center;
                 align-items: center;
             }
         </style>
-        <app-route
-            route="{{route}}"
-            pattern="/:category/:article"
-            data="{{routeData}}"
-            tail="{{subroute}}"></app-route>
+        <app-route route="{{route}}" pattern="/:category/:article" data="{{routeData}}" tail="{{subroute}}"></app-route>
         <iron-pages selected="[[view]]" attr-for-selected="name" fallback-selection="spinner">
             <section name="read">
-                <everest-article view="read" category="[[category]]" slug="{{article}}" is-admin="{{isAdmin}}" loading="{{loading}}"></everest-article>
+                <everest-article view="read" category="[[category]]" slug="{{article}}" is-admin="{{isAdmin}}" loading="{{loading}}" user={{user}}></everest-article>
             </section>
             <section name="view404">
                 <h1>404</h1>
@@ -80,6 +76,8 @@
                     type: Boolean,
                     value: false,
                 },
+
+                user: Object,
 
                 lastRoute: {
                     type: Object,

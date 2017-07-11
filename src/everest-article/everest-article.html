@@ -4,7 +4,6 @@
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 
 <link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
-<link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
 
 <link rel="import" href="../everest-article-card/everest-article-card.html">
 <link rel="import" href="../everest-article-page/everest-article-page.html">
@@ -121,7 +120,7 @@
             </section>
             <section name="read">
                 <template is="dom-if" if={{slug}}>
-                    <everest-article-page article="[[article]]" uid="[[slug]]" is-admin="{{isAdmin}}"></everest-article-page>
+                    <everest-article-page article="[[article]]" uid="[[slug]]" is-admin="{{isAdmin}}" user={{user}}></everest-article-page>
                 </template>
             </section>
             <section name="spinner">
@@ -191,7 +190,9 @@
                     type: Boolean,
                     value: false,
                     notify: true
-                }
+                },
+
+                user: Object
             },
 
             observers: [

@@ -34,9 +34,11 @@
             <section name="article">
                 <everest-article-create edit-mode="true" user="{{user}}" is-admin="{{isAdmin}}"></everest-article-create>
             </section>
+
             <section name="category">
-                <everest-category-create user="{{user}}" is-admin="true"></everest-category-create>
+                <everest-category-create user="{{user}}" rights="{{rights}}"></everest-category-create>
             </section>
+
             <section name="tag">
                 <everest-tag-create user="{{user}}" is-admin="true"></everest-tag-create>
             </section>
@@ -64,7 +66,8 @@
                 },
 
                 rights: {
-                    type: Object,
+                    type: Number,
+                    value: null
                 },
 
                 isAdmin: {
@@ -79,42 +82,31 @@
             },
 
             observers: [
-                '_routePageChanged(routeData.page)',
-                '_rightsChanged(rights.ts)',
+                '_routePageChanged(routeData.page, rights)',
+                '_rightsChanged(rights)',
             ],
 
-            checkRights: function (role) {
-                if (this.rights[role]) {
-                    this.isAdmin = true;
-                    this.page = this.tempPage;
-                } else {
-                    this.page = "spinner";
+            _routePageChanged: function (page, rights) {
+                if (this.rights != null) {
+                    if (this.rights >= 2) {
+                        this.page = page || '';
+                        this.subpage = this.page;
+                    } else {
+                        window.location.href = "/";
+                    }
+
+                    // Load page import on demand. Show 404 page if fails
+                    var resolvedPageUrl = this.resolveUrl('../everest-' + page + '-create/everest-' + page + '-create.html');
+                    Polymer.importHref(
+                        resolvedPageUrl,
+                        null,
+                        this._showPage404.bind(this),
+                        true);
                 }
-            },
-
-            _routePageChanged: function (page) {
-                // if (this.isAdmin) {
-                this.page = page || '';
-                this.subpage = this.page;
-                // } else {
-                //     this.tempPage = page;
-                // }
-
-                // Load page import on demand. Show 404 page if fails
-                var resolvedPageUrl = this.resolveUrl('../everest-' + page + '-create/everest-' + page + '-create.html');
-                Polymer.importHref(
-                    resolvedPageUrl,
-                    null,
-                    this._showPage404.bind(this),
-                    true);
             },
 
             _showPage404() {
                 this.page = 'spinner';
-            },
-
-            _rightsChanged: function (ts) {
-                this.checkRights('editors');
             },
 
             _ucfirst: function (string) {

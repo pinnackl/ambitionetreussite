@@ -64,9 +64,9 @@
                     type: Object
                 },
 
-                isAdmin: {
-                    type: Boolean,
-                    value: false,
+                rights: {
+                    type: Number,
+                    value: null,
                 },
 
                 stateMessage: {
@@ -95,12 +95,14 @@
                             },
                         }
                     }
-                }
+                },
             },
 
+            observers: ['_rightsChanged(rights)'],
+
             addCategory: function (e) {
-                if (this.newCategory && this.isAdmin) {
-                    var _this = this;
+                var _this = this;
+                if (this.newCategory && this.rights >= 2) {
                     const newRef = window.horizon('categories');
                     newRef.store({
                         slug: getSlug(this.newCategory),
@@ -115,23 +117,33 @@
                         _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
                         _this.$.stateMessage.open();
                     });
+                } else {
+                    _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
+                    _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
+                    _this.$.stateMessage.open();
                 }
             },
 
             removeCategory: function (e) {
-                var key = e.currentTarget.category.id;
                 var _this = this;
-                const newRef = window.horizon('categories');
-                newRef.remove(key).subscribe(
-                    function (value) {
-                        _this.stateMessageIcon = _this.stateMessage.success.icon;
-                        _this.$.stateMessage.text = _this.stateMessage.success.text;
-                        _this.$.stateMessage.open();
-                    }, function (error) {
-                        _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
-                        _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
-                        _this.$.stateMessage.open();
-                    });
+                if (this.rights >= 2) {
+                    var key = e.currentTarget.category.id;
+                    const newRef = window.horizon('categories');
+                    newRef.remove(key).subscribe(
+                        function (value) {
+                            _this.stateMessageIcon = _this.stateMessage.success.icon;
+                            _this.$.stateMessage.text = _this.stateMessage.success.text;
+                            _this.$.stateMessage.open();
+                        }, function (error) {
+                            _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
+                            _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
+                            _this.$.stateMessage.open();
+                        });
+                } else {
+                    _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
+                    _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
+                    _this.$.stateMessage.open();
+                }
             },
 
             _toastClosed: function (e) {

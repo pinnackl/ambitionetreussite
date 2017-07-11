@@ -2,39 +2,42 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-styles/element-styles/paper-material-styles.html">
 
 <link rel="import" href="../shared-styles.html">
 <link rel="import" href="../article-styles.html">
 <!-- Import moment -->
 <dom-module id="everest-comment-card">
     <template>
-        <style include="shared-styles article-styles">
-            :host {
+        <style include="shared-styles article-styles paper-material-styles">
+             :host {
                 display: block;
             }
-
+            
             .author {
                 display: flex;
                 justify-content: space-between;
             }
-
+            
+            .paper-material {
+                padding: 8px 16px;
+                border-radius: 5px;
+            }
+            
+            .paper-material[elevation="1"] {
+                @apply --paper-material-elevation-1;
+            }
+            
             #content.comment {
                 margin-top: 1em;
             }
-
+            
             paper-toggle-button {
                 --paper-toggle-button-checked-button-color: #3eb7e9;
             }
         </style>
-        <firebase-auth
-            user="{{fireUser}}"
-            signed-in="{{signedIn}}">
-        </firebase-auth>
-        <firebase-document
-            path="/users/[[comment.authorID]]/basicInfo"
-            data="{{author}}"
-        ></firebase-document>
-        <paper-material elevation="1" class="material">
+        <horizon-document path="/alpinists/[[comment.authorID]]" data="{{author}}"></horizon-document>
+        <div class="paper-material" elevation="1" class="material">
             <div class="author">
                 <span>
                     <div class="avatar-ctn">
@@ -45,39 +48,43 @@
                         <div class="published">[[date]]</div>
                     </div>
                 </span>
-                <paper-button raised on-tap="signalComment">Report</paper-button>
 
-                <template is="dom-if" if={{isAuthor}}>
+                <template is="dom-if" if="{{_computeReportButton(rightLevel, comment.signaled)}}">
+                    <paper-button raised on-tap="signalComment">Report</paper-button>
+                </template>
+
+                <template is="dom-if" if="{{_computeTrashButton(isAuthor, rightLevel, comment.trash)}}">
                     <paper-icon-button icon="delete" on-tap="trashComment"></paper-icon-button>
                 </template>
 
-                <template is="dom-if" if="{{_computeEditRight(isAdmin, isAuthor)}}">
+                <template is="dom-if" if="{{_computeValidateButton(comment.trash, comment.signaled)}}">
+                    <paper-icon-button icon="check" on-tap="validateComment"></paper-icon-button>
+                </template>
+
+                <template is="dom-if" if="{{_computeEditRight(rightLevel, isAuthor)}}">
                     <template is="dom-if" if={{editMode}}>
                         <!-- FIXME : Proper styling -->
                         <div style="display: inline-block;"><span>Publish</span>
-                            <paper-toggle-button checked="{{comment.published}}"></paper-toggle-button></div>
+                            <paper-toggle-button checked="{{comment.published}}"></paper-toggle-button>
+                        </div>
                         <paper-button class="save-button" raised on-tap="updateComment">Save</paper-button>
                     </template>
-                    <paper-icon-button icon="create" raised on-tap="edit"
-                        hidden$="[[editMode]]"></paper-icon-button>
-                    <paper-icon-button icon="close" raised on-tap="close"
-                        hidden$="[[!editMode]]"></paper-icon-button>
+                    <paper-icon-button icon="create" raised on-tap="edit" hidden$="[[editMode]]"></paper-icon-button>
+                    <paper-icon-button icon="close" raised on-tap="close" hidden$="[[!editMode]]"></paper-icon-button>
                 </template>
             </div>
             <template is="dom-if" if={{editMode}}>
                 <paper-textarea label="Edit the comment" value="{{comment.content}}"></paper-textarea>
             </template>
             <div id="content" class="comment"></div>
-        </paper-material>
+        </div>
     </template>
     <script>
         Polymer({
             is: 'everest-comment-card',
 
             properties: {
-                isAdmin: {
-                    type: Boolean
-                },
+                rightLevel: Number,
 
                 editMode: {
                     type: Boolean,
@@ -94,12 +101,14 @@
 
                 date: {
                     type: String
-                }
+                },
+
+                user: Object
             },
 
             observers: [
                 '_commentChanged(comment.content)',
-                '_isAuthor(fireUser.uid, comment.authorID)',
+                '_isAuthor(user.id, comment.authorID)',
             ],
 
             edit: function (e) {
@@ -115,25 +124,32 @@
                     this.comment.signaled = false;
                     this.comment.trash = false;
                 }
-                this.fire('update-comment', {comment: this.comment});
+                this.fire('update-comment', { comment: this.comment });
                 this.close();
             },
 
             signalComment: function (e) {
                 this.comment.published = false;
                 this.comment.signaled = true;
-                this.fire('signal-comment', {comment: this.comment});
+                this.fire('signal-comment', { comment: this.comment });
             },
 
             trashComment: function (e) {
                 this.comment.published = false;
                 this.comment.signaled = false;
                 this.comment.trash = true;
-                this.fire('trash-comment', {comment: this.comment});
+                this.fire('trash-comment', { comment: this.comment });
             },
 
-            _computeEditRight: function (isAdmin, isAuthor) {
-                return isAdmin || isAuthor;
+            validateComment: function (e) {
+                this.comment.published = true;
+                this.comment.signaled = false;
+                this.comment.trash = false;
+                this.fire('validate-comment', { comment: this.comment });
+            },
+
+            _computeEditRight: function (rightLevel, isAuthor) {
+                return rightLevel >= 2 || isAuthor;
             },
 
             _isAuthor: function (uid, authorID) {
@@ -143,7 +159,19 @@
             _commentChanged: function (content) {
                 this.date = moment(this.comment.edited).fromNow();
                 this.$.content.innerHTML = content.replace(/(?:\r\n|\r|\n)/g, '<br>');;
-            }
+            },
+
+            _computeTrashButton: function (isAuthor, rightLevel, trash) {
+                return (isAuthor || rightLevel > 2) && !trash;
+            },
+
+            _computeReportButton: function (rightLevel, signaled) {
+                return !signaled && rightLevel > 0;
+            },
+
+            _computeValidateButton: function (trash, signaled) {
+                return this.rightLevel > 2 && (trash || signaled);
+            },
         });
     </script>
 </dom-module>

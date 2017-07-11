@@ -14,8 +14,7 @@
 <link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
 
 <link rel="import" href="../../bower_components/polymer-mce/polymer-mce.html" async>
-<!-- FIXME : To be replaced -->
-<!-- <link rel="import" href="../../bower_components/file-upload/file-upload.html"> -->
+<link rel="import" href="../../bower_components/vaadin-upload/vaadin-upload.html">
 
 <link rel="import" href="../imports/imports-moment.html">
 <link rel="import" href="../imports/imports-speakingurl.html">
@@ -287,18 +286,18 @@
                 display: inline-block;
             }
             
-            .post .material paper-menu {
+            .post .material paper-listbox {
                 height: 144px;
                 background-color: #f7F7F7;
                 overflow-y: scroll;
                 padding: 0 6px;
             }
             
-            .post .material paper-menu paper-item {
+            .post .material paper-listbox paper-item {
                 cursor: pointer;
             }
             
-            .post .material paper-menu paper-item.iron-selected {
+            .post .material paper-listbox paper-item.iron-selected {
                 background-color: #179BD7;
                 color: #ffffff;
             }
@@ -383,7 +382,7 @@
                             <iron-image class="avatar" src="https://cdn.pinnackl.com/avatars/[[userData.basicInfo.avatar]]" preload sizing="cover" style="background-color: lightgray;"></iron-image>
                         </div>
                         <div class="author-ctn">
-                            <div class="autor-name">By <a href="/user/[[user.uid]]" title="[[userData.basicInfo.name]]">[[userData.basicInfo.name]]</a>,</div>
+                            <div class="autor-name">By <a href="/user/[[user.uid]]" title="[[userData.name]]">[[userData.name]]</a>,</div>
                         </div>
                         <div class="category">
                             <a class="tag" href="#" title="[[_ucfirst(category)]]">[[_ucfirst(category)]]</a>
@@ -427,8 +426,9 @@
                         </div>
                         <div class="section-header">
                             <!-- FIXME : Get the target from config -->
-                            <file-upload droppable="true" raised="true" accept="image/*" method="POST" file-data-name="cover" target="https://cdn.pinnackl.com/api/images/upload"
-                                on-success="fileUploaded">Choose a cover</file-upload>
+                            <vaadin-upload accept="image/*" method="POST" form-data-name="cover" target="http://localhost:9000/cdn/upload" on-upload-success="fileUploaded">
+                                Choose a cover
+                            </vaadin-upload>
                             <template is="dom-if" if="{{categories}}">
                                 <paper-dropdown-menu label="Choose a category" value="{{category}}">
                                     <paper-listbox slot="dropdown-content" class="dropdown-content">
@@ -454,11 +454,11 @@
                             <paper-input label="Create a new tag" value="{{newTag}}"></paper-input>
                             <paper-button raised class="save-button" on-tap="addTag">Add</paper-button>
                         </div>
-                        <paper-menu multi attr-for-selected="name" selected-values="{{selectedTags}}">
+                        <paper-listbox multi attr-for-selected="name" selected-values="{{selectedTags}}">
                             <template is="dom-repeat" items={{tags}} as=item index-as=index>
                                 <paper-item name="[[item.name]]">[[item.name]]</paper-item>
                             </template>
-                        </paper-menu>
+                        </paper-listbox>
                     </div>
                     <div class="tags">
                         <template is="dom-repeat" items={{selectedTags}} as=item index-as=index>
@@ -619,7 +619,7 @@
 
             fileUploaded: function (e, detail) {
                 var parsedResponse = JSON.parse(detail.xhr.response);
-                this.cover = parsedResponse.name;
+                this.cover = parsedResponse.imageName;
             },
 
             addTag: function (e) {

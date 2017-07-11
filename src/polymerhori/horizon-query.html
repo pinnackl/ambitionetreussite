@@ -109,30 +109,29 @@
 
             __computeQuery: function (orderByChild, orderLimit, limit, startAt, endAt, equalTo, path) {
                 var horizon = window.horizon;
-                if (path != null && typeof horizon != "undefined") {
+                if (path != null && path != '' && typeof horizon != "undefined") {
                     var table = path.split('/').slice(1, 2).join('');
                     this.ref = horizon(table);
                     if (orderByChild != null && equalTo != null) {
                         var keys = orderByChild.split("_");
                         var values = equalTo.split("~");
-                        var aOrder = [];
+                        var aOrder = {};
 
                         for (var i = 0; i < keys.length; i++) {
                             var tmp = {};
-                            tmp[keys[i]] = values[i];
-                            aOrder.push(tmp);
+                            if (values[i] == "false") values[i] = false;
+                            else if (values[i] == "true") values[i] = true;
+                            aOrder[keys[i]] = values[i];
                         }
-
-                        this.ref.findAll(aOrder).watch().subscribe(data => {
+                        this.ref.order(this.orderLimit).findAll(aOrder).watch().subscribe(data => {
                             this.set('data', data);
                         });
                     } else {
                         this.ref.order(this.orderLimit).limit(this.limit).watch().subscribe(data => {
                             this.set('data', data);
-                            console.log(data);
                         });
                     }
-                } else {
+                } else if (path != '') {
                     var _this = this;
                     window.addEventListener('dbconnection', function (e) {
                         var horizon = window.horizon;
