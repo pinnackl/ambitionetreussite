@@ -338,8 +338,6 @@
             <page-title base-title="Everest" title="[[article.title]] - [[_ucfirst(article.category)]]" direction="reversed"></page-title>
         </template>
 
-        <!--<horizon-document id="article" path="/articles/[[uid]]" index="slug">
-        </horizon-document>-->
         <horizon-document id="users" path="/alpinists/[[article.authorID]]" data="{{author}}">
         </horizon-document>
         <horizon-query id="categories" path="/categories" data="{{categories}}">
@@ -347,13 +345,9 @@
         <horizon-query id="tags" path="/tags" data="{{tags}}">
         </horizon-query>
 
-        <!--<horizon-query id="comments" order-by-child="published_signaled_trash" equal-to="[[published]]~[[signaled]]~[[trash]]" path="/comments/[[uid]]"
-            data="{{comments}}"></horizon-query>-->
         <horizon-query id="comments" order-by-child="published_signaled_trash" equal-to="[[published]]~[[signaled]]~[[trash]]" path="/comments/[[article.id]]"
             data="{{comments}}"></horizon-query>
 
-        <!--<horizon-auth user="{{fireUser}}" signed-in="{{signedIn}}">
-        </horizon-auth>-->
         <!-- User data -->
         <horizon-document path="/alpinists/[[user.id]]" data="{{userData}}">
         </horizon-document>
@@ -627,7 +621,10 @@
             observers: [
                 '_articleChanged(article.content)',
                 '_userDataChanged(userData)',
-                '_userChanged(user)'
+                '_userChanged(user)',
+                '_trashChanged(trash)',
+                '_publishedChanged(published)',
+                '_signaledChanged(signaled)',
             ],
 
             ready: function () {
@@ -636,6 +633,27 @@
 
             checkRights: function (rights, levelNeeded) {
                 return levelNeeded > rights ? false : true;
+            },
+
+            _publishedChanged: function (published) {
+                if (published) {
+                    this.set('trash', false);
+                    this.set('signaled', false);
+                }
+            },
+
+            _signaledChanged: function (signaled) {
+                if (signaled) {
+                    this.set('published', false);
+                    this.set('trash', false);
+                }
+            },
+
+            _trashChanged: function (trash) {
+                if (trash) {
+                    this.set('published', false);
+                    this.set('signaled', false);
+                }
             },
 
             _userChanged: function (data) {
