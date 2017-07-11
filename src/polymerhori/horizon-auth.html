@@ -148,7 +148,7 @@
                  * @param  {!String} password Password corresponding to the user account.
                  * @return {Promise} Promise that handles success and failure.
                  */
-                createUserWithEmailAndPassword: function (email, password) {
+                createUserWithEmailAndPassword: function (email, password, name) {
                     var _this = this;
                     var str = [];
                     str.push("username=" + email);
@@ -184,6 +184,29 @@
                                     _this.set('user', null);
                                 }
                             });
+
+                            try {
+                                var strEmail = [];
+                                strEmail.push("recipient=" + email);
+                                strEmail.push("username=" + name);
+                                var dataEmail = strEmail.join("&");
+                                this._ajax({
+                                    url: "http://localhost:9000/smtp/inscription",
+                                    type: "POST",
+                                    data: dataEmail,
+                                    headers: [{'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}]
+                                }).then(function (e) {
+                                    console.log("OK");
+                                    console.log(e);
+                                })
+                                .catch(function (e) {
+                                    console.log("ERROR");
+                                    console.log(e);
+                                });
+                            } catch (e) {
+                                console.log("Email not sent");
+                                console.log(e);
+                            }
                         }).catch(function (e) {
                             reject(e);
                         });
