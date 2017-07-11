@@ -1,0 +1,45 @@
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+
+<dom-module id="preview-file">
+    <template>
+        <style>
+        </style>
+        <input id="inpt" type="file" style="display: none;" on-change="previewFile">
+        <paper-fab mini icon="file-upload" on-tap="_fileUpload"></paper-fab>
+    </template>
+    <script>
+        Polymer({
+            is: 'preview-file',
+
+            properties: {
+                content: {
+                    type: String,
+                    value: "",
+                    notify: true
+                }
+            },
+
+            previewFile: function () {
+                // FIXME : to test cross browser
+                var file    = this.$.inpt.files[0];
+                var reader  = new FileReader();
+
+                reader.addEventListener("load", () => {
+                    if (reader.result) {
+                        this.set('content', reader.result);
+                        this.fire('image-loaded', {image: this.content});
+                    }
+                }, false);
+
+                if (file) {
+                    reader.readAsDataURL(file);
+                }
+            },
+
+             _fileUpload: function (e) {
+                this.$.inpt.click();
+            },
+        });
+    </script>
+</dom-module>

@@ -3,7 +3,6 @@
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
 <link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
-<link rel="import" href="../../bower_components/file-upload/file-upload.html">
 
 <link rel="import" href="../everest-article-card/everest-article-card.html">
 
@@ -168,11 +167,18 @@
             <div class="header section-header">
                 <div class="start">
                     <div class="avatar-ctn">
-                        <iron-image src="https://cdn.pinnackl.com/avatars/[[editData.avatar]]" preload fade sizing="contain"></iron-image>
-                        <template is="dom-if" if={{_edit}}><span class="filter" on-tap="openFile"><iron-icon icon="camera-enhance"></iron-icon></span>
-                            <file-upload id="file" droppable="true" raised="true" accept="image/*" method="POST" file-data-name="avatar" target="https://cdn.pinnackl.com/api/avatars/upload"
-                                on-success="fileUploaded">Choose a profile picture</file-upload>
-                        </template>
+                        <<<<<<< HEAD <iron-image src="https://cdn.pinnackl.com/avatars/[[editData.avatar]]" preload fade sizing="contain">
+                            </iron-image>
+                            <template is="dom-if" if={{_edit}}><span class="filter" on-tap="openFile"><iron-icon icon="camera-enhance"></iron-icon></span>
+                                <file-upload id="file" droppable="true" raised="true" accept="image/*" method="POST" file-data-name="avatar" target="https://cdn.pinnackl.com/api/avatars/upload"
+                                    on-success="fileUploaded">Choose a profile picture</file-upload>
+                            </template>
+                            =======
+                            <preview-file content="{{avatar}}"></preview-file>
+                            <iron-image src="{{avatar}}" preload fade sizing="contain"></iron-image>
+                            <template is="dom-if" if={{_edit}}><span class="filter" on-tap="openFile"><iron-icon icon="camera-enhance"></iron-icon></span>
+                                <preview-file content="{{avatar}}" on-image-loaded="fileUploaded"></preview-file>
+                                >>>>>>> 4dfffcbc84155f263e7cff387979e9012c9b95e5
                     </div>
                     <template is="dom-if" if={{editMode}}>
                         <paper-input class="user-name" label="Edit your name" value="{{editData.name}}"></paper-input>
@@ -219,146 +225,144 @@
         <paper-toast id="stateMessage" horizontal-align="left" always-on-top duration="5000" text="" on-iron-overlay-closed="_toastClosed">
             <iron-icon id="toastIcon" class="validate-icon" icon$="[[stateMessageIcon]]"></iron-icon>
         </paper-toast>
-    </template>
-    <script>
-        Polymer({
-            is: 'everest-user',
+        </template>
+        <script>
+            Polymer({
+                is: 'everest-user',
 
-            properties: {
-                route: {
-                    type: Object,
-                },
+                properties: {
+                    route: {
+                        type: Object,
+                    },
 
-                rights: {
-                    type: Object
-                },
+                    rights: {
+                        type: Object
+                    },
 
-                ownProfile: {
-                    type: Boolean,
-                    valule: false,
-                },
+                    ownProfile: {
+                        type: Boolean,
+                        valule: false,
+                    },
 
-                editMode: {
-                    type: Boolean,
-                    value: false,
-                },
+                    editMode: {
+                        type: Boolean,
+                        value: false,
+                    },
 
-                stateMessage: {
-                    type: Object,
-                    value: function () {
-                        return {
-                            'success': {
-                                icon: "check-circle",
-                                text: "Your changes have been saved!",
-                            },
-                            'errorExist': {
-                                icon: "warning",
-                                text: "Error! An user with this name already exists!",
-                            },
-                            'errorEmpty': {
-                                icon: "warning",
-                                text: "Error! You must give a name to your user!",
-                            },
-                            'errorCategory': {
-                                icon: "warning",
-                                text: "Error! You must assign a category to your article!",
-                            },
-                            'errorRight': {
-                                icon: "warning",
-                                text: "Error! You do not have the rights!",
-                            },
+                    stateMessage: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                'success': {
+                                    icon: "check-circle",
+                                    text: "Your changes have been saved!",
+                                },
+                                'errorExist': {
+                                    icon: "warning",
+                                    text: "Error! An user with this name already exists!",
+                                },
+                                'errorEmpty': {
+                                    icon: "warning",
+                                    text: "Error! You must give a name to your user!",
+                                },
+                                'errorCategory': {
+                                    icon: "warning",
+                                    text: "Error! You must assign a category to your article!",
+                                },
+                                'errorRight': {
+                                    icon: "warning",
+                                    text: "Error! You do not have the rights!",
+                                },
+                            }
                         }
-                    }
+                    },
                 },
-            },
 
-            observers: [
-                '_routePageChanged(routeData.userId)',
-                '_rightsChanged(rights.ts)',
-                '_isOwnPage(userId, user.id)',
-                '_userDataChanged(userData)',
-                '_editProfile(editMode, ownProfile)',
-            ],
+                observers: [
+                    '_routePageChanged(routeData.userId)',
+                    '_rightsChanged(rights.ts)',
+                    '_isOwnPage(userId, user.id)',
+                    '_userDataChanged(userData)',
+                    '_editProfile(editMode, ownProfile)',
+                ],
 
-            updateProfile: function (e) {
-                this.isUpdate = false;
-                if (this.editData != "") {
-                    let ref = window.horizon("alpinists");
-                    ref.upsert({
-                        id: this.userId,
-                        name: this.editData.name,
-                        avatar: this.editData.avatar,
-                        email: this.editData.email || "pinnakle.work@gmail.com",
-                        description: this.editData.description,
-                    }).subscribe((value) => {
-                        this.stateMessageIcon = this.stateMessage.success.icon;
-                        this.$.stateMessage.text = this.stateMessage.success.text;
-                        this.$.stateMessage.open();
-                        this.isUpdate = true;
-                    }, err => {
+                updateProfile: function (e) {
+                    this.isUpdate = false;
+                    if (this.editData != "") {
+                        let ref = window.horizon("alpinists");
+                        ref.upsert({
+                            id: this.userId,
+                            name: this.editData.name,
+                            avatar: this.editData.avatar,
+                            email: this.editData.email || "pinnakle.work@gmail.com",
+                            description: this.editData.description,
+                        }).subscribe((value) => {
+                            this.stateMessageIcon = this.stateMessage.success.icon;
+                            this.$.stateMessage.text = this.stateMessage.success.text;
+                            this.$.stateMessage.open();
+                            this.isUpdate = true;
+                        }, err => {
+                            this.stateMessageIcon = this.stateMessage.errorRight.icon;
+                            this.$.stateMessage.text = this.stateMessage.errorRight.text;
+                            this.$.stateMessage.open();
+                        });
+                    } else {
                         this.stateMessageIcon = this.stateMessage.errorRight.icon;
                         this.$.stateMessage.text = this.stateMessage.errorRight.text;
                         this.$.stateMessage.open();
-                    });
-                } else {
-                    this.stateMessageIcon = this.stateMessage.errorRight.icon;
-                    this.$.stateMessage.text = this.stateMessage.errorRight.text;
-                    this.$.stateMessage.open();
-                }
-            },
+                    }
+                },
 
-            edit: function (e) {
-                this.editMode = true;
-            },
+                edit: function (e) {
+                    this.editMode = true;
+                },
 
-            close: function (e) {
-                this.editMode = false;
-            },
-
-            openFile: function (e) {
-                this.$$('#file')._fileClick();
-            },
-
-            fileUploaded: function (e, detail) {
-                var parsedResponse = JSON.parse(detail.xhr.response);
-                this.set('editData.avatar', parsedResponse.name);
-
-            },
-
-            _editProfile: function (editMode, ownProfile) {
-                this._edit = editMode && ownProfile;
-            },
-
-            _toastClosed: function (e) {
-                if (this.isUpdate) {
+                close: function (e) {
                     this.editMode = false;
+                },
+
+                openFile: function (e) {
+                    this.$$('#file')._fileClick();
+                },
+
+                fileUploaded: function (e, detail) {
+                    this.set('editData.avatar', detail.image);
+                },
+
+                _editProfile: function (editMode, ownProfile) {
+                    this._edit = editMode && ownProfile;
+                },
+
+                _toastClosed: function (e) {
+                    if (this.isUpdate) {
+                        this.editMode = false;
+                    }
+                },
+
+                _routePageChanged: function (userId) {
+                    this.userId = userId || '';
+                },
+
+                _isOwnPage: function (userPage, userId) {
+                    this.ownProfile = (userPage == userId);
+                },
+
+                checkRights: function (role) {
+                    if (this.rights[role]) {
+                        this.isAdmin = true;
+                    } else {
+                    }
+                },
+
+                _rightsChanged: function (ts) {
+                    this.checkRights('administrators');
+                },
+
+                _userDataChanged: function (basicInfo) {
+                    if (basicInfo) {
+                        this.editData = this.userData;
+                    }
                 }
-            },
-
-            _routePageChanged: function (userId) {
-                this.userId = userId || '';
-            },
-
-            _isOwnPage: function (userPage, userId) {
-                this.ownProfile = (userPage == userId);
-            },
-
-            checkRights: function (role) {
-                if (this.rights[role]) {
-                    this.isAdmin = true;
-                } else {
-                }
-            },
-
-            _rightsChanged: function (ts) {
-                this.checkRights('administrators');
-            },
-
-            _userDataChanged: function (basicInfo) {
-                if (basicInfo) {
-                    this.editData = this.userData;
-                }
-            }
-        });
-    </script>
+            });
+        </script>
 </dom-module>
