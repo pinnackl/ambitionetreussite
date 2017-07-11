@@ -123,7 +123,8 @@
                             else if (values[i] == "true") values[i] = true;
                             aOrder[keys[i]] = values[i];
                         }
-                        this.ref.findAll(aOrder).watch().subscribe(data => {
+                        console.log(this.orderLimit);
+                        this.ref.order(this.orderLimit).findAll(aOrder).watch().subscribe(data => {
                             this.set('data', data);
                         });
                     } else {
