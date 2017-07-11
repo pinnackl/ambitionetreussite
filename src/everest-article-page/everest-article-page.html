@@ -339,8 +339,8 @@
             <page-title base-title="Everest" title="[[article.title]] - [[_ucfirst(article.category)]]" direction="reversed"></page-title>
         </template>
 
-        <horizon-document id="article" path="/articles/[[uid]]" index="slug">
-        </horizon-document>
+        <!--<horizon-document id="article" path="/articles/[[uid]]" index="slug">
+        </horizon-document>-->
         <horizon-document id="users" path="/alpinists/[[article.authorID]]" data="{{author}}">
         </horizon-document>
         <horizon-query id="categories" path="/categories" data="{{categories}}">
@@ -348,14 +348,16 @@
         <horizon-query id="tags" path="/tags" data="{{tags}}">
         </horizon-query>
 
-        <firebase-query id="comments" order-by-child="published_signaled_trash" equal-to="[[published]]~[[signaled]]~[[trash]]" path="/comments/[[uid]]"
-            data="{{comments}}"></firebase-query>
+        <!--<horizon-query id="comments" order-by-child="published_signaled_trash" equal-to="[[published]]~[[signaled]]~[[trash]]" path="/comments/[[uid]]"
+            data="{{comments}}"></horizon-query>-->
+        <horizon-query id="comments" order-by-child="published_signaled_trash" equal-to="[[published]]~[[signaled]]~[[trash]]" path="/comments/[[article.id]]"
+            data="{{comments}}"></horizon-query>
 
-        <firebase-auth user="{{fireUser}}" signed-in="{{signedIn}}">
-        </firebase-auth>
+        <!--<horizon-auth user="{{fireUser}}" signed-in="{{signedIn}}">
+        </horizon-auth>-->
         <!-- User data -->
-        <firebase-document path="/users/[[fireUser.uid]]/basicInfo" data="{{user}}">
-        </firebase-document>
+        <horizon-document path="/alpinists/[[user.id]]" data="{{userData}}">
+        </horizon-document>
         <div class="post">
             <div class="cover">
                 <iron-image style="background: #3eb7e9;" src$="https://cdn.pinnackl.com/images/[[article.cover]]" position="{{article.position}}"
@@ -408,7 +410,7 @@
             <div class="material content">
                 <div class="section-header">
                     <span></span>
-                    <template is="dom-if" if={{isAdmin}}>
+                    <template is="dom-if" if="{{checkRights(rightLevel, '2')}}">
                         <paper-icon-button icon="create" raised on-tap="edit" hidden$="[[editMode]]"></paper-icon-button>
                         <paper-icon-button icon="close" raised on-tap="close" hidden$="[[!editMode]]"></paper-icon-button>
                     </template>
@@ -478,7 +480,7 @@
                     </div>
                     <div class="comment">
                         <h2><span class="icon"><iron-icon icon="question-answer"></iron-icon></span>COMMENTS</h2>
-                        <template is="dom-if" if={{isAdmin}}>
+                        <template is="dom-if" if="{{checkRights(rightLevel, '3')}}">
                             <div class="section-header">
                                 <div class="sub-align"><span>Published</span>
                                     <paper-toggle-button checked="{{published}}"></paper-toggle-button>
@@ -491,8 +493,8 @@
                                 </div>
                             </div>
                         </template>
-                        <template is="dom-if" if={{signedIn}}>
-                            <h3>Comment as [[user.name]]</h3>
+                        <template is="dom-if" if={{userData}}>
+                            <h3>Comment as [[userData.name]]</h3>
                             <div class="commentEditor">
                                 <div class="author">
                                     <div class="avatar-ctn">
@@ -507,8 +509,8 @@
                             </div>
                         </template>
                         <template is="dom-repeat" items={{comments}} as=comment index-as=index>
-                            <everest-comment-card is-admin="[[isAdmin]]" comment="[[comment]]" on-update-comment="updateComment" on-signal-comment="signalComment"
-                                on-trash-comment="trashComment"></everest-comment-card>
+                            <everest-comment-card right-level="{{rightLevel}}" comment="[[comment]]" on-update-comment="updateComment" on-signal-comment="signalComment"
+                                on-trash-comment="trashComment" user="{{user}}"></everest-comment-card>
                         </template>
                     </div>
                 </div>
@@ -564,11 +566,6 @@
                     type: String,
                 },
 
-                isAdmin: {
-                    type: Boolean,
-                    value: false,
-                },
-
                 editMode: {
                     type: Boolean,
                     value: false,
@@ -581,7 +578,11 @@
 
                 user: Object,
 
+                userData: Object,
+
                 fireUser: Object,
+
+                rightLevel: Number,
 
                 stateMessage: {
                     type: Object,
@@ -626,10 +627,32 @@
 
             observers: [
                 '_articleChanged(article.content)',
+                '_userDataChanged(userData)',
+                '_userChanged(user)'
             ],
 
             ready: function () {
                 this.origin = window.location.origin;
+            },
+
+            checkRights: function (rights, levelNeeded) {
+                return levelNeeded > rights ? false : true;
+            },
+
+            _userChanged: function (data) {
+                let rightLevel = 0;
+                data.groups.forEach((element) => {
+                    let userRightLevel = 0;
+                    if (element == "authenticated") userRightLevel = 1;
+                    else if (element == "editor") userRightLevel = 2;
+                    else if (element == "moderator") userRightLevel = 3;
+                    else if (element == "administrator") userRightLevel = 4;
+                    rightLevel = this.rightLevel == null || this.rightLevel < userRightLevel ? userRightLevel : this.rightLevel;
+                }, this);
+                this.set("rightLevel", rightLevel);
+            },
+
+            _userDataChanged: function (data) {
             },
 
             edit: function (e) {
@@ -642,7 +665,7 @@
 
             updateArticle: function (e) {
                 this.isUpdate = false;
-                if (this.article.title != "" && typeof this.article.category != "undefined" && this.$.editor.getContent() != "" && this.isAdmin) {
+                if (this.article.title != "" && typeof this.article.category != "undefined" && this.$.editor.getContent() != "" && this.rightLevel > 2) {
                     var _this = this;
                     this.$.article.ref.update({
                         slug: getSlug(this.article.slug),
@@ -685,7 +708,7 @@
             },
 
             addTag: function (e) {
-                if (this.newTag && this.isAdmin) {
+                if (this.newTag && this.rightLevel > 2) {
                     this.$.tags.ref.push({
                         slug: getSlug(this.newTag),
                         name: this.newTag
@@ -695,7 +718,7 @@
             },
 
             addCategory: function (e) {
-                if (this.newCategory && this.isAdmin) {
+                if (this.newCategory && this.rightLevel > 2) {
                     this.$.categories.ref.push({
                         slug: getSlug(this.newCategory),
                         name: this.newCategory
@@ -708,18 +731,18 @@
                 // Check if there is a use logged
                 if (this.commentContent) {
                     var _this = this;
-                    this.$.comments.ref.push({
+                    let ref = window.horizon('comments');
+                    ref.store({
                         content: this.commentContent,
-                        article: this.uid,
+                        article: this.article.id,
                         created: Date.now(),
                         edited: Date.now(),
-                        author: this.user.name,
-                        authorID: this.fireUser.uid,
+                        author: this.userData.name,
+                        authorID: this.user.id,
                         published: true,
                         signaled: false,
-                        trash: false,
-                        'published_signaled_trash': "true~false~false"
-                    }).then(function (value) {
+                        trash: false
+                    }).subscribe(function (value) {
                         _this.stateMessageIcon = _this.stateMessage.success.icon;
                         _this.$.stateMessage.text = _this.stateMessage.success.text;
                         _this.$.stateMessage.open();
@@ -730,64 +753,65 @@
 
             updateComment: function (e, detail) {
                 var comment = detail.comment;
-                var _this = this;
                 if (comment.content) {
-                    this.$.comments.ref.child(comment.$key).update({
+                    let ref = window.horizon('comments');
+                    ref.upsert({
+                        id: comment.id,
                         content: comment.content,
                         edited: Date.now(),
                         published: comment.published,
                         signaled: comment.signaled,
                         trash: comment.trash,
-                        'published_signaled_trash': this._computeCombinedIndexPst(comment)
-                    }).then(function (value) {
-                        _this.stateMessageIcon = _this.stateMessage.success.icon;
-                        _this.$.stateMessage.text = _this.stateMessage.success.text;
-                        _this.$.stateMessage.open();
-                        _this.isUpdate = true;
-                    }).catch(function (error) {
-                        _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
-                        _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
-                        _this.$.stateMessage.open();
+                    }).subscribe((value) => {
+                        this.stateMessageIcon = this.stateMessage.success.icon;
+                        this.$.stateMessage.text = this.stateMessage.success.text;
+                        this.$.stateMessage.open();
+                        this.isUpdate = true;
+                    }, err => {
+                        this.stateMessageIcon = this.stateMessage.errorRight.icon;
+                        this.$.stateMessage.text = this.stateMessage.errorRight.text;
+                        this.$.stateMessage.open();
                     });
                 }
             },
 
             signalComment: function (e, detail) {
                 var comment = detail.comment;
-                var _this = this;
-                this.$.comments.ref.child(comment.$key).update({
+                let ref = window.horizon('comments');
+                ref.upsert({
+                    id: comment.id,
                     edited: Date.now(),
                     published: comment.published,
                     signaled: comment.signaled,
                     trash: comment.trash,
-                    'published_signaled_trash': this._computeCombinedIndexPst(comment)
-                }).then(function (value) {
-                    _this.stateMessageIcon = _this.stateMessage.signaled.icon;
-                    _this.$.stateMessage.text = _this.stateMessage.signaled.text;
-                    _this.$.stateMessage.open();
-                    _this.isUpdate = true;
-                }).catch(function (error) {
-                    _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
-                    _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
-                    _this.$.stateMessage.open();
+                }).subscribe((value) => {
+                    this.stateMessageIcon = this.stateMessage.signaled.icon;
+                    this.$.stateMessage.text = this.stateMessage.signaled.text;
+                    this.$.stateMessage.open();
+                    this.isUpdate = true;
+                }, err => {
+                    this.stateMessageIcon = this.stateMessage.errorRight.icon;
+                    this.$.stateMessage.text = this.stateMessage.errorRight.text;
+                    this.$.stateMessage.open();
                 });
             },
 
             trashComment: function (e, detail) {
                 var comment = detail.comment;
                 var _this = this;
-                this.$.comments.ref.child(comment.$key).update({
+                let ref = window.horizon("comments");
+                ref.upsert({
+                    id: comment.id,
                     edited: Date.now(),
                     published: comment.published,
                     signaled: comment.signaled,
-                    trash: comment.trash,
-                    'published_signaled_trash': this._computeCombinedIndexPst(comment)
-                }).then(function (value) {
+                    trash: comment.trash
+                }).subscribe(data => {
                     _this.stateMessageIcon = _this.stateMessage.trash.icon;
                     _this.$.stateMessage.text = _this.stateMessage.trash.text;
                     _this.$.stateMessage.open();
                     _this.isUpdate = true;
-                }).catch(function (error) {
+                }, err => {
                     this.stateMessageIcon = this.stateMessage.errorRight.icon;
                     this.$.stateMessage.text = this.stateMessage.errorRight.text;
                     this.$.stateMessage.open();
@@ -844,25 +868,28 @@
             },
 
             _articleChanged: function (content) {
-                this.$.content.innerHTML = content || '';
-                this.$.comments.path = '';
-                this.set('published', false);
-                this.set('signaled', false);
-                this.set('trash', false);
+                if (typeof content != "undefined") {
+                    this.$.content.innerHTML = content || '';
+                    this.$.comments.path = '';
+                    this.set('published', false);
+                    this.set('signaled', false);
+                    this.set('trash', false);
 
-                if (typeof content != 'undefined') {
-                    if (this.pastSlug == null) {
-                        this.pastSlug = this.article.slug;
+                    if (typeof content != 'undefined') {
+                        if (this.pastSlug == null) {
+                            this.pastSlug = this.article.slug;
+                        }
+                        this.date = moment(this.article.edited).fromNow();
+                        // FIX : set new wysiwyg
+                        // this.$.editor.setContent(this.article.content);
                     }
-                    this.date = moment(this.article.edited).fromNow();
-                    this.$.editor.setContent(this.article.content);
-                }
 
-                // FIXME : Based on timing
-                this.$.comments.path = '/comments/' + this.uid;
-                this.set('published', true);
-                this.set('signaled', false);
-                this.set('trash', false);
+                    // FIXME : Based on timing
+                    this.$.comments.path = '/comments/' + this.uid;
+                    this.set('published', true);
+                    this.set('signaled', false);
+                    this.set('trash', false);
+                }
             },
 
             _editModeChanged: function (e) {

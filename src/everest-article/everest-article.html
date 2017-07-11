@@ -121,7 +121,7 @@
             </section>
             <section name="read">
                 <template is="dom-if" if={{slug}}>
-                    <everest-article-page article="[[article]]" uid="[[slug]]" is-admin="{{isAdmin}}"></everest-article-page>
+                    <everest-article-page article="[[article]]" uid="[[slug]]" is-admin="{{isAdmin}}" user={{user}}></everest-article-page>
                 </template>
             </section>
             <section name="spinner">
@@ -191,7 +191,9 @@
                     type: Boolean,
                     value: false,
                     notify: true
-                }
+                },
+
+                user: Object
             },
 
             observers: [

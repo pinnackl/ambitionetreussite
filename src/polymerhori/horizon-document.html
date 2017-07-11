@@ -54,11 +54,11 @@
       this.__refChanged(this.ref, this.ref);
     },
 
-    detached: function () {
-      if (this.ref) {
-        this.ref.off('value', this.__onFirebaseValue, this);
-      }
-    },
+    // detached: function () {
+    //   if (this.ref) {
+    //     this.ref.off('value', this.__onFirebaseValue, this);
+    //   }
+    // },
 
     observers: [
       '__refChanged(ref)'

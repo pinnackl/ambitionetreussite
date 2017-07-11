@@ -107,7 +107,6 @@
                                 _this.fire('dbconnection');
                             } else if (status.type == "ready" || status.type == "unconnected") {
                                 window.horizon.currentUser().fetch().subscribe((user) => {
-                                    console.log(user)
                                     _this.fire('user', { user: user });
                                 }, err => { });
                             }
