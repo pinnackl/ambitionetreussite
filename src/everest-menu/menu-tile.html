@@ -1,16 +1,13 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../bower_components/iron-image/iron-image.html">
-<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
-<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 
 <link rel="import" href="../everest-search-list/everest-search-list.html">
 <link rel="import" href="../everest-article-card/everest-article-card.html">
-<dom-module id="footer-tile">
+<dom-module id="menu-tile">
     <template>
         <style>
             :host {
@@ -289,6 +286,10 @@
                 background: #afafaf;
             }
 
+            .add-btn {
+                color: #179bd7;
+            }
+
             #dialog {
                 width: 80%;
             }
@@ -301,42 +302,17 @@
         <div class="flex">
             <div class$="handle [[editClass]]"><iron-icon icon="more-vert"></iron-icon></div>
             <div class="content">
-                <div class="footer-cln-header section-header">
-                    <div class="section-header">
-                        <template is="dom-if" if={{edit}}>
-                            <paper-icon-button icon="close" column="[[column]]" on-tap="deleteTile"></paper-icon-button>
-                        </template>
-                        <template is="dom-if" if={{!editColumns}}>
-                            <span>[[column.title]]</span>
-                        </template>
-                        <template is="dom-if" if={{editColumns}}>
-                            <paper-input label="Name of the column" value="{{column.title}}"></paper-input>
-                        </template>
-                    </div>
-                    <template is="dom-if" if={{edit}}>
-                        <div class="section-header">
-                            <paper-icon-button icon="create" raised on-tap="editCol"
-                                hidden$="[[editColumns]]"></paper-icon-button>
-                            <paper-icon-button icon="close" raised on-tap="closeCol"
-                                hidden$="[[!editColumns]]"></paper-icon-button>
-                            <paper-menu-button>
-                                <paper-icon-button icon="add" slot="dropdown-trigger"></paper-icon-button>
-                                <paper-listbox slot="dropdown-content">
-                                    <paper-item><paper-button on-tap="addPage">Pages</paper-button></paper-item>
-                                    <paper-item><paper-button on-tap="addCategory">Categories</paper-button></paper-item>
-                                    <paper-item><paper-button on-tap="addArticle">Articles</paper-button></paper-item>
-                                </paper-listbox>
-                            </paper-menu-button>
-                        </div>
-                    </template>
-                </div>
-                <div class="sub-item">
-                    <!-- FIXME : replace grid -->
-                </div>
+                <paper-icon-button icon="close" menu="[[menu]]" on-tap="deleteTile"></paper-icon-button>
+                <paper-menu-button>
+                    <paper-icon-button class="add-btn" icon="add" slot="dropdown-trigger"></paper-icon-button>
+                    <paper-listbox slot="dropdown-content">
+                        <paper-item><paper-button on-tap="addPage">Pages</paper-button></paper-item>
+                        <paper-item><paper-button on-tap="addCategory">Categories</paper-button></paper-item>
+                        <paper-item><paper-button on-tap="addArticle">Articles</paper-button></paper-item>
+                    </paper-listbox>
+                </paper-menu-button>
             </div>
-            <div><slot></slot></div>
         </div>
-
         <paper-dialog id="dialog">
             <h2>Select an item</h2>
             <div>
@@ -348,41 +324,8 @@
                         <everest-search-list items="[[pages]]" search-term="{{searchText}}">
                             <template>
                                 <div class="searchItemCtn" data-index$="[[_lowerCase(item.title)]]">
-                                    <div
-                                        class="searchtItem"
-                                        style="background: #ccc; height: 100%;"
-                                        page="{{item}}"
-                                        style="height: 100%;"
-                                        tabindex$="[[tabIndex]]"
-                                        selectable
-                                        selected$="[[selected]]">{{item.title}}</div>
-                                </div>
-                            </template>
-                        </everest-search-list>
-                    </section>
-                    <section name="categories">
-                        <everest-search-list items="[[categories]]" search-term="{{searchText}}">
-                            <template>
-                                <div class="searchItemCtn" data-index$="[[_lowerCase(item.title)]]">
-                                    <div
-                                        class="searchtItem"
-                                        style="background: #ccc; height: 100%;"
-                                        category="{{item}}"
-                                        style="height: 100%;"
-                                        tabindex$="[[tabIndex]]"
-                                        selectable
-                                        selected$="[[selected]]">{{item.title}}</div>
-                                </div>
-                            </template>
-                        </everest-search-list>
-                    </section>
-                    <section name="articles">
-                        <everest-search-list items="[[articles]]" search-term="{{searchText}}">
-                            <template>
-                                <div class="searchItemCtn" data-index$="[[_lowerCase(item.title)]]">
                                     <everest-article-card
                                         class="searchtItem"
-                                        article="{{item}}"
                                         style="height: 100%;"
                                         tabindex$="[[tabIndex]]"
                                         selectable
@@ -391,6 +334,8 @@
                             </template>
                         </everest-search-list>
                     </section>
+                    <section name="categories"></section>
+                    <section name="articles"></section>
                 </iron-pages>
             </paper-dialog-scrollable>
             <div class="buttons">
@@ -398,123 +343,19 @@
               <paper-button dialog-confirm>Select</paper-button>
             </div>
         </paper-dialog>
-
     </template>
     <script>
         Polymer({
-            is: 'footer-tile',
+            is: 'menu-tile',
 
-            properties: {
-                edit: {
-                    type: Boolean,
-                    value: false
-                },
-
-                editColumns: {
-                    type: Boolean,
-                    value: false
-                },
-
-                column: {
-                    type: Object,
-                    notify: true
-                },
-
-                col: String,
-                row: String,
-                width: String,
-                height: String,
-
-                editMode: {
-                    type: Boolean,
-                    value: false
-                },
-
-                nbCol: {
-                    type: Number,
-                    value: 1,
-                },
-
-                nbRow: {
-                    type: Number,
-                    value: 6
-                },
-
-                cellHeight: {
-                    type: Number,
-                    value: 100
-                },
-
-                cellWidth: {
-                    type: Number,
-                    value: 100
-                },
-
-                cellMargin: {
-                    type: Number,
-                    value: 9
-                },
-
-
-                pages: {
-                    type: Array,
-                    value: function () {
-                        return [
-                            {
-                                title: "Page 1"
-                            },
-                            {
-                                title: "Page 2"
-                            },
-                            {
-                                title: "Page 3"
-                            },
-                            {
-                                title: "Page 43"
-                            },
-                            {
-                                title: "Page 5"
-                            },
-                            {
-                                title: "Page 51"
-                            },
-                            {
-                                title: "Page 234"
-                            },
-                            {
-                                title: "Page 234"
-                            },
-                            {
-                                title: "Page 13555"
-                            },
-                        ];
-                    }
-                }
-
+            menu: {
+                type: Object,
             },
 
-            editCol: function (e) {
-                this.editColumns = true;
-            },
-
-            closeCol: function (e) {
-                this.editColumns = false;
-            },
-
-            deleteTile: function (e) {
-                this.fire('delete-tile', {column: this.column, tile: this});
-            },
-
-            sortSubItem: function (a, b) {
-                if (a.position < b.position) {
-                    return -1;
-                }
-                if (a.position > b.position) {
-                    return 1;
-                }
-                return 1;
-            },
-
+            col: String,
+            row: String,
+            width: String,
+            height: String,
 
             addPage: function (e) {
                 this._openDialog('page');
@@ -526,6 +367,10 @@
 
             addArticle: function (e) {
                 this._openDialog('article');
+            },
+
+            deleteTile: function (e) {
+                this.fire('delete-tile', {menu: this.menu, tile: this});
             },
 
             _openDialog: function (mode) {
@@ -540,6 +385,7 @@
             _lowerCase: function (string) {
                 return string.toLowerCase();
             }
+
         });
     </script>
 </dom-module>

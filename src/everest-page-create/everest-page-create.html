@@ -61,6 +61,7 @@
             }
 
             paper-item paper-button {
+                width: 100%;
                 background: #179bd7;
                 color: #ffffff;
             }
@@ -69,11 +70,7 @@
         <!-- <firebase-query
             id="pages"
             path="/pages">
-        </firebase-query>
-        <firebase-document
-            path="/users/[[user.uid]]"
-            data="{{userData}}">
-        </firebase-document> -->
+        </firebase-query> -->
         <div class="material">
             <h1>Create a new page</h1>
             <div class="section-header">
@@ -113,6 +110,7 @@
                         </div>
                     </div>
                     <the-grid
+                        id="grid"
                         draggable
                         resizable
                         animated
@@ -132,6 +130,10 @@
                                 row$="{{tile.row}}"
                                 height$="{{tile.height}}"
                                 width$="{{tile.width}}"
+                                content="{{tile.content}}"
+                                index="[[index]]"
+                                on-move="_handleMove"
+                                on-resize="_handleMove"
                                 on-delete-tile="handleDeleteTile">
 
                                 <span resize="left"></span>
@@ -292,10 +294,11 @@
             },
 
             create: function (e) {
+                // FIXME : Protect this action with rights access
                 // if (this.title && this.slug && (this.$.editor.getContent() != "" || this.pageTiles.length > 0) && this.isAdmin) {
                 if (this.title && this.slug && (this.$.editor.getContent() != "" || this.pageTiles.length > 0)) {
                     // Initiate the page object
-                    const  pageObject = {
+                    const pageObject = {
                         title: this.title || "",
                         slug: this.slug || "",
                         created: Date.now(),
@@ -317,16 +320,18 @@
                         
                     }
 
-                    // this.$.pages.ref.push(pageObject).then((value) => {
-                    //     this.stateMessageIcon = this.stateMessage.success.icon;
-                    //     this.$.stateMessage.text = this.stateMessage.success.text;
-                    //     this.$.stateMessage.open();
-                    //     this.isUpdate = true;
-                    // }).catch((error) => {
-                    //     this.stateMessageIcon = this.stateMessage.errorRight.icon;
-                    //     this.$.stateMessage.text = this.stateMessage.errorRight.text;
-                    //     this.$.stateMessage.open();
-                    // });
+                    // FIXME : Use Horizon ref from polymerhori elements
+                    const newRef = window.horizon('pages');
+                    newRef.store(pageObject).subscribe((value) => {
+                        this.stateMessageIcon = this.stateMessage.success.icon;
+                        this.$.stateMessage.text = this.stateMessage.success.text;
+                        this.$.stateMessage.open();
+                        this.isUpdate = true;
+                    }, (error) => {
+                        this.stateMessageIcon = this.stateMessage.errorRight.icon;
+                        this.$.stateMessage.text = this.stateMessage.errorRight.text;
+                        this.$.stateMessage.open();
+                    });
                 } else {
                     // FIXME : Better handle state messages
                     this.stateMessageIcon = this.stateMessage.errorRight.icon;
@@ -339,6 +344,28 @@
                 let initWidth = this.offsetWidth - (2*24 + 2* 16);
                 this.cellHeight = (window.innerHeight - 12 * ( this.nbRow - 1)) / this.nbRow;
                 this.cellWidth = (initWidth - 12 * ( this.nbCol - 1)) / this.nbCol;
+            },
+
+            /**
+             * Handle any tile move and save it new props
+             *
+             * @param      {Event}  event   the move event object
+             */
+            _handleMove: function (event) {
+                let idx = event.detail.tile.index;
+                if (this.pageTiles[idx]) {
+                    if (event.detail.tile.col)
+                        this.set(['pageTiles', idx, 'col'], event.detail.tile.col);
+
+                    if (event.detail.tile.row)
+                        this.set(['pageTiles', idx, 'row'], event.detail.tile.row);
+
+                    if (event.detail.tile.height)
+                        this.set(['pageTiles', idx, 'height'], event.detail.tile.height);
+
+                    if (event.detail.tile.width)
+                        this.set(['pageTiles', idx, 'width'], event.detail.tile.width);
+                }
             },
 
             _titleChanged: function (title) {

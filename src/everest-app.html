@@ -27,6 +27,7 @@
 
 <!-- Everest Custom Elements -->
 <link rel="lazy-import" href="my-view404.html">
+<link rel="import" href="everest-menu/everest-menu.html">
 <link rel="import" href="everest-common-behaviors/everest-behaviors.html">
 <link rel="import" href="everest-footer/everest-footer.html">
 <link rel="import" href="live-theming-behavior/live-theming-behavior.html">
@@ -106,24 +107,7 @@
        :host([large-screen]) [drawer-toggle] {
         display: none;
       }
-      
-      paper-tabs {
-        --paper-tabs-selection-bar-color: var(--app-tab-selected-color);
-      }
-      
-      paper-tab[link] a,
-      paper-tab[link] span {
-        /* These mixins (from iron-flex-layout) center the link text. */
-        @apply(--layout-horizontal);
-        @apply(--layout-center-center);
-        text-decoration: none;
-        pointer-events: auto;
-        color: var(--app-tab-color);
-      }
-      
-      paper-tab[aria-selected=true] a {
-        color: var(--app-tab-selected-color);
-      }
+
       /* Logo display */
       
       [condensed-title] [title] {
@@ -182,7 +166,7 @@
         left: 0;
       }
       
-      paper-tabs.menu-tab {
+      everest-menu.menu-tab {
         width: 60%;
         /* Tabs size (50%, ...) */
         margin-left: 40%;
@@ -283,10 +267,13 @@
       <!-- Main content -->
       <app-header-layout>
 
-        <app-header condenses="[[appCondenses]]" fixed="[[appFixed]]" reveals="[[appReveals]]" shadow="[[appShadow]]" effects="[[_computeEffects(appBlendBackground, appFadeBackground, appParallaxBackground, appResizeSnappedTitle, appResizeTitle, appWaterfall)]]"
+        <app-header
+          condenses="[[appCondenses]]"
+          fixed="[[appFixed]]"
+          reveals="[[appReveals]]"
+          shadow="[[appShadow]]"
+          effects="[[_computeEffects(appBlendBackground, appFadeBackground, appParallaxBackground, appResizeSnappedTitle, appResizeTitle, appWaterfall)]]"
           slot="header">
-
-          <!-- FIXME : Dev purpose -->
 
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
@@ -349,11 +336,9 @@
                   <iron-image placeholder="[[appLogoBase64]]" src="[[appLogo]]"></iron-image>Everest</a>
               </div>
             </app-toolbar>
-            <paper-tabs class="menu-tab" selected="[[page]]" attr-for-selected="name" fit-container scrollable sticky$="[[largeScreen]]">
-              <template is="dom-repeat" items={{menu}} as=menuItem index-as=index sort="sortMenu">
-                <paper-tab link name="[[menuItem.name]]"><a href="[[menuItem.link]]" title="[[menuItem.name]]">[[menuItem.name]]</a></paper-tab>
-              </template>
-            </paper-tabs>
+
+            <everest-menu class="menu-tab" page="[[page]]" sticky></everest-menu>
+
           </template>
         </app-header>
 
@@ -646,11 +631,11 @@
         // console.log(appTitleSizeDefault);
 
         // FIXME : Posible way to fix this loading perf issue issue
-        Polymer.importHref(
-          this.resolveUrl("everest-swatch-picker/everest-swatch-picker.html"),
-          null,
-          null,
-          true);
+        // Polymer.importHref(
+        //   this.resolveUrl("everest-swatch-picker/everest-swatch-picker.html"),
+        //   null,
+        //   null,
+        //   true);
       }
 
       checkRights(rights, levelNeeded) {

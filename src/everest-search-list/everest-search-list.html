@@ -53,7 +53,7 @@
                 // Set data-index
                 let styleRules = `::slotted(:not([data-index*="${this.searchTerm.toLowerCase()}"])) { visibility: hidden; }`;
 
-                const customStyle = this._customStyle || document.createElement('custom-style');
+                const customStyle = this._customStyle || document.createElement('inside-style');
                 const style = customStyle && customStyle.querySelector('style') || document.createElement('style');
 
                 style.textContent = styleRules;
