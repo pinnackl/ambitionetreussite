@@ -99,6 +99,7 @@
                         _this.fire('dbconnection');
 
                         window.horizon.status(function (status) {
+                            console.log(status)
                             if (status.type == "error") {
                                 _this.$.auth.signOut();
                                 console.log("connection 5")
