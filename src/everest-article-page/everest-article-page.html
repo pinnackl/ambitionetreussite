@@ -345,8 +345,8 @@
         <horizon-query id="tags" path="/tags" data="{{tags}}">
         </horizon-query>
 
-        <horizon-query id="comments" order-by-child="published_signaled_trash" equal-to="[[published]]~[[signaled]]~[[trash]]" path="/comments/[[article.id]]"
-            data="{{comments}}"></horizon-query>
+        <horizon-query id="comments" order-by-child="published_signaled_trash_article" equal-to="[[published]]~[[signaled]]~[[trash]]~[[article.id]]"
+            path="/comments/[[article.id]]" data="{{comments}}"></horizon-query>
 
         <!-- User data -->
         <horizon-document path="/alpinists/[[user.id]]" data="{{userData}}">
