@@ -1,0 +1,220 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
+
+<!-- https://developer.mozilla.org/en/docs/Web/API/Document/execCommand -->
+<!-- https://developer.mozilla.org/en-US/docs/Rich-Text_Editing_in_Mozilla -->
+<!-- http://www-archive.mozilla.org/editor/midasdemo/ -->
+<!-- https://codepen.io/anon/pen/eRQjxK -->
+
+<dom-module id="everest-wysiwyg">
+    <template>
+        <style>
+            :host {
+                position: relative;
+                display: block;
+                height: 100%;
+            }
+
+            #textContent {
+                height: 100%;
+                outline: none;
+            }
+
+            [contenteditable=true]:empty:before{
+                content: attr(placeholder);
+                display: block; /* For Firefox */
+            }
+
+            #floating {
+                display: inline-block;
+                visibility: hidden;
+                background: rgba(204, 204, 204, 0.48);
+                border-radius: 5px;
+                position: fixed;
+                top: 0;
+                left: 0;
+            }
+        </style>
+        <div id="floating">
+            <paper-icon-button
+                icon="editor:format-clear"
+                on-tap='_execCommand'
+                cmd="removeFormat"></paper-icon-button>
+            <paper-icon-button
+                icon="icons:undo"
+                on-tap='_execCommand'
+                cmd="undo"></paper-icon-button>
+            <paper-icon-button
+                icon="icons:redo"
+                on-tap='_execCommand'
+                cmd="redo"></paper-icon-button>
+            <paper-icon-button
+                icon="editor:format-size"
+                on-tap='_execCommand'
+                cmd="heading"></paper-icon-button>
+            <paper-icon-button
+                icon="editor:format-bold"
+                on-tap='_execCommand'
+                cmd="bold"></paper-icon-button>
+            <paper-icon-button
+                icon="editor:format-italic"
+                on-tap='_execCommand'
+                cmd="italic"></paper-icon-button>
+            <paper-icon-button
+                icon="editor:format-underlined"
+                on-tap='_execCommand'
+                cmd="underline"></paper-icon-button>
+            <paper-icon-button
+                icon="editor:format-align-left"
+                on-tap='_execCommand'
+                cmd="justifyLeft"></paper-icon-button>
+            <paper-icon-button
+                icon="editor:format-align-center"
+                on-tap='_execCommand'
+                cmd="justifyCenter"></paper-icon-button>
+            <paper-icon-button
+                icon="editor:format-align-right"
+                on-tap='_execCommand'
+                cmd="justifyRight"></paper-icon-button>
+            <paper-icon-button
+                icon="editor:format-align-justify"
+                on-tap='_execCommand'
+                cmd="justifyFull"></paper-icon-button>
+        </div>
+        <div id="textContent" contenteditable="true" placeholder$="[[placeholder]]"></div>
+        <textarea id="realInput" name$="[[name]]" style="display: none;">{{value}}</textarea>
+    </template>
+    <script>
+        Polymer({
+            is: 'everest-wysiwyg',
+
+            properties: {
+                name: {
+                    type: String,
+                    value: ""
+                },
+
+                value: {
+                    type: String,
+                    value: "",
+                    notify: true,
+                    observer: '_valueChanged'
+                },
+
+                placeholder: {
+                    type: String,
+                    value: "Enter text here ..."
+                },
+
+                _headingState: {
+                    type: Number,
+                    value: 0
+                },
+
+                _updateInnerValue: {
+                    type: Boolean,
+                    value: true,
+                }
+            },
+
+            attached: function () {
+                this.$.textContent.innerHTML = this.value;
+            },
+
+            ready: function () {
+                this.$.textContent.focus();
+                this.$.textContent.addEventListener('mouseup', this.handleMouseUp.bind(this), false);
+                this.$.textContent.addEventListener('keyup', this.handleKeyDown.bind(this), false);
+            },
+
+            handleMouseUp: function (event) {
+                // Calculate pageX/Y if missing and clientX/Y available
+                if ( event.pageX == null && event.clientX != null ) {
+                  var doc = document.documentElement, body = document.body;
+                  event.pageX = event.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
+                  event.pageY = event.clientY + (doc && doc.scrollTop  || body && body.scrollTop  || 0) - (doc   && doc.clientTop  || body && body.clientTop  || 0);
+                }
+
+                let selectedContent = this.getSelected();
+                if (selectedContent) {
+                    this.$.floating.style.transform = `translate3d(${event.pageX+10}px, ${event.pageY+10}px, 0px)`;
+                    this.$.floating.style.visibility = `visible`;
+                } else {
+                    this.$.floating.style.transform = "";
+                    this.$.floating.style.visibility = "hidden";
+                }
+            },
+
+            handleKeyDown: function (event) {
+                this.set('_updateInnerValue', false);
+                this.set('value', this.$.textContent.innerHTML);
+            },
+
+            getSelected: function (e) {
+                var text = "";
+                var activeEl = document.activeElement;
+                var activeElTagName = activeEl ? activeEl.tagName.toLowerCase() : null;
+                if (
+                  (activeElTagName == "textarea") || (activeElTagName == "input" &&
+                  /^(?:text|search|password|tel|url)$/i.test(activeEl.type)) &&
+                  (typeof activeEl.selectionStart == "number")
+                ) {
+                    text = activeEl.value.slice(activeEl.selectionStart, activeEl.selectionEnd);
+                } else if (window.getSelection) {
+                    text = window.getSelection().toString();
+                }
+                return text;
+            },
+
+            _valueChanged: function (value) {
+                if (!this._updateInnerValue) { return; }
+                this.$.textContent.innerHTML = value;
+            },
+
+            _execCommand: function (e) {
+                let cmd = e.target.getAttribute('cmd');
+                switch (cmd) {
+                    case 'undo':
+                        document.execCommand('undo');
+                        break;
+                    case 'redo':
+                        document.execCommand('redo');
+                        break;
+                    case 'justifyLeft':
+                        document.execCommand('justifyLeft');
+                        break;
+                    case 'justifyCenter':
+                        document.execCommand('justifyCenter');
+                        break;
+                    case 'justifyRight':
+                        document.execCommand('justifyRight');
+                        break;
+                    case 'justifyFull':
+                        document.execCommand('justifyFull');
+                        break;
+                    case 'removeFormat':
+                        document.execCommand('removeFormat');
+                        break;
+                    case 'heading':
+                        if (this._headingState == 3) { this.set('_headingState', 0); }
+                        else { this.set('_headingState', this._headingState+1); }
+
+                        this._headingState == 0 ? document.execCommand('formatBlock', false, 'p') : this._headingState == 1 ? document.execCommand('formatBlock', false, 'h1') : this._headingState == 2 ? document.execCommand('formatBlock', false, 'h2') : document.execCommand('formatBlock', false, 'h4');
+                    break;
+                    case 'bold':
+                        document.execCommand('bold');
+                    break;
+                    case 'italic':
+                        document.execCommand('italic');
+                    break;
+                    case 'underline':
+                        document.execCommand('underline');
+                    break;
+
+                }
+            }
+        });
+    </script>
+</dom-module>
