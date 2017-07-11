@@ -27,6 +27,7 @@
 
 <!-- Everest Custom Elements -->
 <link rel="lazy-import" href="my-view404.html">
+<link rel="import" href="everest-menu/everest-menu.html">
 <link rel="import" href="everest-common-behaviors/everest-behaviors.html">
 <link rel="import" href="everest-footer/everest-footer.html">
 <link rel="import" href="live-theming-behavior/live-theming-behavior.html">
@@ -106,24 +107,6 @@
        :host([large-screen]) [drawer-toggle] {
         display: none;
       }
-      
-      paper-tabs {
-        --paper-tabs-selection-bar-color: var(--app-tab-selected-color);
-      }
-      
-      paper-tab[link] a,
-      paper-tab[link] span {
-        /* These mixins (from iron-flex-layout) center the link text. */
-        @apply(--layout-horizontal);
-        @apply(--layout-center-center);
-        text-decoration: none;
-        pointer-events: auto;
-        color: var(--app-tab-color);
-      }
-      
-      paper-tab[aria-selected=true] a {
-        color: var(--app-tab-selected-color);
-      }
       /* Logo display */
       
       [condensed-title] [title] {
@@ -182,7 +165,7 @@
         left: 0;
       }
       
-      paper-tabs.menu-tab {
+      everest-menu.menu-tab {
         width: 60%;
         /* Tabs size (50%, ...) */
         margin-left: 40%;
@@ -286,8 +269,6 @@
         <app-header condenses="[[appCondenses]]" fixed="[[appFixed]]" reveals="[[appReveals]]" shadow="[[appShadow]]" effects="[[_computeEffects(appBlendBackground, appFadeBackground, appParallaxBackground, appResizeSnappedTitle, appResizeTitle, appWaterfall)]]"
           slot="header">
 
-          <!-- FIXME : Dev purpose -->
-
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div condensed-title mobile$=[[!largeScreen]]>
@@ -324,7 +305,7 @@
                 <!-- </template> -->
                 <div class="user-menu user-card" slot="dropdown-content">
                   <div>
-                    <a href="/user/[[fireUser.uid]]" class="email user-menu user-card" title="Profile">
+                    <a href="/user/[[horizonUser.id]]" class="email user-menu user-card" title="Profile">
                       <!-- <template is="dom-if" if={{user.avatar}}> -->
                       <span class="circle"><img src="https://cdn.pinnackl.com/avatars/[[user.avatar]]"></span>
                       <!-- </template> -->
@@ -349,11 +330,9 @@
                   <iron-image placeholder="[[appLogoBase64]]" src="[[appLogo]]"></iron-image>Everest</a>
               </div>
             </app-toolbar>
-            <paper-tabs class="menu-tab" selected="[[page]]" attr-for-selected="name" fit-container scrollable sticky$="[[largeScreen]]">
-              <template is="dom-repeat" items={{menu}} as=menuItem index-as=index sort="sortMenu">
-                <paper-tab link name="[[menuItem.name]]"><a href="[[menuItem.link]]" title="[[menuItem.name]]">[[menuItem.name]]</a></paper-tab>
-              </template>
-            </paper-tabs>
+
+            <everest-menu class="menu-tab" page="[[page]]" sticky></everest-menu>
+
           </template>
         </app-header>
 
@@ -366,11 +345,11 @@
           <!-- Read view -->
           <everest-read name="read" rights="[[rights]]" route="{{subroute}}" subpage="{{subpage}}" user={{horizonUser}}></everest-read>
           <!-- Page view -->
-          <everest-page name="page" rights="[[rights]]" route="{{subroute}}" subpage="{{subpage}}"></everest-page>
+          <everest-page name="page" rights="{{rightLevel}}" route="{{subroute}}" subpage="{{subpage}}"></everest-page>
           <!-- New view -->
           <everest-new name="new" rights="{{rightLevel}}" route="{{subroute}}" subpage="{{subpage}}" user="{{horizonUser}}"></everest-new>
           <!-- User view -->
-          <everest-user name="user" rights="{{rights}}" route="{{subroute}}" subpage="{{subpage}}" user="{{horizonUser}}"></everest-user>
+          <everest-user name="user" rights="{{rightLevel}}" route="{{subroute}}" subpage="{{subpage}}" user="{{horizonUser}}"></everest-user>
           <!-- Author view -->
           <div name="author">author</div>
 
@@ -624,7 +603,7 @@
             if (element == "authenticated") userRightLevel = 1;
             else if (element == "editor") userRightLevel = 2;
             else if (element == "moderator") userRightLevel = 3;
-            else if (element == "administrator") userRightLevel = 4;
+            else if (element == "admin") userRightLevel = 4;
             rightLevel = this.rightLevel == null || this.rightLevel < userRightLevel ? userRightLevel : this.rightLevel;
           }, this);
           this.set("rightLevel", rightLevel);
@@ -671,13 +650,11 @@
       }
 
       _signIn(e) {
-        console.info('sign-in');
         this.fire('sign-in');
         this.$.formDialog.openDialog('signIn');
       }
 
       _signUp(e) {
-        console.info('sign-up');
         this.fire('sign-up');
         this.$.formDialog.openDialog('signUp');
       }
@@ -692,6 +669,7 @@
         // If no page was found in the route data, page will be an empty string.
         // Deault to 'home' in that case.
         this.page = page || 'home';
+        console.log(this.page);
 
         // Close a non-persistent drawer when the page & route are changed.
         if (!this.$.drawer.persistent) {

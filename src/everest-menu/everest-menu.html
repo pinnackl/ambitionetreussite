@@ -1,0 +1,246 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../../bower_components/the-grid/the-grid.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+
+<link rel="import" href="menu-tile.html">
+<link rel="import" href="../everest-search-list/everest-search-list.html">
+<link rel="import" href="../shared-styles.html">
+
+<dom-module id="everest-menu">
+    <template>
+        <style include="shared-styles">
+             :host {
+                display: block;
+                height: 100%;
+                position: relative;
+            }
+            
+            paper-tabs {
+                --paper-tabs-selection-bar-color: var(--app-tab-selected-color);
+            }
+            
+            paper-tab[link] a,
+            paper-tab[link] span {
+                /* These mixins (from iron-flex-layout) center the link text. */
+                @apply(--layout-horizontal);
+                @apply(--layout-center-center);
+                text-decoration: none;
+                pointer-events: auto;
+                color: var(--app-tab-color);
+            }
+            
+            paper-tab[aria-selected=true] a {
+                color: var(--app-tab-selected-color);
+            }
+            
+            paper-icon-button {
+                color: #ffffff;
+            }
+            
+            [icon] {
+                display: inline-block;
+            }
+            
+            [icon="create"] {
+                display: flex;
+            }
+            
+            [hidden] {
+                display: none;
+            }
+        </style>
+        <horizon-query path="/menus" data={{menus}}>
+        </horizon-query>
+        <div style="text-align: right;">
+            <paper-button class="save-button" raised hidden$="[[!editMode]]" on-tap="addMenu">add</paper-button>
+            <paper-button class="save-button" raised hidden$="[[!editMode]]">Save</paper-button>
+            <paper-icon-button icon="create" hidden$="[[editMode]]" on-tap="edit"></paper-icon-button>
+            <paper-icon-button icon="close" hidden$="[[!editMode]]" on-tap="close"></paper-icon-button>
+        </div>
+        <iron-pages selected="[[mode]]" attr-for-selected="name" fallback-selection="list">
+            <section name="list">
+                <paper-tabs class="menu-tab" selected="[[page]]" attr-for-selected="name" fit-container scrollable sticky$="[[largeScreen]]">
+                    <template style="display: none;" is="dom-repeat" items={{menus}} as=menuItem index-as=index sort="sortMenu">
+                        <paper-tab link name="[[menuItem.name]]"><a href="[[menuItem.link]]" title="[[menuItem.title]]">[[menuItem.title]]</a></paper-tab>
+                    </template>
+                </paper-tabs>
+            </section>
+            <section name="edit">
+                <the-grid id="menuGrid" draggable="[[editMode]]" resizable="[[editMode]]" animated overlappable="[[editMode]]" col-count="{{nbCol}}"
+                    row-count$="{{nbRow}}" cell-width="{{cellWidth}}" cell-height="{{cellHeight}}" cell-margin="8">
+
+                    <template is="dom-repeat" items=[[menus]] as=menu index-as=index>
+                        <menu-tile edit$="[[editMode]]" col$="[[menu.col]]" row$="[[menu.row]]" height$="[[menu.height]]" width$="[[menu.width]]"
+                            menu="{{menu}}" index="[[index]]" on-move="_handleMove" on-resize="_handleMove" on-delete-tile="deleteMenu">
+                        </menu-tile>
+                    </template>
+                    <div placeholder style="background: #ccc"></div>
+                </the-grid>
+            </section>
+            <section></section>
+        </iron-pages>
+    </template>
+    <script>
+        Polymer({
+            is: 'everest-menu',
+            properties: {
+                menus: {
+                    type: Array,
+                    // value: function () {
+                    //     return [
+                    //         { name: 'home', title: "Home", link: '/', col: 1, row: 0, width: 1, height: 1 },
+                    //         { name: 'Menu 2', title: "Menu 2", link: '/', col: 2, row: 0, width: 1, height: 1 },
+                    //         { name: 'Menu 3', title: "Menu 3", link: '/', col: 3, row: 0, width: 1, height: 1 },
+                    //     ]
+                    // }
+                },
+
+                page: {
+                    type: String
+                },
+
+                editMode: {
+                    type: Boolean,
+                    value: false
+                },
+
+                nbCol: {
+                    type: Number,
+                    value: 8,
+                },
+
+                nbRow: {
+                    type: Number,
+                    value: 1
+                },
+
+                cellHeight: {
+                    type: Number,
+                    value: 64,
+                    notify: true
+                },
+
+                cellWidth: {
+                    type: Number,
+                    value: 100
+                },
+
+                cellMargin: {
+                    type: Number,
+                    value: 9
+                },
+
+                stateMessage: {
+                    type: Object,
+                    value: function () {
+                        return {
+                            'success': {
+                                icon: "check-circle",
+                                text: "Your changes have been saved!",
+                            },
+                            'errorExist': {
+                                icon: "warning",
+                                text: "Error! A footer with this title already exists!",
+                            },
+                            'errorEmpty': {
+                                icon: "warning",
+                                text: "Error! You must give a title to your footer!",
+                            },
+                            'errorCategory': {
+                                icon: "warning",
+                                text: "Error! You must assign a category to your article!",
+                            },
+                            'errorRight': {
+                                icon: "warning",
+                                text: "Error! You do not have the rights!",
+                            },
+                        }
+                    }
+
+                },
+            },
+
+            ready: function () {
+                // Init the compute of the grid
+                this._computeCellWidth();
+
+                window.addEventListener('resize', this._computeCellWidth.bind(this));
+            },
+
+            sortMenu: function (a, b) {
+                if (a.col < b.col) {
+                    return -1;
+                }
+                if (a.col > b.col) {
+                    return 1;
+                }
+                return 0;
+            },
+
+            edit: function (e) {
+                this.set('editMode', true);
+                this.editClass = "edit";
+                this.mode = "edit";
+            },
+
+            close: function (e) {
+                this.set('editMode', false);
+                this.editColumns = false;
+                this.editClass = "";
+                this.mode = "list";
+            },
+
+            addMenu: function (e) {
+                if (this.menus.length < this.nbCol) {
+                    let ref = window.horizon("menus");
+                    ref.upsert({
+                        name: 'Menu 3',
+                        title: "Menu 3",
+                        link: '/',
+                        col: this.menus.length,
+                        row: 0,
+                        width: 1,
+                        height: 1
+                    });
+                }
+            },
+
+            deleteMenu: function (e) {
+                if (this.menus.length) {
+                    let ref = window.horizon("menus");
+                    ref.remove(e.detail.menu.id);
+                    // this.arrayDelete('menus', e.detail.menu);
+                }
+            },
+
+            _computeCellWidth: function () {
+                this.cellHeight = (64 - this.cellMargin * (this.nbRow - 1)) / this.nbRow;
+                this.cellWidth = (window.innerWidth * 60 / 100 - this.cellMargin * (this.nbCol - 1)) / this.nbCol;
+            },
+
+            /**
+             * Handle any tile move and save it new props
+             *
+             * @param      {Event}  event   the move event object
+             */
+            _handleMove: function (event) {
+                let idx = event.detail.tile.index;
+                if (this.menus[idx]) {
+                    if (event.detail.tile.col)
+                        this.menus[idx].col = event.detail.tile.col;
+
+                    if (event.detail.tile.row)
+                        this.menus[idx].row = event.detail.tile.row;
+
+                    if (event.detail.tile.height)
+                        this.menus[idx].height = event.detail.tile.height;
+
+                    if (event.detail.tile.width)
+                        this.menus[idx].width = event.detail.tile.width;
+                }
+            },
+        });
+    </script>
+</dom-module>

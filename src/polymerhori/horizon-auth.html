@@ -220,6 +220,10 @@
                     var request = db.transaction("token", "readwrite")
                         .objectStore("token")
                         .delete(1);
+                    console.log("connection 8")
+                    var hz = new Horizon({ host: 'localhost:8181', authType: 'unauthenticated' });
+                    window.horizon = hz;
+                    this.fire('dbconnection');
                     // request.onsuccess = function (event) {
                     //     window.db.close();
                     // };

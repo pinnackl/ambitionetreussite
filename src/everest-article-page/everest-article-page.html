@@ -266,18 +266,18 @@
                 display: inline-block;
             }
             
-            .post .material paper-menu {
+            .post .material paper-listbox {
                 height: 144px;
                 background-color: #f7F7F7;
                 overflow-y: scroll;
                 padding: 0 6px;
             }
             
-            .post .material paper-menu paper-item {
+            .post .material paper-listbox paper-item {
                 cursor: pointer;
             }
             
-            .post .material paper-menu paper-item.iron-selected {
+            .post .material paper-listbox paper-item.iron-selected {
                 background-color: #179BD7;
                 color: #ffffff;
             }
@@ -385,15 +385,15 @@
                             <div>
                                 <span>Position of the cover <iron-icon icon="editor:vertical-align-[[article.position]]"></iron-icon></span>
                                 <paper-menu-button horizontal-align="right">
-                                    <paper-icon-button icon="open-with" class="dropdown-trigger"></paper-icon-button>
-                                    <paper-menu class="dropdown-content" selected="{{article.position}}" attr-for-selected="value">
+                                    <paper-icon-button icon="open-with" slot="dropdown-trigger"></paper-icon-button>
+                                    <paper-listbox slot="dropdown-content" selected="{{article.position}}" attr-for-selected="value">
                                         <paper-item value="top">
                                             <iron-icon icon="editor:vertical-align-top"></iron-icon>Top</paper-item>
                                         <paper-item value="center">
                                             <iron-icon icon="editor:vertical-align-center"></iron-icon>Center</paper-item>
                                         <paper-item value="bottom">
                                             <iron-icon icon="editor:vertical-align-bottom"></iron-icon>Bottom</paper-item>
-                                    </paper-menu>
+                                    </paper-listbox>
                                 </paper-menu-button>
                             </div>
                         </div>
@@ -453,11 +453,11 @@
                                 <paper-input label="Add a new tag" value="{{newTag}}"></paper-input>
                                 <paper-button raised class="save-button" on-tap="addTag">Add</paper-button>
                             </div>
-                            <paper-menu multi attr-for-selected="name" selected-values="{{article.tags}}">
+                            <paper-listbox multi attr-for-selected="name" selected-values="{{article.tags}}">
                                 <template is="dom-repeat" items={{tags}} as=item index-as=index>
                                     <paper-item name="[[item.name]]">[[item.name]]</paper-item>
                                 </template>
-                            </paper-menu>
+                            </paper-listbox>
                         </div>
                     </template>
                     <div class="tags">
@@ -669,7 +669,7 @@
                         if (element == "authenticated") userRightLevel = 1;
                         else if (element == "editor") userRightLevel = 2;
                         else if (element == "moderator") userRightLevel = 3;
-                        else if (element == "administrator") userRightLevel = 4;
+                        else if (element == "admin") userRightLevel = 4;
                         rightLevel = this.rightLevel == null || this.rightLevel < userRightLevel ? userRightLevel : this.rightLevel;
                     }, this);
                     this.set("rightLevel", rightLevel);
@@ -693,7 +693,9 @@
                 this.isUpdate = false;
                 if (this.article.title != "" && typeof this.article.category != "undefined" && this.$.editor.getContent() != "" && this.rightLevel > 2) {
                     var _this = this;
-                    this.$.article.ref.update({
+                    let ref = window.horizon("articles");
+                    ref.upsert({
+                        id: this.article.id,
                         slug: getSlug(this.article.slug),
                         title: this.article.title,
                         category: this._lowerCase(this.article.category),
@@ -708,15 +710,12 @@
                         comments: this.article.comments || [],
                         published: this.article.published,
                         trash: false,
-                        'published_trash': this._computeCombinedIndexPt(),
-                        'slug_published': this._computeCombinedIndexSp(),
-                        'category_published_trash': this._computeCombinedIndexCpt(),
-                    }).then(function (value) {
+                    }).subscribe((value) => {
                         _this.stateMessageIcon = _this.stateMessage.success.icon;
                         _this.$.stateMessage.text = _this.stateMessage.success.text;
                         _this.$.stateMessage.open();
                         _this.isUpdate = true;
-                    }).catch(function (error) {
+                    }, err => {
                         _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
                         _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
                         _this.$.stateMessage.open();

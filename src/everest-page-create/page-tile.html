@@ -1,14 +1,11 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
-
-<link rel="import" href="../imports/imports-simpla.html">
-<link rel="import" href="../../bower_components/simpla-article/simpla-article.html">
-
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
 
+<link rel="import" href="../everest-wysiwyg/everest-wysiwyg.html">
 <dom-module id="page-tile">
     <template>
         <style>
@@ -192,10 +189,10 @@
         </style>
         <iron-pages selected="{{type}}" attr-for-selected="name">
             <div name="text">
-                <simpla-article value="{{text}}"></simpla-article>
+                <everest-wysiwyg value="{{text}}" placeholder="Write some text ..."></everest-wysiwyg>
             </div>
             <div name="image">
-                <iron-image id="img" src$="[[content.image]]" placeholder="[[content.image]]" preload sizing="[[content.cover]]" position="[[content.position]]"></iron-image>
+                <iron-image id="img" src$="[[content.image]]" placeholder="[[content.image]]" preload sizing="[[_ctnCover(content.cover)]]" position="[[content.position]]"></iron-image>
                 <input id="inpt" type="file" style="display: none;" on-change="previewFile">
                 <div class="position">
                     <paper-button class="cover" raised on-tap="_changeSizing">[[content.cover]]</paper-button>
@@ -231,7 +228,8 @@
 
                 text: {
                     type: String,
-                    value: ""
+                    value: "",
+                    observer: '_textChanged'
                 },
 
                 col: {
@@ -263,13 +261,7 @@
 
             },
 
-            observers: [
-                '_tilePropertiesChanged(type, col, row, height, width, content.*)'
-            ],
-
             ready: function () {
-                Simpla.init('local');
-                Simpla.editable(true);
             },
 
             deleteTile: function (e) {
@@ -292,6 +284,15 @@
                 }
             },
 
+            _textChanged: function (text) {
+                this.set('content.text', text);
+            },
+
+            _ctnCover: function (cover) {
+                if (!cover) { this.set('content.cover', 'cover'); }
+                return this.content.cover;
+            },
+
             _changeSizing: function (e) {
                 let cover = this.content.cover == "cover" ? "contain" : "cover";
                 this.set('content.cover', cover);
@@ -300,45 +301,6 @@
             _fileUpload: function (e) {
                 this.$.inpt.click();
             },
-
-            _getTileContent: function (type) {
-                switch (type) {
-                    case 'image':
-                        console.log("variable");
-                    break;
-
-                    // Default tile type is text
-                    default:
-                        return this.text;
-                    break;
-                }
-            },
-
-            _setContent: function (type) {
-                switch (type) {
-                    case "image":
-                        if (!this.content.image) {
-                            this.set('content.cover', 'cover');
-                        }
-                    break;
-
-                    default:
-                    break;
-                }
-            },
-
-            _tilePropertiesChanged: function (type, col, row, height, width, content) {
-                this._setContent(type);
-                // FIXME : find a better way than force it 
-                this.set('tile', {
-                    type: type,
-                    col: col,
-                    row: row,
-                    height: height,
-                    width: width,
-                    content: this.content
-                });
-            }
         });
     </script>
 </dom-module>

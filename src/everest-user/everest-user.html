@@ -2,46 +2,46 @@
 
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
-<link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
 
 <link rel="import" href="../everest-article-card/everest-article-card.html">
+<link rel="import" href="../preview-file/preview-file.html">
 
 <link rel="import" href="../shared-styles.html">
 <dom-module id="everest-user">
     <template>
-        <style  include="shared-styles app-grid-style">
-            :host {
+        <style include="shared-styles app-grid-style">
+             :host {
                 display: block;
-
                 --app-grid-columns: 3;
                 --app-grid-item-height: 200px;
             }
-
+            
             .save-button {
                 vertical-align: middle;
             }
-
+            
             .material {
                 background: #ffffff;
             }
-
+            
             .start {
                 display: flex;
                 align-items: center;
             }
-
-            .header.section-header h1, h2 {
+            
+            .header.section-header h1,
+            h2 {
                 color: #56585c;
             }
-
+            
             .header.section-header {
                 color: #444444;
             }
-
+            
             h2 {
                 padding: 0 8px;
             }
-
+            
             .avatar-ctn {
                 position: relative;
                 width: 128px;
@@ -50,13 +50,13 @@
                 border-radius: 50%;
                 box-shadow: 0 0 6px 1px #cecece;
             }
-
+            
             .avatar-ctn iron-image {
-                width : 100%;
+                width: 100%;
                 height: 100%;
                 vertical-align: top;
             }
-
+            
             .avatar-ctn .filter {
                 position: absolute;
                 top: 0px;
@@ -67,9 +67,9 @@
                 border-radius: 50%;
                 color: #e0e0e0;
                 z-index: 1;
-                background-color: rgba(0,0,0,0);
-                background-image: -webkit-linear-gradient(rgba(0,0,0,0.6) 0%,rgba(0,0,0,.6) 75%,rgba(0,0,0,.6) 100%);
-                background-image: linear-gradient(rgba(0,0,0,0.6) 0%,rgba(0,0,0,.6) 75%,rgba(0,0,0,.6) 100%);
+                background-color: rgba(0, 0, 0, 0);
+                background-image: -webkit-linear-gradient(rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, .6) 75%, rgba(0, 0, 0, .6) 100%);
+                background-image: linear-gradient(rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, .6) 75%, rgba(0, 0, 0, .6) 100%);
                 transform: translateX(-100%);
                 -webkit-transition: all .2s ease;
                 -moz-transition: all .2s ease;
@@ -83,15 +83,15 @@
                 align-items: center;
                 cursor: pointer;
             }
-
+            
             .avatar-ctn:hover .filter {
                 transform: translateX(0%);
             }
-
+            
             .user-name {
                 margin-left: 16px;
             }
-
+            
             .user-info.section-header {
                 display: -ms-flexbox;
                 display: -webkit-flex;
@@ -112,9 +112,10 @@
                 -ms-flex-align: stretch;
                 align-items: stretch;
             }
-
+            
             .section-col {
-                -webkit-order: 0;
+                width: 100%;
+                /*-webkit-order: 0;
                 -ms-flex-order: 0;
                 order: 0;
                 -webkit-flex: 1 1 auto;
@@ -122,13 +123,13 @@
                 flex: 1 1 auto;
                 -webkit-align-self: auto;
                 -ms-flex-item-align: auto;
-                align-self: auto;
+                align-self: auto;*/
             }
-
+            
             everest-article-card {
                 padding: 0 0.5em 1em 0.5em;
             }
-
+            
             @media (max-width: 799px) {
                 .user-info.section-header {
                     display: -ms-flexbox;
@@ -150,52 +151,36 @@
                     -ms-flex-align: stretch;
                     align-items: stretch;
                 }
-
-                :host {
+                 :host {
                     --app-grid-columns: 1;
                 }
             }
         </style>
-        <app-route
-            route="{{route}}"
-            pattern="/:userId"
-            data="{{routeData}}"
-            tail="{{subroute}}"></app-route>
+        <app-route route="{{route}}" pattern="/:userId" data="{{routeData}}" tail="{{subroute}}"></app-route>
 
-        <firebase-document
-            id="profile"
-            path="/users/[[userId]]"
-            data="{{userData}}">
-        </firebase-document>
+        <horizon-document id="profile" path="/alpinists/[[userId]]" data="{{userData}}">
+        </horizon-document>
 
-        <firebase-query
-            path="/articles"
-            order-by-child="authorID_published"
-            equal-to="[[userId]]~true"
-            data="{{articles}}">
-        </firebase-query>
+        <horizon-query path="/articles" order-by-child="authorID_published" equal-to="[[userId]]~true" data="{{articles}}">
+        </horizon-query>
 
         <div class="material">
             <div class="header section-header">
                 <div class="start">
                     <div class="avatar-ctn">
-                        <preview-file content="{{avatar}}"></preview-file>
-                        <iron-image
-                            src="{{avatar}}"
-                            preload
-                            fade
-                            sizing="contain"></iron-image>
+                        <!--<preview-file content="{{avatar}}"></preview-file>
+                        <iron-image src="{{avatar}}" preload fade sizing="contain"></iron-image>
                         <template is="dom-if" if={{_edit}}><span class="filter" on-tap="openFile"><iron-icon icon="camera-enhance"></iron-icon></span>
-                        <preview-file content="{{avatar}}" on-image-loaded="fileUploaded"></preview-file>
+                            <preview-file content="{{avatar}}" on-image-loaded="fileUploaded"></preview-file>
+                    </div>-->
+                        <template is="dom-if" if={{editMode}}>
+                            <paper-input class="user-name" label="Edit your name" value="{{editData.name}}"></paper-input>
+                        </template>
+                        <template is="dom-if" if={{!editMode}}>
+                            <h1 class="user-name">[[userData.name]]</h1>
+                        </template>
                     </div>
-                    <template is="dom-if" if={{editMode}}>
-                        <paper-input class="user-name" label="Edit your name" value="{{editData.basicInfo.name}}"></paper-input>
-                    </template>
-                    <template is="dom-if" if={{!editMode}}>
-                        <h1 class="user-name">[[userData.basicInfo.name]]</h1>
-                    </template>
-                </div>
-                <span>
+                    <span>
                     <template is="dom-if" if={{ownProfile}}>
                         <paper-icon-button icon="create" raised on-tap="edit"
                             hidden$="[[editMode]]"></paper-icon-button>
@@ -209,31 +194,30 @@
                             hidden$="[[!editMode]]"></paper-icon-button>
                     </template>
                 </span>
-            </div>
-        </div>
-        <div class="user-info section-header">
-            <div class="material section-col">
-                <h2>Intro</h2>
-                <template is="dom-if" if={{editMode}}>
-                    <paper-textarea label="Edit your intro" value="{{editData.basicInfo.description}}"></paper-textarea>
-                </template>
-                <template is="dom-if" if={{!editMode}}>
-                    <div id="description">[[userData.basicInfo.description]]</div>
-                </template>
-            </div>
-            <div class="material section-col">
-                <h2>Articles</h2>
-                <div class="app-grid">
-                    <template is="dom-repeat" items=[[articles]]
-                        as=item index-as=index>
-                        <everest-article-card class="item" article="{{item}}"></everest-article-card>
-                    </template>
                 </div>
             </div>
-        </div>
-        <paper-toast id="stateMessage" horizontal-align="left" always-on-top duration="5000" text="" on-iron-overlay-closed="_toastClosed">
-            <iron-icon id="toastIcon" class="validate-icon" icon$="[[stateMessageIcon]]"></iron-icon>
-        </paper-toast>
+            <div class="user-info section-header">
+                <div class="material section-col">
+                    <h2>Intro</h2>
+                    <template is="dom-if" if={{editMode}}>
+                        <paper-textarea label="Edit your intro" value="{{editData.description}}"></paper-textarea>
+                    </template>
+                    <template is="dom-if" if={{!editMode}}>
+                        <div id="description">[[userData.description]]</div>
+                    </template>
+                </div>
+                <div class="material section-col">
+                    <h2>Articles</h2>
+                    <div class="app-grid">
+                        <template is="dom-repeat" items=[[articles]] as=item index-as=index>
+                            <everest-article-card class="item" article="{{item}}"></everest-article-card>
+                        </template>
+                    </div>
+                </div>
+            </div>
+            <paper-toast id="stateMessage" horizontal-align="left" always-on-top duration="5000" text="" on-iron-overlay-closed="_toastClosed">
+                <iron-icon id="toastIcon" class="validate-icon" icon$="[[stateMessageIcon]]"></iron-icon>
+            </paper-toast>
     </template>
     <script>
         Polymer({
@@ -290,31 +274,34 @@
             observers: [
                 '_routePageChanged(routeData.userId)',
                 '_rightsChanged(rights.ts)',
-                '_isOwnPage(userId, user.uid)',
-                '_userDataChanged(userData.basicInfo)',
+                '_isOwnPage(userId, user.id)',
+                '_userDataChanged(userData)',
                 '_editProfile(editMode, ownProfile)',
             ],
 
+            ready: function () {
+                console.log('user page ready');
+            },
+
             updateProfile: function (e) {
-                _this = this;
                 this.isUpdate = false;
-                if (this.editData.basicInfo != "") {
-                    this.$.profile.ref.update({
-                      basicInfo: {
-                        name: this.editData.basicInfo.name,
-                        avatar: this.editData.basicInfo.avatar,
-                        email: this.editData.basicInfo.email || "pinnakle.work@gmail.com",
-                        description: this.editData.basicInfo.description,
-                      }
-                    }).then(function (value) {
-                        _this.stateMessageIcon = _this.stateMessage.success.icon;
-                        _this.$.stateMessage.text = _this.stateMessage.success.text;
-                        _this.$.stateMessage.open();
-                        _this.isUpdate = true;
-                    }).catch(function (error) {
-                        _this.stateMessageIcon = _this.stateMessage.errorRight.icon;
-                        _this.$.stateMessage.text = _this.stateMessage.errorRight.text;
-                        _this.$.stateMessage.open();
+                if (this.editData != "") {
+                    let ref = window.horizon("alpinists");
+                    ref.upsert({
+                        id: this.userId,
+                        name: this.editData.name,
+                        avatar: this.editData.avatar,
+                        email: this.editData.email || "pinnakle.work@gmail.com",
+                        description: this.editData.description,
+                    }).subscribe((value) => {
+                        this.stateMessageIcon = this.stateMessage.success.icon;
+                        this.$.stateMessage.text = this.stateMessage.success.text;
+                        this.$.stateMessage.open();
+                        this.isUpdate = true;
+                    }, err => {
+                        this.stateMessageIcon = this.stateMessage.errorRight.icon;
+                        this.$.stateMessage.text = this.stateMessage.errorRight.text;
+                        this.$.stateMessage.open();
                     });
                 } else {
                     this.stateMessageIcon = this.stateMessage.errorRight.icon;
@@ -336,7 +323,7 @@
             },
 
             fileUploaded: function (e, detail) {
-                this.set('editData.basicInfo.avatar', detail.image);
+                this.set('editData.avatar', detail.image);
             },
 
             _editProfile: function (editMode, ownProfile) {

@@ -348,8 +348,41 @@
                         <everest-search-list items="[[pages]]" search-term="{{searchText}}">
                             <template>
                                 <div class="searchItemCtn" data-index$="[[_lowerCase(item.title)]]">
+                                    <div
+                                        class="searchtItem"
+                                        style="background: #ccc; height: 100%;"
+                                        page="{{item}}"
+                                        style="height: 100%;"
+                                        tabindex$="[[tabIndex]]"
+                                        selectable
+                                        selected$="[[selected]]">{{item.title}}</div>
+                                </div>
+                            </template>
+                        </everest-search-list>
+                    </section>
+                    <section name="categories">
+                        <everest-search-list items="[[categories]]" search-term="{{searchText}}">
+                            <template>
+                                <div class="searchItemCtn" data-index$="[[_lowerCase(item.title)]]">
+                                    <div
+                                        class="searchtItem"
+                                        style="background: #ccc; height: 100%;"
+                                        category="{{item}}"
+                                        style="height: 100%;"
+                                        tabindex$="[[tabIndex]]"
+                                        selectable
+                                        selected$="[[selected]]">{{item.title}}</div>
+                                </div>
+                            </template>
+                        </everest-search-list>
+                    </section>
+                    <section name="articles">
+                        <everest-search-list items="[[articles]]" search-term="{{searchText}}">
+                            <template>
+                                <div class="searchItemCtn" data-index$="[[_lowerCase(item.title)]]">
                                     <everest-article-card
                                         class="searchtItem"
+                                        article="{{item}}"
                                         style="height: 100%;"
                                         tabindex$="[[tabIndex]]"
                                         selectable
@@ -358,8 +391,6 @@
                             </template>
                         </everest-search-list>
                     </section>
-                    <section name="categories"></section>
-                    <section name="articles"></section>
                 </iron-pages>
             </paper-dialog-scrollable>
             <div class="buttons">
