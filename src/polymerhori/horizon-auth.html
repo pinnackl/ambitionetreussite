@@ -124,10 +124,15 @@
                             });
                             window.horizon = hz;
                             window.horizon.status(function (status) {
-                                window.horizon.currentUser().fetch().subscribe((user) => {
-                                    _this.set('user', user);
-                                    resolve(user);
-                                });
+                                if (status.type != "disconnected") {
+                                    window.horizon.currentUser().fetch().subscribe((user) => {
+                                        _this.set('user', user);
+                                        _this.fire('user', { user: user });
+                                        resolve(user);
+                                    });
+                                } else {
+                                    _this.set('user', null);
+                                }
                             });
                         }).catch(function (e) {
                             reject(e);
@@ -169,10 +174,15 @@
                             });
                             window.horizon = hz;
                             window.horizon.status(function (status) {
-                                window.horizon.currentUser().fetch().subscribe((user) => {
-                                    _this.set('user', user);
-                                    resolve(user);
-                                });
+                                if (status.type != "disconnected") {
+                                    window.horizon.currentUser().fetch().subscribe((user) => {
+                                        _this.set('user', user);
+                                        _this.fire('user', { user: user });
+                                        resolve(user);
+                                    });
+                                } else {
+                                    _this.set('user', null);
+                                }
                             });
                         }).catch(function (e) {
                             reject(e);
@@ -182,6 +192,7 @@
                 },
 
                 signOut: function () {
+                    this.set('user', null);
                     window.horizon.disconnect();
                     var request = db.transaction("token", "readwrite")
                         .objectStore("token")

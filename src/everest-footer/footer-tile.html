@@ -331,39 +331,7 @@
                     </template>
                 </div>
                 <div class="sub-item">
-                    <the-grid
-                        id="footerGrid"
-                        draggable="[[editMode]]"
-                        resizable="[[editMode]]"
-                        animated
-                        overlappable="[[editMode]]"
-                        row-autogrow
-                        col-count="{{nbCol}}"
-                        row-count="{{nbRow}}"
-                        cell-width="{{cellWidth}}"
-                        cell-height="{{cellHeight}}"
-                        cell-margin="8">
-
-                        <template is="dom-repeat" items={{column.items}} as=item index-as=index>
-                            <div
-                                edit$="[[editMode]]"
-                                col$="{{column.col}}"
-                                row$="{{column.row}}"
-                                height$="{{column.height}}"
-                                width$="{{column.width}}"
-                                min-height="2"
-                                item="{{item}}"
-                                index="[[index]]"
-                                on-move="_handleMove"
-                                on-resize="_handleMove"
-                                on-delete-tile="deleteColumn">
-                                <span resize="top"></span>
-                                <span resize="bottom"></span>
-                                pplop
-                            </div>
-                        </template>
-                        <div placeholder></div>
-                    </the-grid>
+                    <!-- FIXME : replace grid -->
                 </div>
             </div>
             <div><slot></slot></div>
@@ -428,7 +396,7 @@
 
                 editMode: {
                     type: Boolean,
-                    value: true
+                    value: false
                 },
 
                 nbCol: {
@@ -492,10 +460,6 @@
                     }
                 }
 
-            },
-
-            ready: function () {
-                // console.log(this.tile);
             },
 
             editCol: function (e) {

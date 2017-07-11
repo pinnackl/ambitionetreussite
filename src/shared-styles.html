@@ -14,21 +14,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="shared-styles">
   <template>
     <style>
-      :host {
+       :host {
         --accent-color: #3eb7e9;
       }
-
+      
       .card {
         color: #757575;
         background-color: #fff;
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
       }
-
+      
       .material {
         margin: 24px;
         padding: 16px;
       }
-
+      
+      [hidden] {
+        display: none;
+      }
+      
       .section-header {
         display: flex;
         flex-wrap: wrap;
@@ -36,7 +40,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin-bottom: 1em;
         align-items: center;
       }
-
+      
       .save-button {
         background-color: #179BD7;
         color: #FFFFFF;
@@ -46,15 +50,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         background-color: #ff5252;
         color: #FFFFFF;
       }
-
-      .validate-icon[icon="check-circle"] {
+      
+      .validate-icon[icon="check-circle"] {
         color: #4CAF50;
       }
-
-      .validate-icon[icon="warning"] {
-       color: #ff5252;
+      
+      .validate-icon[icon="warning"] {
+        color: #ff5252;
       }
-
+      
       .sub-align {
         display: flex;
         justify-content: center;
@@ -69,15 +73,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .sub-align paper-toggle-button {
         --paper-toggle-button-checked-button-color: #3eb7e9;
       }
-
+      
       h1 {
         margin: 16px 0;
-
         color: #212121;
-
         font-size: 22px;
       }
-
+      
       [name=spinner] {
         display: flex;
         justify-content: center;
