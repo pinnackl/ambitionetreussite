@@ -48,10 +48,17 @@
                         <div class="published">[[date]]</div>
                     </div>
                 </span>
-                <paper-button raised on-tap="signalComment">Report</paper-button>
 
-                <template is="dom-if" if={{isAuthor}}>
+                <template is="dom-if" if="{{_computeReportButton(rightLevel, comment.signaled)}}">
+                    <paper-button raised on-tap="signalComment">Report</paper-button>
+                </template>
+
+                <template is="dom-if" if="{{_computeTrashButton(isAuthor, rightLevel, comment.trash)}}">
                     <paper-icon-button icon="delete" on-tap="trashComment"></paper-icon-button>
+                </template>
+
+                <template is="dom-if" if="{{_computeValidateButton(comment.trash, comment.signaled)}}">
+                    <paper-icon-button icon="check" on-tap="validateComment"></paper-icon-button>
                 </template>
 
                 <template is="dom-if" if="{{_computeEditRight(rightLevel, isAuthor)}}">
@@ -134,6 +141,13 @@
                 this.fire('trash-comment', { comment: this.comment });
             },
 
+            validateComment: function (e) {
+                this.comment.published = true;
+                this.comment.signaled = false;
+                this.comment.trash = false;
+                this.fire('validate-comment', { comment: this.comment });
+            },
+
             _computeEditRight: function (rightLevel, isAuthor) {
                 return rightLevel >= 2 || isAuthor;
             },
@@ -145,7 +159,19 @@
             _commentChanged: function (content) {
                 this.date = moment(this.comment.edited).fromNow();
                 this.$.content.innerHTML = content.replace(/(?:\r\n|\r|\n)/g, '<br>');;
-            }
+            },
+
+            _computeTrashButton: function (isAuthor, rightLevel, trash) {
+                return (isAuthor || rightLevel > 2) && !trash;
+            },
+
+            _computeReportButton: function (rightLevel, signaled) {
+                return !signaled && rightLevel > 0;
+            },
+
+            _computeValidateButton: function (trash, signaled) {
+                return this.rightLevel > 2 && (trash || signaled);
+            },
         });
     </script>
 </dom-module>
