@@ -2,9 +2,9 @@
 
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
-<link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
 
 <link rel="import" href="../everest-article-card/everest-article-card.html">
+<link rel="import" href="../preview-file/preview-file.html">
 
 <link rel="import" href="../shared-styles.html">
 <dom-module id="everest-user">
@@ -167,27 +167,19 @@
             <div class="header section-header">
                 <div class="start">
                     <div class="avatar-ctn">
-                        <<<<<<< HEAD <iron-image src="https://cdn.pinnackl.com/avatars/[[editData.avatar]]" preload fade sizing="contain">
-                            </iron-image>
-                            <template is="dom-if" if={{_edit}}><span class="filter" on-tap="openFile"><iron-icon icon="camera-enhance"></iron-icon></span>
-                                <file-upload id="file" droppable="true" raised="true" accept="image/*" method="POST" file-data-name="avatar" target="https://cdn.pinnackl.com/api/avatars/upload"
-                                    on-success="fileUploaded">Choose a profile picture</file-upload>
-                            </template>
-                            =======
-                            <preview-file content="{{avatar}}"></preview-file>
-                            <iron-image src="{{avatar}}" preload fade sizing="contain"></iron-image>
-                            <template is="dom-if" if={{_edit}}><span class="filter" on-tap="openFile"><iron-icon icon="camera-enhance"></iron-icon></span>
-                                <preview-file content="{{avatar}}" on-image-loaded="fileUploaded"></preview-file>
-                                >>>>>>> 4dfffcbc84155f263e7cff387979e9012c9b95e5
+                        <!--<preview-file content="{{avatar}}"></preview-file>
+                        <iron-image src="{{avatar}}" preload fade sizing="contain"></iron-image>
+                        <template is="dom-if" if={{_edit}}><span class="filter" on-tap="openFile"><iron-icon icon="camera-enhance"></iron-icon></span>
+                            <preview-file content="{{avatar}}" on-image-loaded="fileUploaded"></preview-file>
+                    </div>-->
+                        <template is="dom-if" if={{editMode}}>
+                            <paper-input class="user-name" label="Edit your name" value="{{editData.name}}"></paper-input>
+                        </template>
+                        <template is="dom-if" if={{!editMode}}>
+                            <h1 class="user-name">[[userData.name]]</h1>
+                        </template>
                     </div>
-                    <template is="dom-if" if={{editMode}}>
-                        <paper-input class="user-name" label="Edit your name" value="{{editData.name}}"></paper-input>
-                    </template>
-                    <template is="dom-if" if={{!editMode}}>
-                        <h1 class="user-name">[[userData.name]]</h1>
-                    </template>
-                </div>
-                <span>
+                    <span>
                     <template is="dom-if" if={{ownProfile}}>
                         <paper-icon-button icon="create" raised on-tap="edit"
                             hidden$="[[editMode]]"></paper-icon-button>
@@ -201,168 +193,172 @@
                             hidden$="[[!editMode]]"></paper-icon-button>
                     </template>
                 </span>
-            </div>
-        </div>
-        <div class="user-info section-header">
-            <div class="material section-col">
-                <h2>Intro</h2>
-                <template is="dom-if" if={{editMode}}>
-                    <paper-textarea label="Edit your intro" value="{{editData.description}}"></paper-textarea>
-                </template>
-                <template is="dom-if" if={{!editMode}}>
-                    <div id="description">[[userData.description]]</div>
-                </template>
-            </div>
-            <div class="material section-col">
-                <h2>Articles</h2>
-                <div class="app-grid">
-                    <template is="dom-repeat" items=[[articles]] as=item index-as=index>
-                        <everest-article-card class="item" article="{{item}}"></everest-article-card>
-                    </template>
                 </div>
             </div>
-        </div>
-        <paper-toast id="stateMessage" horizontal-align="left" always-on-top duration="5000" text="" on-iron-overlay-closed="_toastClosed">
-            <iron-icon id="toastIcon" class="validate-icon" icon$="[[stateMessageIcon]]"></iron-icon>
-        </paper-toast>
-        </template>
-        <script>
-            Polymer({
-                is: 'everest-user',
+            <div class="user-info section-header">
+                <div class="material section-col">
+                    <h2>Intro</h2>
+                    <template is="dom-if" if={{editMode}}>
+                        <paper-textarea label="Edit your intro" value="{{editData.description}}"></paper-textarea>
+                    </template>
+                    <template is="dom-if" if={{!editMode}}>
+                        <div id="description">[[userData.description]]</div>
+                    </template>
+                </div>
+                <div class="material section-col">
+                    <h2>Articles</h2>
+                    <div class="app-grid">
+                        <template is="dom-repeat" items=[[articles]] as=item index-as=index>
+                            <everest-article-card class="item" article="{{item}}"></everest-article-card>
+                        </template>
+                    </div>
+                </div>
+            </div>
+            <paper-toast id="stateMessage" horizontal-align="left" always-on-top duration="5000" text="" on-iron-overlay-closed="_toastClosed">
+                <iron-icon id="toastIcon" class="validate-icon" icon$="[[stateMessageIcon]]"></iron-icon>
+            </paper-toast>
+    </template>
+    <script>
+        Polymer({
+            is: 'everest-user',
 
-                properties: {
-                    route: {
-                        type: Object,
-                    },
-
-                    rights: {
-                        type: Object
-                    },
-
-                    ownProfile: {
-                        type: Boolean,
-                        valule: false,
-                    },
-
-                    editMode: {
-                        type: Boolean,
-                        value: false,
-                    },
-
-                    stateMessage: {
-                        type: Object,
-                        value: function () {
-                            return {
-                                'success': {
-                                    icon: "check-circle",
-                                    text: "Your changes have been saved!",
-                                },
-                                'errorExist': {
-                                    icon: "warning",
-                                    text: "Error! An user with this name already exists!",
-                                },
-                                'errorEmpty': {
-                                    icon: "warning",
-                                    text: "Error! You must give a name to your user!",
-                                },
-                                'errorCategory': {
-                                    icon: "warning",
-                                    text: "Error! You must assign a category to your article!",
-                                },
-                                'errorRight': {
-                                    icon: "warning",
-                                    text: "Error! You do not have the rights!",
-                                },
-                            }
-                        }
-                    },
+            properties: {
+                route: {
+                    type: Object,
                 },
 
-                observers: [
-                    '_routePageChanged(routeData.userId)',
-                    '_rightsChanged(rights.ts)',
-                    '_isOwnPage(userId, user.id)',
-                    '_userDataChanged(userData)',
-                    '_editProfile(editMode, ownProfile)',
-                ],
+                rights: {
+                    type: Object
+                },
 
-                updateProfile: function (e) {
-                    this.isUpdate = false;
-                    if (this.editData != "") {
-                        let ref = window.horizon("alpinists");
-                        ref.upsert({
-                            id: this.userId,
-                            name: this.editData.name,
-                            avatar: this.editData.avatar,
-                            email: this.editData.email || "pinnakle.work@gmail.com",
-                            description: this.editData.description,
-                        }).subscribe((value) => {
-                            this.stateMessageIcon = this.stateMessage.success.icon;
-                            this.$.stateMessage.text = this.stateMessage.success.text;
-                            this.$.stateMessage.open();
-                            this.isUpdate = true;
-                        }, err => {
-                            this.stateMessageIcon = this.stateMessage.errorRight.icon;
-                            this.$.stateMessage.text = this.stateMessage.errorRight.text;
-                            this.$.stateMessage.open();
-                        });
-                    } else {
+                ownProfile: {
+                    type: Boolean,
+                    valule: false,
+                },
+
+                editMode: {
+                    type: Boolean,
+                    value: false,
+                },
+
+                stateMessage: {
+                    type: Object,
+                    value: function () {
+                        return {
+                            'success': {
+                                icon: "check-circle",
+                                text: "Your changes have been saved!",
+                            },
+                            'errorExist': {
+                                icon: "warning",
+                                text: "Error! An user with this name already exists!",
+                            },
+                            'errorEmpty': {
+                                icon: "warning",
+                                text: "Error! You must give a name to your user!",
+                            },
+                            'errorCategory': {
+                                icon: "warning",
+                                text: "Error! You must assign a category to your article!",
+                            },
+                            'errorRight': {
+                                icon: "warning",
+                                text: "Error! You do not have the rights!",
+                            },
+                        }
+                    }
+                },
+            },
+
+            observers: [
+                '_routePageChanged(routeData.userId)',
+                '_rightsChanged(rights.ts)',
+                '_isOwnPage(userId, user.id)',
+                '_userDataChanged(userData)',
+                '_editProfile(editMode, ownProfile)',
+            ],
+
+            ready: function () {
+                console.log('user page ready');
+            },
+
+            updateProfile: function (e) {
+                this.isUpdate = false;
+                if (this.editData != "") {
+                    let ref = window.horizon("alpinists");
+                    ref.upsert({
+                        id: this.userId,
+                        name: this.editData.name,
+                        avatar: this.editData.avatar,
+                        email: this.editData.email || "pinnakle.work@gmail.com",
+                        description: this.editData.description,
+                    }).subscribe((value) => {
+                        this.stateMessageIcon = this.stateMessage.success.icon;
+                        this.$.stateMessage.text = this.stateMessage.success.text;
+                        this.$.stateMessage.open();
+                        this.isUpdate = true;
+                    }, err => {
                         this.stateMessageIcon = this.stateMessage.errorRight.icon;
                         this.$.stateMessage.text = this.stateMessage.errorRight.text;
                         this.$.stateMessage.open();
-                    }
-                },
-
-                edit: function (e) {
-                    this.editMode = true;
-                },
-
-                close: function (e) {
-                    this.editMode = false;
-                },
-
-                openFile: function (e) {
-                    this.$$('#file')._fileClick();
-                },
-
-                fileUploaded: function (e, detail) {
-                    this.set('editData.avatar', detail.image);
-                },
-
-                _editProfile: function (editMode, ownProfile) {
-                    this._edit = editMode && ownProfile;
-                },
-
-                _toastClosed: function (e) {
-                    if (this.isUpdate) {
-                        this.editMode = false;
-                    }
-                },
-
-                _routePageChanged: function (userId) {
-                    this.userId = userId || '';
-                },
-
-                _isOwnPage: function (userPage, userId) {
-                    this.ownProfile = (userPage == userId);
-                },
-
-                checkRights: function (role) {
-                    if (this.rights[role]) {
-                        this.isAdmin = true;
-                    } else {
-                    }
-                },
-
-                _rightsChanged: function (ts) {
-                    this.checkRights('administrators');
-                },
-
-                _userDataChanged: function (basicInfo) {
-                    if (basicInfo) {
-                        this.editData = this.userData;
-                    }
+                    });
+                } else {
+                    this.stateMessageIcon = this.stateMessage.errorRight.icon;
+                    this.$.stateMessage.text = this.stateMessage.errorRight.text;
+                    this.$.stateMessage.open();
                 }
-            });
-        </script>
+            },
+
+            edit: function (e) {
+                this.editMode = true;
+            },
+
+            close: function (e) {
+                this.editMode = false;
+            },
+
+            openFile: function (e) {
+                this.$$('#file')._fileClick();
+            },
+
+            fileUploaded: function (e, detail) {
+                this.set('editData.avatar', detail.image);
+            },
+
+            _editProfile: function (editMode, ownProfile) {
+                this._edit = editMode && ownProfile;
+            },
+
+            _toastClosed: function (e) {
+                if (this.isUpdate) {
+                    this.editMode = false;
+                }
+            },
+
+            _routePageChanged: function (userId) {
+                this.userId = userId || '';
+            },
+
+            _isOwnPage: function (userPage, userId) {
+                this.ownProfile = (userPage == userId);
+            },
+
+            checkRights: function (role) {
+                if (this.rights[role]) {
+                    this.isAdmin = true;
+                } else {
+                }
+            },
+
+            _rightsChanged: function (ts) {
+                this.checkRights('administrators');
+            },
+
+            _userDataChanged: function (basicInfo) {
+                if (basicInfo) {
+                    this.editData = this.userData;
+                }
+            }
+        });
+    </script>
 </dom-module>
