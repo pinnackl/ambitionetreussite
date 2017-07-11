@@ -11,16 +11,16 @@
 <dom-module id="everest-menu">
     <template>
         <style include="shared-styles">
-            :host {
+             :host {
                 display: block;
                 height: 100%;
                 position: relative;
             }
-
+            
             paper-tabs {
                 --paper-tabs-selection-bar-color: var(--app-tab-selected-color);
             }
-
+            
             paper-tab[link] a,
             paper-tab[link] span {
                 /* These mixins (from iron-flex-layout) center the link text. */
@@ -30,27 +30,29 @@
                 pointer-events: auto;
                 color: var(--app-tab-color);
             }
-
+            
             paper-tab[aria-selected=true] a {
                 color: var(--app-tab-selected-color);
             }
-
+            
             paper-icon-button {
                 color: #ffffff;
             }
-
+            
             [icon] {
                 display: inline-block;
             }
-
+            
             [icon="create"] {
                 display: flex;
             }
-
+            
             [hidden] {
                 display: none;
             }
         </style>
+        <horizon-query path="/menus" data={{menus}}>
+        </horizon-query>
         <div style="text-align: right;">
             <paper-button class="save-button" raised hidden$="[[!editMode]]" on-tap="addMenu">add</paper-button>
             <paper-button class="save-button" raised hidden$="[[!editMode]]">Save</paper-button>
@@ -66,30 +68,12 @@
                 </paper-tabs>
             </section>
             <section name="edit">
-                <the-grid
-                    id="menuGrid"
-                    draggable="[[editMode]]"
-                    resizable="[[editMode]]"
-                    animated
-                    overlappable="[[editMode]]"
-                    col-count="{{nbCol}}"
-                    row-count$="{{nbRow}}"
-                    cell-width="{{cellWidth}}"
-                    cell-height="{{cellHeight}}"
-                    cell-margin="8">
+                <the-grid id="menuGrid" draggable="[[editMode]]" resizable="[[editMode]]" animated overlappable="[[editMode]]" col-count="{{nbCol}}"
+                    row-count$="{{nbRow}}" cell-width="{{cellWidth}}" cell-height="{{cellHeight}}" cell-margin="8">
 
                     <template is="dom-repeat" items=[[menus]] as=menu index-as=index>
-                        <menu-tile
-                            edit$="[[editMode]]"
-                            col$="[[menu.col]]"
-                            row$="[[menu.row]]"
-                            height$="[[menu.height]]"
-                            width$="[[menu.width]]"
-                            menu="{{menu}}"
-                            index="[[index]]"
-                            on-move="_handleMove"
-                            on-resize="_handleMove"
-                            on-delete-tile="deleteMenu">
+                        <menu-tile edit$="[[editMode]]" col$="[[menu.col]]" row$="[[menu.row]]" height$="[[menu.height]]" width$="[[menu.width]]"
+                            menu="{{menu}}" index="[[index]]" on-move="_handleMove" on-resize="_handleMove" on-delete-tile="deleteMenu">
                         </menu-tile>
                     </template>
                     <div placeholder style="background: #ccc"></div>
@@ -104,13 +88,13 @@
             properties: {
                 menus: {
                     type: Array,
-                    value: function () {
-                      return [
-                        { name: 'home', title: "Home", link: '/', col: 1, row: 0, width: 1, height: 1 },
-                        { name: 'Menu 2', title: "Menu 2", link: '/', col: 2, row: 0, width: 1, height: 1 },
-                        { name: 'Menu 3', title: "Menu 3", link: '/', col: 3, row: 0, width: 1, height: 1 },
-                      ]
-                    }
+                    // value: function () {
+                    //     return [
+                    //         { name: 'home', title: "Home", link: '/', col: 1, row: 0, width: 1, height: 1 },
+                    //         { name: 'Menu 2', title: "Menu 2", link: '/', col: 2, row: 0, width: 1, height: 1 },
+                    //         { name: 'Menu 3', title: "Menu 3", link: '/', col: 3, row: 0, width: 1, height: 1 },
+                    //     ]
+                    // }
                 },
 
                 page: {
@@ -148,7 +132,7 @@
                     value: 9
                 },
 
-               stateMessage: {
+                stateMessage: {
                     type: Object,
                     value: function () {
                         return {
@@ -210,7 +194,8 @@
 
             addMenu: function (e) {
                 if (this.menus.length < this.nbCol) {
-                    this.push('menus', {
+                    let ref = window.horizon("menus");
+                    ref.upsert({
                         name: 'Menu 3',
                         title: "Menu 3",
                         link: '/',
@@ -229,8 +214,8 @@
             },
 
             _computeCellWidth: function () {
-                this.cellHeight = (64 - this.cellMargin * ( this.nbRow - 1)) / this.nbRow;
-                this.cellWidth = (window.innerWidth * 60 / 100 - this.cellMargin * ( this.nbCol - 1)) / this.nbCol;
+                this.cellHeight = (64 - this.cellMargin * (this.nbRow - 1)) / this.nbRow;
+                this.cellWidth = (window.innerWidth * 60 / 100 - this.cellMargin * (this.nbCol - 1)) / this.nbCol;
             },
 
             /**
