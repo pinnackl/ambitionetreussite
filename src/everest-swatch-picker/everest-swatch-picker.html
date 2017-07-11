@@ -60,7 +60,7 @@
           accept="image/*" 
           method="POST" 
           form-data-name="cover" 
-          target="http://localhost:3000/upload" 
+          target="http://localhost:9000/cdn/upload" 
           on-upload-success="_imageChanged">
         </vaadin-upload>
       </div>
@@ -185,7 +185,7 @@
       ],
 
       _imageChanged: function(e, detail) {
-        var cdn = "http://localhost:3000/images/";
+        var cdn = "http://localhost:9000/images/";
         var parsedResponse = JSON.parse(detail.xhr.response);
         var image = cdn + parsedResponse.imageName;
         var base64Image = parsedResponse.imageBase64;
