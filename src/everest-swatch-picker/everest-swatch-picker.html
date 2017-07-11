@@ -1,7 +1,6 @@
 <link rel="import" href="../../bower_components/paper-swatch-picker/paper-swatch-picker.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/web-animations-js/web-animations-next-lite.min.html">
-<!--<link rel="import" href="../../bower_components/file-upload/file-upload.html">-->
 <link rel="import" href="../../bower_components/vaadin-upload/vaadin-upload.html">
 <link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
 <link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
@@ -60,7 +59,7 @@
           accept="image/*" 
           method="POST" 
           form-data-name="cover" 
-          target="http://localhost:3000/upload" 
+          target="http://localhost:9000/cdn/upload" 
           on-upload-success="_imageChanged">
         </vaadin-upload>
       </div>
@@ -185,7 +184,7 @@
       ],
 
       _imageChanged: function(e, detail) {
-        var cdn = "http://localhost:3000/images/";
+        var cdn = "http://localhost:9000/images/";
         var parsedResponse = JSON.parse(detail.xhr.response);
         var image = cdn + parsedResponse.imageName;
         var base64Image = parsedResponse.imageBase64;

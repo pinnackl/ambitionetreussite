@@ -365,7 +365,7 @@
         str.push(encodeURIComponent(p) + "=" + encodeURIComponent(this.theme[p]));
       var data = str.join("&");
       this._ajax({
-        url: "http://localhost:3000/download",
+        url: "http://localhost:9000/theme/download",
         type: "POST",
         data: data,
         headers: [{'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}]
