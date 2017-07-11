@@ -3,7 +3,6 @@
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
 <link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
-<link rel="import" href="../../bower_components/file-upload/file-upload.html">
 
 <link rel="import" href="../everest-article-card/everest-article-card.html">
 
@@ -180,22 +179,14 @@
             <div class="header section-header">
                 <div class="start">
                     <div class="avatar-ctn">
+                        <preview-file content="{{avatar}}"></preview-file>
                         <iron-image
-                            src="https://cdn.pinnackl.com/avatars/[[editData.basicInfo.avatar]]"
+                            src="{{avatar}}"
                             preload
                             fade
                             sizing="contain"></iron-image>
                         <template is="dom-if" if={{_edit}}><span class="filter" on-tap="openFile"><iron-icon icon="camera-enhance"></iron-icon></span>
-                        <file-upload
-                            id="file"
-                            droppable="true"
-                            raised="true"
-                            accept="image/*"
-                            method="POST"
-                            file-data-name="avatar"
-                            target="https://cdn.pinnackl.com/api/avatars/upload"
-                            on-success="fileUploaded">Choose a profile picture</file-upload>
-                        </template>
+                        <preview-file content="{{avatar}}" on-image-loaded="fileUploaded"></preview-file>
                     </div>
                     <template is="dom-if" if={{editMode}}>
                         <paper-input class="user-name" label="Edit your name" value="{{editData.basicInfo.name}}"></paper-input>
@@ -345,9 +336,7 @@
             },
 
             fileUploaded: function (e, detail) {
-                var parsedResponse = JSON.parse(detail.xhr.response);
-                this.set('editData.basicInfo.avatar', parsedResponse.name);
-
+                this.set('editData.basicInfo.avatar', detail.image);
             },
 
             _editProfile: function (editMode, ownProfile) {

@@ -1,8 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 
-<!-- <link rel="import" href="../../bower_components/file-upload/file-upload.html" async> --><!-- FIXME : To be replaced by Vaadin file-upload -->
-
 <link rel="import" href="../shared-styles.html">
 <dom-module id="sign-up">
     <template>
@@ -32,26 +30,11 @@
                 <template is="dom-if" if={{user.avatar}}>
                     <iron-image
                         style="width: 100px; height: 100px; border: solid 1px #3eb7e9;"
-                        src="http://localhost:9000/avatars/[[user.avatar]]"
+                        src="{{avatar}}"
                         preload
                         sizing="contain"></iron-image>
                 </template>
-                <file-upload
-                    droppable="true"
-                    raised="true"
-                    accept="image/*"
-                    method="POST"
-                    file-data-name="avatar"
-                    target="http://localhost:9000/api/avatars/upload"
-                    on-success="fileUploaded">Choose a profile picture</file-upload><!--
-                <file-upload
-                    droppable="true"
-                    raised="true"
-                    accept="image/*"
-                    method="POST"
-                    file-data-name="avatar"
-                    target="https://cdn.pinnackl.com/api/avatars/upload"
-                    on-success="fileUploaded">Choisir une photo de profile</file-upload> -->
+                <preview-file content="{{avatar}}" on-image-loaded="fileUploaded"></preview-file>
             </div>
             <paper-input label="Name" value="{{user.name}}"></paper-input>
             <paper-input label="Email" type="email" value="{{user.email}}"></paper-input>
@@ -100,9 +83,7 @@
             },
 
             fileUploaded: function (e, detail) {
-                var parsedResponse = JSON.parse(detail.xhr.response);
-                this.set('user.avatar', parsedResponse.name);
-
+                this.set('user.avatar', detail.image);
             },
 
             _confirmChanged: function (passwordConfirm) {
