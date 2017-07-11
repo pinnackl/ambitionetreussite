@@ -189,10 +189,10 @@
         </style>
         <iron-pages selected="{{type}}" attr-for-selected="name">
             <div name="text">
-                <everest-wysiwyg value="{{text}}"></everest-wysiwyg>
+                <everest-wysiwyg value="{{text}}" placeholder="Write some text ..."></everest-wysiwyg>
             </div>
             <div name="image">
-                <iron-image id="img" src$="[[content.image]]" placeholder="[[content.image]]" preload sizing="[[content.cover]]" position="[[content.position]]"></iron-image>
+                <iron-image id="img" src$="[[content.image]]" placeholder="[[content.image]]" preload sizing="[[_ctnCover(content.cover)]]" position="[[content.position]]"></iron-image>
                 <input id="inpt" type="file" style="display: none;" on-change="previewFile">
                 <div class="position">
                     <paper-button class="cover" raised on-tap="_changeSizing">[[content.cover]]</paper-button>
@@ -285,7 +285,12 @@
             },
 
             _textChanged: function (text) {
-                // console.log(text);
+                this.set('content.text', text);
+            },
+
+            _ctnCover: function (cover) {
+                if (!cover) { this.set('content.cover', 'cover'); }
+                return this.content.cover;
             },
 
             _changeSizing: function (e) {
