@@ -345,8 +345,8 @@
         <horizon-query id="tags" path="/tags" data="{{tags}}">
         </horizon-query>
 
-        <horizon-query id="comments" order-by-child="published_signaled_trash" equal-to="[[published]]~[[signaled]]~[[trash]]" path="/comments/[[article.id]]"
-            data="{{comments}}"></horizon-query>
+        <horizon-query id="comments" order-limit="created" order-by-child="published_signaled_trash_article" equal-to="[[published]]~[[signaled]]~[[trash]]~[[article.id]]"
+            path="/comments/[[article.id]]" data="{{comments}}"></horizon-query>
 
         <!-- User data -->
         <horizon-document path="/alpinists/[[user.id]]" data="{{userData}}">
@@ -426,12 +426,7 @@
                         </div>
                         <div class="section-header">
                             <!-- FIXME : Get the target from config -->
-                            <vaadin-upload 
-                                accept="image/*" 
-                                method="POST" 
-                                form-data-name="cover" 
-                                target="http://localhost:9000/cdn/upload" 
-                                on-upload-success="fileUploaded">
+                            <vaadin-upload accept="image/*" method="POST" form-data-name="cover" target="http://localhost:9000/cdn/upload" on-upload-success="fileUploaded">
                                 Choose a cover
                             </vaadin-upload>
                             <paper-input label="Add a category" value="{{newCategory}}"></paper-input>
@@ -509,7 +504,7 @@
                         </template>
                         <template is="dom-repeat" items={{comments}} as=comment index-as=index>
                             <everest-comment-card right-level="{{rightLevel}}" comment="[[comment]]" on-update-comment="updateComment" on-signal-comment="signalComment"
-                                on-trash-comment="trashComment" user="{{user}}"></everest-comment-card>
+                                on-trash-comment="trashComment" on-validate-comment="validateComment" user="{{user}}"></everest-comment-card>
                         </template>
                     </div>
                 </div>
@@ -619,6 +614,10 @@
                                 icon: "check-circle",
                                 text: "This comment has been removed!",
                             },
+                            'validated': {
+                                icon: "check-circle",
+                                text: "This comment has been validated!",
+                            },
                         }
                     }
                 },
@@ -664,15 +663,19 @@
 
             _userChanged: function (data) {
                 let rightLevel = 0;
-                data.groups.forEach((element) => {
-                    let userRightLevel = 0;
-                    if (element == "authenticated") userRightLevel = 1;
-                    else if (element == "editor") userRightLevel = 2;
-                    else if (element == "moderator") userRightLevel = 3;
-                    else if (element == "administrator") userRightLevel = 4;
-                    rightLevel = this.rightLevel == null || this.rightLevel < userRightLevel ? userRightLevel : this.rightLevel;
-                }, this);
-                this.set("rightLevel", rightLevel);
+                if (data != null) {
+                    data.groups.forEach((element) => {
+                        let userRightLevel = 0;
+                        if (element == "authenticated") userRightLevel = 1;
+                        else if (element == "editor") userRightLevel = 2;
+                        else if (element == "moderator") userRightLevel = 3;
+                        else if (element == "administrator") userRightLevel = 4;
+                        rightLevel = this.rightLevel == null || this.rightLevel < userRightLevel ? userRightLevel : this.rightLevel;
+                    }, this);
+                    this.set("rightLevel", rightLevel);
+                } else {
+                    this.set("rightLevel", null);
+                }
             },
 
             _userDataChanged: function (data) {
@@ -753,7 +756,6 @@
             addComment: function (e) {
                 // Check if there is a use logged
                 if (this.commentContent) {
-                    var _this = this;
                     let ref = window.horizon('comments');
                     ref.store({
                         content: this.commentContent,
@@ -765,11 +767,12 @@
                         published: true,
                         signaled: false,
                         trash: false
-                    }).subscribe(function (value) {
-                        _this.stateMessageIcon = _this.stateMessage.success.icon;
-                        _this.$.stateMessage.text = _this.stateMessage.success.text;
-                        _this.$.stateMessage.open();
-                        _this.isUpdate = true;
+                    }).subscribe((value) => {
+                        this.stateMessageIcon = this.stateMessage.success.icon;
+                        this.$.stateMessage.text = this.stateMessage.success.text;
+                        this.$.stateMessage.open();
+                        this.isUpdate = true;
+                        this.set('commentContent', "");
                     })
                 }
             },
@@ -832,6 +835,28 @@
                 }).subscribe(data => {
                     _this.stateMessageIcon = _this.stateMessage.trash.icon;
                     _this.$.stateMessage.text = _this.stateMessage.trash.text;
+                    _this.$.stateMessage.open();
+                    _this.isUpdate = true;
+                }, err => {
+                    this.stateMessageIcon = this.stateMessage.errorRight.icon;
+                    this.$.stateMessage.text = this.stateMessage.errorRight.text;
+                    this.$.stateMessage.open();
+                });
+            },
+
+            validateComment: function (e, detail) {
+                var comment = detail.comment;
+                var _this = this;
+                let ref = window.horizon("comments");
+                ref.upsert({
+                    id: comment.id,
+                    edited: Date.now(),
+                    published: comment.published,
+                    signaled: comment.signaled,
+                    trash: comment.trash
+                }).subscribe(data => {
+                    _this.stateMessageIcon = _this.stateMessage.validated.icon;
+                    _this.$.stateMessage.text = _this.stateMessage.validated.text;
                     _this.$.stateMessage.open();
                     _this.isUpdate = true;
                 }, err => {
