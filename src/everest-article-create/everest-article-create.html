@@ -14,8 +14,7 @@
 <link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
 
 <link rel="import" href="../../bower_components/polymer-mce/polymer-mce.html" async>
-<!-- FIXME : To be replaced -->
-<!-- <link rel="import" href="../../bower_components/file-upload/file-upload.html"> -->
+<link rel="import" href="../../bower_components/vaadin-upload/vaadin-upload.html">
 
 <link rel="import" href="../imports/imports-moment.html">
 <link rel="import" href="../imports/imports-speakingurl.html">
@@ -427,8 +426,14 @@
                         </div>
                         <div class="section-header">
                             <!-- FIXME : Get the target from config -->
-                            <file-upload droppable="true" raised="true" accept="image/*" method="POST" file-data-name="cover" target="https://cdn.pinnackl.com/api/images/upload"
-                                on-success="fileUploaded">Choose a cover</file-upload>
+                            <vaadin-upload 
+                                accept="image/*" 
+                                method="POST" 
+                                form-data-name="cover" 
+                                target="http://localhost:9000/cdn/upload" 
+                                on-upload-success="fileUploaded">
+                                Choose a cover
+                            </vaadin-upload>
                             <template is="dom-if" if="{{categories}}">
                                 <paper-dropdown-menu label="Choose a category" value="{{category}}">
                                     <paper-listbox slot="dropdown-content" class="dropdown-content">
@@ -619,7 +624,7 @@
 
             fileUploaded: function (e, detail) {
                 var parsedResponse = JSON.parse(detail.xhr.response);
-                this.cover = parsedResponse.name;
+                this.cover = parsedResponse.imageName;
             },
 
             addTag: function (e) {

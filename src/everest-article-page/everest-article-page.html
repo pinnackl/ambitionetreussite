@@ -10,7 +10,7 @@
 
 <link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
 <link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
-<link rel="import" href="../../bower_components/file-upload/file-upload.html" async>
+<link rel="import" href="../../bower_components/vaadin-upload/vaadin-upload.html" async>
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 
 <link rel="import" href="../imports/imports-speakingurl.html" async>
@@ -431,8 +431,14 @@
                         </div>
                         <div class="section-header">
                             <!-- FIXME : Get the target from config -->
-                            <file-upload droppable="true" raised="true" accept="image/*" method="POST" file-data-name="cover" target="https://cdn.pinnackl.com/api/images/upload"
-                                on-success="fileUploaded">Choose a cover</file-upload>
+                            <vaadin-upload 
+                                accept="image/*" 
+                                method="POST" 
+                                form-data-name="cover" 
+                                target="http://localhost:9000/cdn/upload" 
+                                on-upload-success="fileUploaded">
+                                Choose a cover
+                            </vaadin-upload>
                             <paper-input label="Add a category" value="{{newCategory}}"></paper-input>
                             <paper-button raised class="save-button" on-tap="addCategory">Add</paper-button>
                             <paper-dropdown-menu label="Choose a category" value="{{article.category}}">
@@ -681,7 +687,7 @@
 
             fileUploaded: function (e, detail) {
                 var parsedResponse = JSON.parse(detail.xhr.response);
-                this.set("article.cover", parsedResponse.name);
+                this.set("article.cover", parsedResponse.imageName);
             },
 
             addTag: function (e) {
