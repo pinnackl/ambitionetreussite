@@ -669,7 +669,7 @@
                         if (element == "authenticated") userRightLevel = 1;
                         else if (element == "editor") userRightLevel = 2;
                         else if (element == "moderator") userRightLevel = 3;
-                        else if (element == "administrator") userRightLevel = 4;
+                        else if (element == "admin") userRightLevel = 4;
                         rightLevel = this.rightLevel == null || this.rightLevel < userRightLevel ? userRightLevel : this.rightLevel;
                     }, this);
                     this.set("rightLevel", rightLevel);

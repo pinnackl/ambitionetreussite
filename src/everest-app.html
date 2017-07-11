@@ -370,7 +370,7 @@
           <!-- New view -->
           <everest-new name="new" rights="{{rightLevel}}" route="{{subroute}}" subpage="{{subpage}}" user="{{horizonUser}}"></everest-new>
           <!-- User view -->
-          <everest-user name="user" rights="{{rights}}" route="{{subroute}}" subpage="{{subpage}}" user="{{horizonUser}}"></everest-user>
+          <everest-user name="user" rights="{{rightLevel}}" route="{{subroute}}" subpage="{{subpage}}" user="{{horizonUser}}"></everest-user>
           <!-- Author view -->
           <div name="author">author</div>
 
@@ -624,7 +624,7 @@
             if (element == "authenticated") userRightLevel = 1;
             else if (element == "editor") userRightLevel = 2;
             else if (element == "moderator") userRightLevel = 3;
-            else if (element == "administrator") userRightLevel = 4;
+            else if (element == "admin") userRightLevel = 4;
             rightLevel = this.rightLevel == null || this.rightLevel < userRightLevel ? userRightLevel : this.rightLevel;
           }, this);
           this.set("rightLevel", rightLevel);
@@ -671,13 +671,11 @@
       }
 
       _signIn(e) {
-        console.info('sign-in');
         this.fire('sign-in');
         this.$.formDialog.openDialog('signIn');
       }
 
       _signUp(e) {
-        console.info('sign-up');
         this.fire('sign-up');
         this.$.formDialog.openDialog('signUp');
       }
@@ -692,6 +690,7 @@
         // If no page was found in the route data, page will be an empty string.
         // Deault to 'home' in that case.
         this.page = page || 'home';
+        console.log(this.page);
 
         // Close a non-persistent drawer when the page & route are changed.
         if (!this.$.drawer.persistent) {
