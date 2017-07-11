@@ -426,12 +426,7 @@
                         </div>
                         <div class="section-header">
                             <!-- FIXME : Get the target from config -->
-                            <vaadin-upload 
-                                accept="image/*" 
-                                method="POST" 
-                                form-data-name="cover" 
-                                target="http://localhost:9000/cdn/upload" 
-                                on-upload-success="fileUploaded">
+                            <vaadin-upload accept="image/*" method="POST" form-data-name="cover" target="http://localhost:9000/cdn/upload" on-upload-success="fileUploaded">
                                 Choose a cover
                             </vaadin-upload>
                             <paper-input label="Add a category" value="{{newCategory}}"></paper-input>
@@ -757,7 +752,6 @@
             addComment: function (e) {
                 // Check if there is a use logged
                 if (this.commentContent) {
-                    var _this = this;
                     let ref = window.horizon('comments');
                     ref.store({
                         content: this.commentContent,
@@ -769,11 +763,12 @@
                         published: true,
                         signaled: false,
                         trash: false
-                    }).subscribe(function (value) {
-                        _this.stateMessageIcon = _this.stateMessage.success.icon;
-                        _this.$.stateMessage.text = _this.stateMessage.success.text;
-                        _this.$.stateMessage.open();
-                        _this.isUpdate = true;
+                    }).subscribe((value) => {
+                        this.stateMessageIcon = this.stateMessage.success.icon;
+                        this.$.stateMessage.text = this.stateMessage.success.text;
+                        this.$.stateMessage.open();
+                        this.isUpdate = true;
+                        this.set('commentContent', "");
                     })
                 }
             },
