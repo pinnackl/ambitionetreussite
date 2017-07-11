@@ -209,7 +209,9 @@
 
             deleteMenu: function (e) {
                 if (this.menus.length) {
-                    this.arrayDelete('menus', e.detail.menu);
+                    let ref = window.horizon("menus");
+                    ref.remove(e.detail.menu.id);
+                    // this.arrayDelete('menus', e.detail.menu);
                 }
             },
 
