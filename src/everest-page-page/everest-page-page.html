@@ -105,9 +105,9 @@
                     <div class="material app-grid">
                         <template is="dom-repeat" items={{pages}} as=item index-as=index>
                             <a class="page-card" href="/page/[[item.slug]]">
-                                <paper-material class="material" elevation="1">
+                                <div class="material" elevation="1">
                                     <h2>[[_ucfirst(item.title)]]</h2>
-                                </paper-material>
+                                </div>
                             </a>
                         </template>
                     </div>

@@ -161,7 +161,7 @@
                             type: 'POST',
                             data: data,
                             headers: [{ 'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded' }]
-                        }).then(function (e) {
+                        }).then((e) => {
                             var token = JSON.parse(e.response).token;
                             window.horizon.disconnect();
                             console.log("connection 2")
@@ -190,19 +190,19 @@
                                 strEmail.push("recipient=" + email);
                                 strEmail.push("username=" + name);
                                 var dataEmail = strEmail.join("&");
-                                this._ajax({
+                                _this.ajax({
                                     url: "http://localhost:9000/smtp/inscription",
                                     type: "POST",
                                     data: dataEmail,
-                                    headers: [{'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}]
+                                    headers: [{ 'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded' }]
                                 }).then(function (e) {
                                     console.log("OK");
                                     console.log(e);
                                 })
-                                .catch(function (e) {
-                                    console.log("ERROR");
-                                    console.log(e);
-                                });
+                                    .catch(function (e) {
+                                        console.log("ERROR");
+                                        console.log(e);
+                                    });
                             } catch (e) {
                                 console.log("Email not sent");
                                 console.log(e);

@@ -296,6 +296,12 @@
                 border-radius: 3px;
             }
         </style>
+        <horizon-query path="/pages" data={{pages}}>
+        </horizon-query>
+        <horizon-query path="/categories" data={{categories}}>
+        </horizon-query>
+        <horizon-query path="/articles" data={{articles}}>
+        </horizon-query>
         <div class="flex">
             <div class$="handle [[editClass]]">
                 <iron-icon icon="more-vert"></iron-icon>
@@ -329,18 +335,42 @@
                         <everest-search-list items="[[pages]]" search-term="{{searchText}}">
                             <template>
                                 <div class="searchItemCtn" data-index$="[[_lowerCase(item.title)]]">
-                                    <everest-article-card class="searchtItem" style="height: 100%;" tabindex$="[[tabIndex]]" selectable selected$="[[selected]]"></everest-article-card>
+                                    <div class="searchItemCtn" data-index$="[[_lowerCase(item.title)]]">
+                                        <paper-item class="searchtItem" style="background: #ccc; height: 100%;" page="{{item}}" uid="{{item.id}}" slug={{item.slug}}
+                                            data-type="page" style="height: 100%;" tabindex$="[[tabIndex]]" selectable selected$="[[selected]]"
+                                            on-tap="saveCurrentChoice">{{item.title}}</paper-item>
+                                    </div>
                                 </div>
                             </template>
                         </everest-search-list>
                     </section>
-                    <section name="categories"></section>
-                    <section name="articles"></section>
+                    <section name="category">
+                        <everest-search-list items="[[categories]]" search-term="{{searchText}}">
+                            <template>
+                                <div class="searchItemCtn" data-index$="[[_lowerCase(item.name)]]">
+                                    <div class="searchtItem" style="background: #ccc; height: 100%;" category="{{item}}" uid="{{item.id}}" slug={{item.slug}}
+                                        data-type="category" style="height: 100%;" tabindex$="[[tabIndex]]" selectable selected$="[[selected]]"
+                                        on-tap="saveCurrentChoice">{{item.name}}</div>
+                                </div>
+                            </template>
+                        </everest-search-list>
+                    </section>
+                    <section name="article">
+                        <everest-search-list items="[[articles]]" search-term="{{searchText}}">
+                            <template>
+                                <div class="searchItemCtn" data-index$="[[_lowerCase(item.title)]]">
+                                    <paper-item class="searchtItem" style="background: #ccc; height: 100%;" article="{{item}}" uid="{{item.id}}" slug={{item.slug}}
+                                        category="{{item.category}}" data-type="article" style="height: 100%;" tabindex$="[[tabIndex]]"
+                                        selectable selected$="[[selected]]" on-tap="saveCurrentChoice">{{item.title}}</paper-item>
+                                </div>
+                            </template>
+                        </everest-search-list>
+                    </section>
                 </iron-pages>
             </paper-dialog-scrollable>
             <div class="buttons">
                 <paper-button dialog-dismiss>Close</paper-button>
-                <paper-button dialog-confirm>Select</paper-button>
+                <paper-button dialog-confirm on-tap="saveTile">Select</paper-button>
             </div>
         </paper-dialog>
     </template>
@@ -356,6 +386,32 @@
             row: String,
             width: String,
             height: String,
+            path: String,
+            id: String,
+
+            saveTile: function (e) {
+                let ref = window.horizon("menus");
+                console.log(this.id);
+                ref.upsert({
+                    id: this.id,
+                    link: this.path
+                });
+            },
+
+            saveCurrentChoice: function (e) {
+                let element = e.currentTarget;
+                if (e.currentTarget.dataset.type == "page") {
+                    let newPath = '/page/' + element.slug;
+                    this.set('path', newPath);
+                } else if (e.currentTarget.dataset.type == "category") {
+                    let newPath = '/category/' + element.slug;
+                    this.set('path', newPath);
+                } else if (e.currentTarget.dataset.type == "article") {
+                    let newPath = '/read/' + element.category + '/' + element.slug;
+                    this.set('path', newPath);
+                }
+                this.set('id', this.menu.id);
+            },
 
             addPage: function (e) {
                 this._openDialog('page');
@@ -375,11 +431,7 @@
 
             _openDialog: function (mode) {
                 this.$.dialog.open();
-                switch (mode) {
-                    case 'page': this.set('openType', mode); break;
-                    case 'category': this.set('openType', mode); break;
-                    case 'article': this.set('openType', mode); break;
-                }
+                this.set('openType', mode);
             },
 
             _lowerCase: function (string) {
