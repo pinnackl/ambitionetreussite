@@ -127,6 +127,7 @@
                 this.$.textContent.focus();
                 this.$.textContent.addEventListener('mouseup', this.handleMouseUp.bind(this), false);
                 this.$.textContent.addEventListener('keyup', this.handleKeyDown.bind(this), false);
+                this.$.textContent.addEventListener('input', this.handleKeyDown.bind(this), false);
             },
 
             handleMouseUp: function (event) {
@@ -201,7 +202,7 @@
                         if (this._headingState == 3) { this.set('_headingState', 0); }
                         else { this.set('_headingState', this._headingState+1); }
 
-                        this._headingState == 0 ? document.execCommand('formatBlock', false, 'p') : this._headingState == 1 ? document.execCommand('formatBlock', false, 'h1') : this._headingState == 2 ? document.execCommand('formatBlock', false, 'h2') : document.execCommand('formatBlock', false, 'h4');
+                        this._headingState == 0 ? document.execCommand('formatBlock', false, 'p') : this._headingState == 1 ? document.execCommand('formatBlock', false, 'h1') : this._headingState == 2 ? document.execCommand('formatBlock', false, 'h2') : document.execCommand('formatBlock', false, 'h3');
                     break;
                     case 'bold':
                         document.execCommand('bold');
