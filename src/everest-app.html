@@ -107,7 +107,6 @@
        :host([large-screen]) [drawer-toggle] {
         display: none;
       }
-
       /* Logo display */
       
       [condensed-title] [title] {
@@ -267,12 +266,7 @@
       <!-- Main content -->
       <app-header-layout>
 
-        <app-header
-          condenses="[[appCondenses]]"
-          fixed="[[appFixed]]"
-          reveals="[[appReveals]]"
-          shadow="[[appShadow]]"
-          effects="[[_computeEffects(appBlendBackground, appFadeBackground, appParallaxBackground, appResizeSnappedTitle, appResizeTitle, appWaterfall)]]"
+        <app-header condenses="[[appCondenses]]" fixed="[[appFixed]]" reveals="[[appReveals]]" shadow="[[appShadow]]" effects="[[_computeEffects(appBlendBackground, appFadeBackground, appParallaxBackground, appResizeSnappedTitle, appResizeTitle, appWaterfall)]]"
           slot="header">
 
           <app-toolbar>
@@ -351,7 +345,7 @@
           <!-- Read view -->
           <everest-read name="read" rights="[[rights]]" route="{{subroute}}" subpage="{{subpage}}" user={{horizonUser}}></everest-read>
           <!-- Page view -->
-          <everest-page name="page" rights="[[rights]]" route="{{subroute}}" subpage="{{subpage}}"></everest-page>
+          <everest-page name="page" rights="{{rightLevel}}" route="{{subroute}}" subpage="{{subpage}}"></everest-page>
           <!-- New view -->
           <everest-new name="new" rights="{{rightLevel}}" route="{{subroute}}" subpage="{{subpage}}" user="{{horizonUser}}"></everest-new>
           <!-- User view -->
@@ -631,11 +625,11 @@
         // console.log(appTitleSizeDefault);
 
         // FIXME : Posible way to fix this loading perf issue issue
-        // Polymer.importHref(
-        //   this.resolveUrl("everest-swatch-picker/everest-swatch-picker.html"),
-        //   null,
-        //   null,
-        //   true);
+        Polymer.importHref(
+          this.resolveUrl("everest-swatch-picker/everest-swatch-picker.html"),
+          null,
+          null,
+          true);
       }
 
       checkRights(rights, levelNeeded) {

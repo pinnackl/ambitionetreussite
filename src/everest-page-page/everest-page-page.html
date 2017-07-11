@@ -1,119 +1,109 @@
-1<link rel="import" href="../../bower_components/polymer/polymer.html">
-
-<link rel="import" href="../../bower_components/import-tinymce/import-tinymce.html">
-<link rel="import" href="../../bower_components/polymer-tinymce/polymer-tinymce.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymer-mce/polymer-mce.html" async>
 
 <link rel="import" href="../shared-styles.html">
 <dom-module id="everest-page-page">
     <template>
         <style include="shared-styles app-grid-style">
-            :host {
+             :host {
                 display: block;
-
                 min-height: 100vh;
                 width: 100%;
-
                 --app-grid-columns: 3;
                 --app-grid-item-height: 200px;
             }
-
+            
             [name=spinner] {
                 min-height: 50vh;
                 display: flex;
                 justify-content: center;
                 align-items: center;
             }
-
+            
             .material {
                 background: #ffffff;
                 height: 100%;
                 color: #444444;
             }
-
+            
             .material h1 {
                 padding-left: 8px;
                 border-left: solid #3eb7e9 6px;
                 color: #56585c;
             }
-
+            
             .material .section-header {
                 margin: 0 8px;
             }
-
+            
             .material .section-header a {
                 text-decoration: none;
                 color: #757575;
                 display: block;
             }
-
+            
             #collapse {
                 color: #757575;
                 text-align: center;
             }
-
+            
             .page-list {
                 margin-bottom: 8px;
             }
-
+            
             .page-list {
                 padding: 16px;
                 -webkit-box-shadow: 0 2px 5px 0 #cccccc;
                 box-shadow: 0 2px 5px 0 #cccccc;
             }
-
+            
             a.page-card {
                 text-align: center;
                 text-decoration: none;
             }
-
+            
             .page-card .material {
                 height: auto;
             }
-
+            
             @media (max-width: 799px) {
-                :host {
+                 :host {
                     --app-grid-columns: 1;
                 }
             }
         </style>
 
-        <firebase-document
-            id="page"
-            path="/pages/[[uid]]">
-        </firebase-document>
+        <horizon-document id="page" path="/pages/[[uid]]">
+        </horizon-document>
 
-        <firebase-query
-            path="/pages"
-            order-by-child="published_trash"
-            equal-to="[[combinedFilters]]"
-            data="{{pages}}"
-        ></firebase-query>
+        <horizon-query path="/pages" order-by-child="published_trash" equal-to="[[combinedFilters]]" data="{{pages}}"></horizon-query>
 
         <div class="material">
             <div class="section-header">
                 <h1>[[_ucfirst(page.title)]]</h1>
                 <template is="dom-if" if={{isAdmin}}>
-                    <paper-icon-button icon="create" raised on-tap="edit"
-                        hidden$="[[editMode]]"></paper-icon-button>
-                    <paper-icon-button icon="close" raised on-tap="close"
-                        hidden$="[[!editMode]]"></paper-icon-button>
+                    <paper-icon-button icon="create" raised on-tap="edit" hidden$="[[editMode]]"></paper-icon-button>
+                    <paper-icon-button icon="close" raised on-tap="close" hidden$="[[!editMode]]"></paper-icon-button>
                 </template>
             </div>
             <template is="dom-if" if={{isAdmin}}>
                 <div class="section-header page-list">
-                    <paper-button class="save-button" raised on-tap="expandPages">Show all pages <iron-icon icon$="[[expand]]"></iron-icon></paper-button>
+                    <paper-button class="save-button" raised on-tap="expandPages">Show all pages
+                        <iron-icon icon$="[[expand]]"></iron-icon>
+                    </paper-button>
                     <div class="sub-align"><span>Published</span>
-                        <paper-toggle-button checked="{{published}}"></paper-toggle-button></div>
+                        <paper-toggle-button checked="{{published}}"></paper-toggle-button>
+                    </div>
                     <div class="sub-align"><span>Trash</span>
-                        <paper-toggle-button checked="{{trash}}"></paper-toggle-button></div>
+                        <paper-toggle-button checked="{{trash}}"></paper-toggle-button>
+                    </div>
                     <a href="/new/page" title="Create a page">
                         <paper-icon-button class="" icon="add"></paper-icon-button>
                     </a>
                 </div>
                 <iron-collapse id="collapse" opened="{{opened}}">
                     <div class="material app-grid">
-                        <template is="dom-repeat" items={{pages}}
-                            as=item index-as=index>
+                        <template is="dom-repeat" items={{pages}} as=item index-as=index>
                             <a class="page-card" href="/page/[[item.slug]]">
                                 <paper-material class="material" elevation="1">
                                     <h2>[[_ucfirst(item.title)]]</h2>
@@ -130,29 +120,19 @@
                 <div class="section-header">
                     <paper-input label="Titre de la page" value="{{_page.title}}"></paper-input>
                     <div class="sub-align"><span>Publish</span>
-                        <paper-toggle-button checked="{{_page.published}}"></paper-toggle-button></div>
-                    <paper-button
-                        class="save-button"
-                        raised
-                        on-tap="updatePage">
+                        <paper-toggle-button checked="{{_page.published}}"></paper-toggle-button>
+                    </div>
+                    <paper-button class="save-button" raised on-tap="updatePage">
                         <iron-icon icon="done"></iron-icon>Save</paper-button>
                 </div>
                 <div class="section-header">
-                    <paper-input
-                        style="width: 90%;"
-                        id="articleTitle"
-                        label="Link to the page"
-                        value="{{_page.slug}}">
+                    <paper-input style="width: 90%;" id="articleTitle" label="Link to the page" value="{{_page.slug}}">
                         <div prefix><span>[[origin]]/</span></div>
                     </paper-input>
                 </div>
             </template>
-            <polymer-tinymce id="editor"
-                base-url="[[origin]]/bower_components/tinymce"
-                hidden$="[[!editMode]]"
-                tinytoolbar="insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
-                tinyplugins='["advlist autolink lists link image charmap print preview anchor","searchreplace visualblocks code fullscreen","insertdatetime media table contextmenu paste"]'
-            ></polymer-tinymce>
+            <polymer-mce hidden$="[[!editMode]]" id="editor" base-url="[[origin]]/bower_components/tinymce" tinytoolbar="insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+                tinyplugins='["advlist autolink lists link image charmap print preview anchor","searchreplace visualblocks code fullscreen","insertdatetime media table contextmenu paste"]'></polymer-mce>
             <div class="material" id="content"></div>
         </div>
         <paper-toast id="stateMessage" horizontal-align="left" always-on-top duration="5000" text="" on-iron-overlay-closed="_toastClosed">
@@ -180,6 +160,8 @@
                     type: Boolean,
                     value: false,
                 },
+
+                rights: Number,
 
                 editMode: {
                     type: Boolean,
@@ -270,7 +252,9 @@
             updatePage: function () {
                 if (this._page.title && this.$.editor.getContent() != "") {
                     var _this = this;
-                    this.$.page.ref.update({
+                    let ref = window.horizon("pages");
+                    ref.upsert({
+                        id: this.page.id,
                         slug: getSlug(this.page.slug),
                         title: this.page.title,
                         content: this.$.editor.getContent() || "",
@@ -279,15 +263,13 @@
                         author: this.page.author,
                         authorID: this.page.authorID,
                         published: this.page.published,
-                        trash: false,
-                        'published_trash': this._computeCombinedIndexPt(),
-                        'slug_published': this._computeCombinedIndexSp(),
-                    }).then(function (value) {
+                        trash: false
+                    }).subscribe((value) => {
                         _this.stateMessageIcon = _this.stateMessage.success.icon;
                         _this.$.stateMessage.text = _this.stateMessage.success.text;
                         _this.$.stateMessage.open();
                         _this.isUpdate = true;
-                    }).catch(function (error) {
+                    }, err => {
                         _this.stateMessageIcon = _this.stateMessage.errorExist.icon;
                         _this.$.stateMessage.text = _this.stateMessage.errorExist.text;
                         _this.$.stateMessage.open();
@@ -346,7 +328,7 @@
             },
 
             checkRights: function (role) {
-                if (this.rights[role]) {
+                if (this.rights == 4) {
                     this.isAdmin = true;
                 } else {
                     this.isAdmin = false;

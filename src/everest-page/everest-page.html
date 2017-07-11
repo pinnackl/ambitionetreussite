@@ -12,21 +12,20 @@
 <dom-module id="everest-page">
     <template>
         <style include="shared-styles app-grid-style">
-            :host {
+             :host {
                 display: block;
-
                 min-height: 100vh;
                 width: 100%;
             }
-
+            
             iron-pages {
                 min-height: 100vh;
             }
-
+            
             iron-pages section {
                 min-height: 50vh;
             }
-
+            
             [name=spinner] {
                 min-height: 50vh;
                 display: flex;
@@ -34,35 +33,25 @@
                 align-items: center;
             }
         </style>
-        <app-route
-            route="[[route]]"
-            pattern="/:page"
-            data="{{routeData}}"
-            tail="{{subroute}}"></app-route>
+        <app-route route="[[route]]" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
 
         <page-title base-title="Everest" title="[[_ucfirst(staticPage.title)]]" direction="reversed"></page-title>
 
-        <firebase-query
-            path="/pages"
-            order-by-child="[[pageindex]]"
-            equal-to="[[page]][[pagefilter]]"
-            limit-to-first="1"
-            data="{{matchedPage}}"
-        ></firebase-query>
+        <horizon-query path="/pages" data="{{matchedPage}}"></horizon-query>
 
-        <template is="dom-repeat" items={{matchedPage}}
-            as=item index-as=index filter="isHandler">
-            <firebase-document
-                id="query"
-                path="/pages/[[item.$key]]"
-                data="{{staticPage}}">
-            </firebase-document>
-        </template>
+        <!--<template is="dom-repeat" items={{matchedPage}} as=item index-as=index filter="isHandler">
+            <horizon-document id="query" path="/pages/[[item.id]]" data="{{staticPage}}">
+            </horizon-document>
+        </template>-->
+        <horizon-document id="query" path="/pages/[[routeData.page]]" data="{{staticPage}}" index="slug">
+        </horizon-document>
         <iron-pages selected="[[view]]" attr-for-selected="name" fallback-selection="spinner">
             <section name="read">
-                <everest-page-page rights="[[rights]]" uid="[[uid]]" is-admin="[[isAdmin]]" page="[[staticPage]]"></everest-page-page>
+                <everest-page-page rights="[[rights]]" uid="[[uid]]" rights="[[rights]]" page="[[staticPage]]"></everest-page-page>
             </section>
-            <div name="spinner"><paper-spinner active alt="Loading content"></paper-spinner></div>
+            <div name="spinner">
+                <paper-spinner active alt="Loading content"></paper-spinner>
+            </div>
         </iron-pages>
     </template>
     <script>
@@ -98,7 +87,7 @@
                 },
 
                 rights: {
-                    type: Object,
+                    type: Number,
                 },
 
                 isAdmin: {
@@ -124,13 +113,12 @@
 
             observers: [
                 '_routePageChanged(routeData.page)',
-                '_rightsChanged(rights.ts)',
                 '_contentChanged(staticPage.content)',
             ],
 
             isHandler: function (item) {
                 if (item) {
-                    this.uid = item.$key;
+                    this.uid = item.id;
                 }
                 return true;
             },
@@ -160,10 +148,6 @@
                     this.pageindex = "slug_published";
                     this.pagefilter = "~true";
                 }
-            },
-
-            _rightsChanged: function (ts) {
-                this.checkRights('administrators');
             },
 
             _ucfirst: function (string) {
