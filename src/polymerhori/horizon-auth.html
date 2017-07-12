@@ -102,8 +102,9 @@
                     var data = str.join("&");
 
                     var promise = new Promise(function (resolve, reject) {
+                        let url = 'http://' + window.authDomain + '/auth/login';
                         _this.ajax({
-                            url: 'http://localhost:8181/auth/login',
+                            url: url,
                             type: 'POST',
                             data: data,
                             headers: [{ 'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded' }]
@@ -116,7 +117,7 @@
                             });
                             console.log('connection 1');
                             var hz = new Horizon({
-                                host: 'localhost:8181',
+                                host: window.authDomain,
                                 authType: {
                                     storeLocally: false,
                                     token: token
@@ -156,8 +157,9 @@
                     var data = str.join("&");
 
                     var promise = new Promise(function (resolve, reject) {
+                        let url = 'http://' + window.authDomain + '/auth/login';
                         _this.ajax({
-                            url: 'http://localhost:8181/auth/signup',
+                            url: url,
                             type: 'POST',
                             data: data,
                             headers: [{ 'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded' }]
@@ -166,7 +168,7 @@
                             window.horizon.disconnect();
                             console.log("connection 2")
                             var hz = new Horizon({
-                                host: 'localhost:8181',
+                                host: window.authDomain,
                                 authType: {
                                     storeLocally: false,
                                     token: token
@@ -221,7 +223,7 @@
                         .objectStore("token")
                         .delete(1);
                     console.log("connection 8")
-                    var hz = new Horizon({ host: 'localhost:8181', authType: 'unauthenticated' });
+                    var hz = new Horizon({ host: window.authDomain, authType: 'unauthenticated' });
                     window.horizon = hz;
                     this.fire('dbconnection');
                     // request.onsuccess = function (event) {
