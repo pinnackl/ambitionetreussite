@@ -24,9 +24,9 @@
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 
 <!-- Everest Custom Elements -->
-<link rel="lazy-import" href="my-view404.html">
 <link rel="import" href="everest-menu/everest-menu.html">
 <link rel="import" href="everest-common-behaviors/everest-behaviors.html">
 <link rel="import" href="everest-footer/everest-footer.html">
@@ -388,6 +388,10 @@
           </app-toolbar>
           <paper-button raised on-tap="_downloadTheme" hidden="[[!showDownload]]">
             <iron-icon icon="file-download"></iron-icon>Download Theme</paper-button>
+          <div class="flexbox-container">
+            <span>Override</span>
+            <paper-toggle-button checked="{{override}}"></paper-toggle-button>
+          </div>
           <iron-pages selected="{{selected}}" fallback-selection="0">
             <div>
               <!-- Banner Upload -->
