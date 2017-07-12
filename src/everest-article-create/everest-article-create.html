@@ -374,12 +374,12 @@
 
         <div class="post">
             <div class="cover">
-                <iron-image src="https://cdn.pinnackl.com/images/[[cover]]" preload style="background: #3eb7e9;" fade sizing="cover" position="{{position}}"></iron-image>
+                <iron-image src="[[cover]]" preload style="background: #3eb7e9;" fade sizing="cover" position="{{position}}"></iron-image>
                 <div class="filter">
                     <h1 class="title">[[title]]</h1>
                     <div class="article-info">
                         <div class="avatar-ctn">
-                            <iron-image class="avatar" src="https://cdn.pinnackl.com/avatars/[[userData.basicInfo.avatar]]" preload sizing="cover" style="background-color: lightgray;"></iron-image>
+                            <iron-image class="avatar" src="[[userData.avatar]]" preload sizing="cover" style="background-color: lightgray;"></iron-image>
                         </div>
                         <div class="author-ctn">
                             <div class="autor-name">By <a href="/user/[[user.uid]]" title="[[userData.name]]">[[userData.name]]</a>,</div>
@@ -426,7 +426,7 @@
                         </div>
                         <div class="section-header">
                             <!-- FIXME : Get the target from config -->
-                            <vaadin-upload accept="image/*" method="POST" form-data-name="cover" target="http://localhost:9000/cdn/upload" on-upload-success="fileUploaded">
+                            <vaadin-upload accept="image/*" method="POST" form-data-name="cover" target="{{target}}" on-upload-success="fileUploaded">
                                 Choose a cover
                             </vaadin-upload>
                             <template is="dom-if" if="{{categories}}">
@@ -512,6 +512,10 @@
                     value: "check-circle"
                 },
 
+                target: {
+                    type: String,
+                },
+
                 stateMessage: {
                     type: Object,
                     value: function () {
@@ -570,6 +574,8 @@
 
             ready: function () {
                 this.origin = window.location.origin;
+                let url = "http://" + window.cdnUrl + '/cdn/upload';
+                this.set('target', url);
             },
 
             create: function (e) {
@@ -619,7 +625,7 @@
 
             fileUploaded: function (e, detail) {
                 var parsedResponse = JSON.parse(detail.xhr.response);
-                this.cover = parsedResponse.imageName;
+                this.cover = parsedResponse.imageBase64;
             },
 
             addTag: function (e) {

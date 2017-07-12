@@ -78,12 +78,12 @@
       },
 
       appLogo: {
-        value:"",
+        value: "",
         observer: "_appLogoChanged"
       },
 
       appLogoBase64: {
-        value:"",
+        value: "",
         observer: "_appLogoBase64Changed"
       },
 
@@ -136,19 +136,19 @@
 
       appResizeSnappedTitle: {
         type: Boolean,
-        value:false,
+        value: false,
         observer: '_appResizeSnappedTitleChanged'
       },
 
       appResizeTitle: {
         type: Boolean,
-        value:true,
+        value: true,
         observer: '_appResizeTitleChanged'
       },
 
       appWaterfall: {
         type: Boolean,
-        value:true,
+        value: true,
         observer: '_appWaterfallChanged'
       },
 
@@ -162,13 +162,15 @@
         value: function () {
           return {};
         }
-      }
+      },
+
+      url: String,
     },
 
     listeners: {
       'download-theme': '_download'
     },
-    
+
     observers: [
       '_removeIf("appFixed", appReveals)',
       '_removeIf("appReveals", appFixed)',
@@ -180,13 +182,18 @@
       '_removeIf("appWaterfall", appShadow)'
     ],
 
-    _removeIf: function(propName, value) {
+    ready: function () {
+      let url = "http://" + window.cdnUrl + '/theme/download';
+      this.set('url', url);
+    },
+
+    _removeIf: function (propName, value) {
       if (this[propName] && value) {
         this[propName] = false;
       }
     },
 
-    _computeEffects: function() {
+    _computeEffects: function () {
       return [
         this.appblendBackground ? 'blend-background ' : '',
         this.appFadeBackground ? 'fade-background ' : '',
@@ -212,7 +219,7 @@
       this.__updateCustomProperty('--app-icon-color', e);
     },
 
-     _appLogoTitleColorChanged: function (e) {
+    _appLogoTitleColorChanged: function (e) {
       this.__updateCustomProperty('--app-logo-title-color', e);
     },
 
@@ -244,11 +251,11 @@
       this.__updateCustomProperty('--app-header-banner', e);
     },
 
-    _appHeaderBannerPositionChanged:function(e) {
+    _appHeaderBannerPositionChanged: function (e) {
       this.__updateCustomProperty('--app-header-banner-position', e);
     },
 
-    _appHeaderBannerSizeChanged:function(e) {
+    _appHeaderBannerSizeChanged: function (e) {
       this.__updateCustomProperty('--app-header-banner-size', e);
     },
 
@@ -271,51 +278,49 @@
       this.__updateThemeVariable('appCDN', e);
     },
 
-    _appCondensesChanged:function(e) {
+    _appCondensesChanged: function (e) {
       this.__updateThemeVariable('appCondenses', e);
     },
 
-    _appFixedChanged:function(e) {
+    _appFixedChanged: function (e) {
       this.__updateThemeVariable('appFixed', e);
     },
 
-    _appRevealsChanged:function(e) {
+    _appRevealsChanged: function (e) {
       this.__updateThemeVariable('appReveals', e);
     },
 
-    _appShadowChanged:function(e) {
+    _appShadowChanged: function (e) {
       this.__updateThemeVariable('appShadow', e);
     },
 
-    _appBlendBackgroundChanged:function(e) {
+    _appBlendBackgroundChanged: function (e) {
       this.__updateThemeVariable('appBlendBackground', e);
     },
 
-    _appFadeBackgroundChanged:function(e) {
+    _appFadeBackgroundChanged: function (e) {
       this.__updateThemeVariable('appFadeBackground', e);
     },
 
-    _appParallaxBackgroundChanged:function(e) {
+    _appParallaxBackgroundChanged: function (e) {
       this.__updateThemeVariable('appParallaxBackground', e);
     },
 
-    _appResizeSnappedTitleChanged:function(e) {
+    _appResizeSnappedTitleChanged: function (e) {
       this.__updateThemeVariable('appResizeSnappedTitle', e);
     },
 
-    _appResizeTitleChanged:function(e) {
+    _appResizeTitleChanged: function (e) {
       this.__updateThemeVariable('appResizeTitle', e);
     },
 
-    _appWaterfallChanged:function(e) {
+    _appWaterfallChanged: function (e) {
       this.__updateThemeVariable('appWaterfall', e);
     },
 
     // Live updates
     __updateCustomProperty: function (name, value) {
 
-      console.log(name, value);
-      
       this.themeBuffer = this.themeBuffer || {};
       var property = {};
       property[name] = value;
@@ -344,8 +349,6 @@
     },
 
     __updateThemeVariable: function (name, value) {
-      console.log(name, value);
-      
       this.set(name, value);
       this.__setTheme(name, value);
     },
@@ -361,18 +364,18 @@
 
     _download: function () {
       var str = [];
-      for(var p in this.theme)
+      for (var p in this.theme)
         str.push(encodeURIComponent(p) + "=" + encodeURIComponent(this.theme[p]));
       var data = str.join("&");
       this._ajax({
-        url: "http://localhost:9000/theme/download",
+        url: this.url,
         type: "POST",
         data: data,
-        headers: [{'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}]
+        headers: [{ 'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded' }]
       }).then(function (e) {
         // Create a new Blob object using the
         //response data of the onload object
-        var blob = new Blob([e.response], {type: "octet/stream"});
+        var blob = new Blob([e.response], { type: "octet/stream" });
         //Create a link element, hide it, direct
         //it towards the blob, and then 'click' it programatically
         let a = document.createElement("a");
@@ -390,7 +393,7 @@
         window.URL.revokeObjectURL(url);
         a.remove();
       })
-      .catch(function (e) {});
+        .catch(function (e) { });
     },
 
     /**
@@ -403,52 +406,53 @@
      * @param  {[type]} headers
      * @return {[type]}
      */
-     _ajax: function (param) {
-        var url         = typeof param.url !== 'undefined' ? param.url  : "/";
-        var type        = typeof param.type !== 'undefined' ? param.type  : "GET";
-        var data        = typeof param.data !== 'undefined' ? param.data  : {};
-        var headers     = typeof param.headers !== 'undefined' ? param.headers  : [{'header': 'X-Requested-With', 'value': 'XMLHttpRequest'}];
-        var user        = typeof param.user !== 'undefined' ? param.user  : null;
-        var password    = typeof param.password !== 'undefined' ? param.password  : null;
-        var async       = typeof param.async != 'undefined' ? param.async : true;
+    _ajax: function (param) {
+      var url = typeof param.url !== 'undefined' ? param.url : "/";
+      var type = typeof param.type !== 'undefined' ? param.type : "GET";
+      var data = typeof param.data !== 'undefined' ? param.data : {};
+      var headers = typeof param.headers !== 'undefined' ? param.headers : [{ 'header': 'X-Requested-With', 'value': 'XMLHttpRequest' }];
+      var user = typeof param.user !== 'undefined' ? param.user : null;
+      var password = typeof param.password !== 'undefined' ? param.password : null;
+      var async = typeof param.async != 'undefined' ? param.async : true;
 
-        // Promise fallback
-        var callback    = typeof param.callback !== 'undefined' ? param.callback  : function () {};
-        var failure     = typeof param.failure !== 'undefined' ? param.failure  : function () {};
+      // Promise fallback
+      var callback = typeof param.callback !== 'undefined' ? param.callback : function () { };
+      var failure = typeof param.failure !== 'undefined' ? param.failure : function () { };
 
-        if ('Promise' in window) {
-            var promise = new Promise(function (resolve, reject) {
+      if ('Promise' in window) {
+        var promise = new Promise(function (resolve, reject) {
 
-                // Init the XHR request object
-                var request = new XMLHttpRequest();
-                request.open(type, url, async, user, password);
+          // Init the XHR request object
+          var request = new XMLHttpRequest();
+          request.open(type, url, async, user, password);
 
-                // Set custom headers
-                for (var i = 0; i < headers.length; i++) {
-                    request.setRequestHeader(headers[i].header, headers[i].value);
-                }
+          // Set custom headers
+          for (var i = 0; i < headers.length; i++) {
+            request.setRequestHeader(headers[i].header, headers[i].value);
+          }
 
-                request.onload = function () {
-                    if (request.status >= 200 && request.status < 400) {
-                        // Success!
-                        resolve(request);
-                    } else {
-                        // Error!
-                        console.error("Error:", request.status);
-                        reject(request);
-                      };
-                    }
+          request.onload = function () {
+            if (request.status >= 200 && request.status < 400) {
+              // Success!
+              resolve(request);
+            } else {
+              // Error!
+              console.error("Error:", request.status);
+              reject(request);
+            };
+          }
 
-                request.onerror = function () {
-                    reject(this.statusText);
-                };
+          request.onerror = function () {
+            reject(this.statusText);
+          };
 
-                request.send(data);
-            });
+          request.send(data);
+        });
 
-            return promise;
+        return promise;
 
-        } else { console.warn("Promise are not supported on this browser!"); }
+      } else { console.warn("Promise are not supported on this browser!"); }
     }
   };
+
 </script>

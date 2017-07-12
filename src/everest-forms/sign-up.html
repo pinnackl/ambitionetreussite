@@ -1,25 +1,25 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../preview-file/preview-file.html">
 
 <link rel="import" href="../shared-styles.html">
 <dom-module id="sign-up">
     <template>
         <style include="shared-styles">
-            :host {
+             :host {
                 display: block;
             }
-
+            
             .form {
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
             }
-
+            
             .form-error {
                 color: #ff5252;
             }
-
         </style>
         <form class="form" action="sign-up_submit" method="get" accept-charset="utf-8">
             <template is="dom-if" if={{formError}}>
@@ -28,11 +28,7 @@
             <div class="form-error">[[errorMsg]]</div>
             <div class="section-header">
                 <template is="dom-if" if={{user.avatar}}>
-                    <iron-image
-                        style="width: 100px; height: 100px; border: solid 1px #3eb7e9;"
-                        src="{{avatar}}"
-                        preload
-                        sizing="contain"></iron-image>
+                    <iron-image style="width: 100px; height: 100px; border: solid 1px #3eb7e9;" src="{{avatar}}" preload sizing="contain"></iron-image>
                 </template>
                 <preview-file content="{{avatar}}" on-image-loaded="fileUploaded"></preview-file>
             </div>
