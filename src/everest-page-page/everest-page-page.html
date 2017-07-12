@@ -1,5 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/polymer-mce/polymer-mce.html" async>
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../everest-page-create/page-tile.html">
 
 <link rel="import" href="../shared-styles.html">
 <dom-module id="everest-page-page">
@@ -9,6 +11,7 @@
                 display: block;
                 min-height: 100vh;
                 width: 100%;
+                --grid-width: 100%;
                 --app-grid-columns: 3;
                 --app-grid-item-height: 200px;
             }
@@ -65,7 +68,29 @@
             .page-card .material {
                 height: auto;
             }
-            
+
+            the-grid {
+                margin: 16px 0;
+                background: #f7f7f7;
+                width: 100%;
+                height: 100%;
+            }
+
+            the-grid > div[placeholder] {
+                background: #afafaf;
+            }
+
+            paper-item {
+                min-height: 48px;
+                padding: 0px;
+            }
+
+            paper-item paper-button {
+                width: 100%;
+                background: #179bd7;
+                color: #ffffff;
+            }
+
             @media (max-width: 799px) {
                  :host {
                     --app-grid-columns: 1;
@@ -131,8 +156,68 @@
                     </paper-input>
                 </div>
             </template>
-            <polymer-mce hidden$="[[!editMode]]" id="editor" base-url="[[origin]]/bower_components/tinymce" tinytoolbar="insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
-                tinyplugins='["advlist autolink lists link image charmap print preview anchor","searchreplace visualblocks code fullscreen","insertdatetime media table contextmenu paste"]'></polymer-mce>
+            <iron-pages selected="{{_page.mode}}" attr-for-selected="name" fallback-section="text">
+                <section name="text">
+                    <polymer-mce hidden$="[[!editMode]]" id="editor" base-url="[[origin]]/bower_components/tinymce" tinytoolbar="insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+                        tinyplugins='["advlist autolink lists link image charmap print preview anchor","searchreplace visualblocks code fullscreen","insertdatetime media table contextmenu paste"]'></polymer-mce>
+                </section>
+                <section name="grid">
+                    <template is="dom-if" if={{isAdmin}}>
+                        <div class="section-header">
+                            <div>Column number : {{nbCol}} <paper-slider value="{{nbCol}}" min="5" max="12"></paper-slider></div>
+                            <div>
+                                <paper-menu-button>
+                                  <paper-button class="save-button" raised slot="dropdown-trigger"><iron-icon icon="add"></iron-icon>ADD</paper-button>
+                                  <paper-listbox slot="dropdown-content">
+                                    <paper-item><paper-button on-tap="addTextTile"><iron-icon icon="editor:text-fields"></iron-icon>Text</paper-button></paper-item>
+                                    <paper-item><paper-button on-tap="addImageTile"><iron-icon icon="editor:insert-photo"></iron-icon>Image</paper-button></paper-item>
+                                  </paper-listbox>
+                                </paper-menu-button>
+                            </div>
+                        </div>
+                    </template>
+                    <the-grid
+                        id="grid"
+                        draggable=[[editMode]]
+                        resizable=[[editMode]]
+                        animated
+                        row-autogrow=[[editMode]]
+                        col-count="{{nbCol}}"
+                        row-count="{{nbRow}}"
+                        cell-width="{{cellWidth}}"
+                        cell-height="{{cellHeight}}"
+                        cell-margin="0">
+
+                        <template is="dom-repeat" items={{_page.content}}
+                            as=tile index-as=index initialCount=2>
+                            <page-tile class="tile"
+                                edit$="[[editMode]]"
+                                tile="{{tile}}"
+                                type="{{tile.type}}"
+                                col$="{{tile.col}}"
+                                row$="{{tile.row}}"
+                                height$="{{tile.height}}"
+                                width$="{{tile.width}}"
+                                content="{{tile.content}}"
+                                index="[[index]]"
+                                on-move="_handleMove"
+                                on-resize="_handleMove"
+                                on-delete-tile="handleDeleteTile">
+
+                                <span resize="left"></span>
+                                <span resize="right"></span>
+                                <span resize="top"></span>
+                                <span resize="bottom"></span>
+                                <span resize="top-right"></span>
+                                <span resize="top-left"></span>
+                                <span resize="bottom-right"></span>
+                                <span resize="bottom-left"></span>
+                            </page-tile>
+                        </template>
+                        <div placeholder></div>
+                    </the-grid>
+                </section>
+            </iron-pages>
             <div class="material" id="content"></div>
         </div>
         <paper-toast id="stateMessage" horizontal-align="left" always-on-top duration="5000" text="" on-iron-overlay-closed="_toastClosed">
@@ -197,6 +282,28 @@
                     type: String,
                 },
 
+
+                nbCol: {
+                    type: Number,
+                    value: 12,
+                    obsever: '_computeCellWidth'
+                },
+
+                nbRow: {
+                    type: Number,
+                    value: 6
+                },
+
+                cellHeight: {
+                    type: Number,
+                    value: 100
+                },
+
+                cellWidth: {
+                    type: Number,
+                    value: 100
+                },
+
                 stateMessageIcon: {
                     type: String,
                     value: "check-circle"
@@ -239,6 +346,11 @@
 
             ready: function () {
                 this.origin = window.location.origin;
+
+                // Init the compute of the grid
+                this._computeCellWidth();
+
+                window.addEventListener('resize', this._computeCellWidth.bind(this));
             },
 
             edit: function (e) {
@@ -247,6 +359,35 @@
 
             close: function (e) {
                 this.editMode = false;
+            },
+
+
+            addTextTile: function (e) {
+                if (this.pageTiles.length >= this.nbRow-2) {
+                    ++this.nbRow;
+                }
+                this.push('pageTiles', {
+                    type: 'text',
+                    col: 0,
+                    row: this.pageTiles.length,
+                    height: 1,
+                    width: this.nbCol,
+                    content: {}
+                });
+            },
+
+            addImageTile: function (e) {
+                if (this.pageTiles.length >= this.nbRow-2) {
+                    ++this.nbRow;
+                }
+                this.push('pageTiles', {
+                    type: 'image',
+                    col: 0,
+                    row: this.pageTiles.length,
+                    height: 1,
+                    width: this.nbCol,
+                    content: {}
+                });
             },
 
             updatePage: function () {
@@ -279,15 +420,18 @@
 
             _pageChanged: function (content) {
                 this._page = this.page;
-
-                this.$.content.innerHTML = content || '';
+                if (this.page && this.page.mode == "text") {
+                    this.$.content.innerHTML = content || '';
+                }
 
                 if (typeof content != 'undefined') {
                     if (this.pastSlug == null) {
                         this.pastSlug = this.page.slug;
                     }
                     this.date = moment(this.page.edited).fromNow();
-                    this.$.editor.setContent(this.page.content);
+                    if (this.page.mode == "text") {
+                        this.$.editor.setContent(this.page.content);
+                    }
                 }
             },
 
@@ -325,6 +469,35 @@
                         this.pastSlug = null;
                     }
                 }
+            },
+
+
+            _computeCellWidth: function () {
+                let initWidth = window.innerWidth - (2*24 + 2* 16);
+                this.cellHeight = (window.innerHeight - 12 * ( this.nbRow - 1)) / this.nbRow;
+                this.cellWidth = (initWidth - 12 * ( this.nbCol - 1)) / this.nbCol;
+            },
+
+            /**
+             * Handle any tile move and save it new props
+             *
+             * @param      {Event}  event   the move event object
+             */
+            _handleMove: function (event) {
+                // let idx = event.detail.tile.index;
+                // if (this.menus[idx]) {
+                //     if (event.detail.tile.col)
+                //         this.menus[idx].col = event.detail.tile.col;
+
+                //     if (event.detail.tile.row)
+                //         this.menus[idx].row = event.detail.tile.row;
+
+                //     if (event.detail.tile.height)
+                //         this.menus[idx].height = event.detail.tile.height;
+
+                //     if (event.detail.tile.width)
+                //         this.menus[idx].width = event.detail.tile.width;
+                // }
             },
 
             checkRights: function (role) {
