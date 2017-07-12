@@ -192,6 +192,14 @@
       this.set('url', url);
     },
 
+    _fallbackOnLtb: function (themeProperty, ltbProperty) {
+      if (this.override) {
+        return ltbProperty;
+      } else {
+        return themeProperty;
+      }
+    },
+
     _removeIf: function (propName, value) {
       if (this[propName] && value) {
         this[propName] = false;
