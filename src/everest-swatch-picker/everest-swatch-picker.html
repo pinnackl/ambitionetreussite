@@ -14,20 +14,20 @@
 <dom-module id="everest-swatch-picker">
   <template>
     <style>
-      :host {
+       :host {
         display: block;
       }
-
+      
       paper-icon-button {
         color: var(--swatch-picker-bg);
       }
-
+      
       paper-swatch-picker {
         --paper-swatch-picker-icon: {
           color: white;
         }
       }
-
+      
       file-upload {
         --paper-button: {
           border-radius: 100%;
@@ -39,28 +39,21 @@
           margin-bottom: 0px!important;
         }
       }
-
+      
       .swatch-picker {
         display: inline-block;
         border-radius: 50%;
         background-color: var(--swatch-picker-bg);
       }
-
-       [hidden] {
-         display: none;
-       }
+      
+      [hidden] {
+        display: none;
+      }
     </style>
     <iron-pages selected="{{mode}}" attr-for-selected="name">
 
       <div class="image" name="image">
-        <vaadin-upload 
-          nodrop 
-          max-files="1" 
-          accept="image/*" 
-          method="POST" 
-          form-data-name="cover" 
-          target="http://localhost:9000/cdn/upload" 
-          on-upload-success="_imageChanged">
+        <vaadin-upload nodrop max-files="1" accept="image/*" method="POST" form-data-name="cover" target="{{urlUpload}}" on-upload-success="_imageChanged">
         </vaadin-upload>
       </div>
 
@@ -80,26 +73,26 @@
 
       <div class="selector" name="selector">
         <paper-menu-button>
-            <paper-icon-button icon="swap-vert" slot="dropdown-trigger" horizontal-align="right"></paper-icon-button>
-            <paper-listbox slot="dropdown-content" selected="{{vertical}}" attr-for-selected="value">
-                <paper-item value="top">
-                    <iron-icon icon="editor:vertical-align-top"></iron-icon>Top</paper-item>
-                <paper-item value="center">
-                    <iron-icon icon="editor:vertical-align-center"></iron-icon>Center</paper-item>
-                <paper-item value="bottom">
-                    <iron-icon icon="editor:vertical-align-bottom"></iron-icon>Bottom</paper-item>
-            </paper-listbox>
+          <paper-icon-button icon="swap-vert" slot="dropdown-trigger" horizontal-align="right"></paper-icon-button>
+          <paper-listbox slot="dropdown-content" selected="{{vertical}}" attr-for-selected="value">
+            <paper-item value="top">
+              <iron-icon icon="editor:vertical-align-top"></iron-icon>Top</paper-item>
+            <paper-item value="center">
+              <iron-icon icon="editor:vertical-align-center"></iron-icon>Center</paper-item>
+            <paper-item value="bottom">
+              <iron-icon icon="editor:vertical-align-bottom"></iron-icon>Bottom</paper-item>
+          </paper-listbox>
         </paper-menu-button>
         <paper-menu-button>
-            <paper-icon-button icon="swap-horiz" slot="dropdown-trigger" horizontal-align="right"></paper-icon-button>
-            <paper-listbox slot="dropdown-content" selected="{{horizontal}}" attr-for-selected="value">
-                <paper-item value="left">
-                    <iron-icon icon="editor:format-align-left"></iron-icon>Left</paper-item>
-                <paper-item value="center">
-                    <iron-icon icon="editor:format-align-center"></iron-icon>Center</paper-item>
-                <paper-item value="right">
-                    <iron-icon icon="editor:format-align-right"></iron-icon>Right</paper-item>
-            </paper-listbox>
+          <paper-icon-button icon="swap-horiz" slot="dropdown-trigger" horizontal-align="right"></paper-icon-button>
+          <paper-listbox slot="dropdown-content" selected="{{horizontal}}" attr-for-selected="value">
+            <paper-item value="left">
+              <iron-icon icon="editor:format-align-left"></iron-icon>Left</paper-item>
+            <paper-item value="center">
+              <iron-icon icon="editor:format-align-center"></iron-icon>Center</paper-item>
+            <paper-item value="right">
+              <iron-icon icon="editor:format-align-right"></iron-icon>Right</paper-item>
+          </paper-listbox>
         </paper-menu-button>
       </div>
 
@@ -171,10 +164,14 @@
           type: Boolean,
           value: false
         },
- 
+
         default: {
           type: String,
-        }
+        },
+
+        urlUpload: String,
+
+        urlImage: String,
       },
 
       observers: [
@@ -183,40 +180,48 @@
         '__positionChanged(vertical, horizontal)'
       ],
 
-      _imageChanged: function(e, detail) {
-        var cdn = "http://localhost:9000/images/";
+      ready: function () {
+        this.origin = window.location.origin;
+        let urlUpload = "http://" + window.cdnUrl + '/cdn/upload';
+        let urlImage = "http://" + window.cdnUrl + '/images/';
+        this.set('urlUpload', urlUpload);
+        this.set('urlImage', urlImage);
+      },
+
+      _imageChanged: function (e, detail) {
+        var cdn = this.urlImage;
         var parsedResponse = JSON.parse(detail.xhr.response);
         var image = cdn + parsedResponse.imageName;
         var base64Image = parsedResponse.imageBase64;
-        if(this.asBackground)
-          this.set('image', 'url("'+ image +'")');
+        if (this.asBackground)
+          this.set('image', 'url("' + image + '")');
         else
           this.set('image', image);
         this.set('imageBaseSf', base64Image);
         console.log(this.imageBase64);
       },
 
-      _sizeChanged:function(object) {
-        this.set('size', object.detail.value+"px");
+      _sizeChanged: function (object) {
+        this.set('size', object.detail.value + "px");
       },
 
-      _textChanged:function(object) {
+      _textChanged: function (object) {
         this.set('text', object.detail.value);
       },
 
-      __bannerSizeChanged:function(e) {
-        if(e == true)
+      __bannerSizeChanged: function (e) {
+        if (e == true)
           this.set('display', 'cover');
         else
           this.set('display', 'contains');
       },
 
-      __positionChanged:function(vert, horiz){
-        if(vert && horiz)
-          this.set('position', vert + " " + horiz); 
-        else if(vert && !horiz)
+      __positionChanged: function (vert, horiz) {
+        if (vert && horiz)
+          this.set('position', vert + " " + horiz);
+        else if (vert && !horiz)
           this.set('position', vert);
-        else if(!vert && horiz)
+        else if (!vert && horiz)
           this.set('position', horiz);
       },
 
@@ -225,32 +230,32 @@
         if (!value) {
           value = "#fefefe";
         }
-        this.updateStyles({'--swatch-picker-bg' : this.__invertColor(value)});
+        this.updateStyles({ '--swatch-picker-bg': this.__invertColor(value) });
       },
 
       __invertColor: function (hex) {
-          if (hex.indexOf('#') === 0) {
-              hex = hex.slice(1);
-          }
-          // convert 3-digit hex to 6-digits.
-          if (hex.length === 3) {
-              hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-          }
-          if (hex.length !== 6) {
-              throw new Error('Invalid HEX color.');
-          }
-          // invert color components
-          var r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
-              g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
-              b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
-          // pad each with zeros and return
-          return '#' + this.__padZero(r) + this.__padZero(g) + this.__padZero(b);
+        if (hex.indexOf('#') === 0) {
+          hex = hex.slice(1);
+        }
+        // convert 3-digit hex to 6-digits.
+        if (hex.length === 3) {
+          hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+        }
+        if (hex.length !== 6) {
+          throw new Error('Invalid HEX color.');
+        }
+        // invert color components
+        var r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
+          g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
+          b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
+        // pad each with zeros and return
+        return '#' + this.__padZero(r) + this.__padZero(g) + this.__padZero(b);
       },
 
       __padZero: function (str, len) {
-          len = len || 2;
-          var zeros = new Array(len).join('0');
-          return (zeros + str).slice(-len);
+        len = len || 2;
+        var zeros = new Array(len).join('0');
+        return (zeros + str).slice(-len);
       }
     });
   </script>
