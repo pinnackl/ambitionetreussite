@@ -4,18 +4,14 @@
 <dom-module id="everest-category">
     <template>
         <style>
-            :host {
+             :host {
                 display: block;
             }
         </style>
 
         <page-title base-title="Everest" title="[[_ucfirst(category)]]" direction="reversed"></page-title>
 
-        <app-route
-            route="{{route}}"
-            pattern="/:category"
-            data="{{routeData}}"
-            tail="{{subroute}}"></app-route>
+        <app-route route="{{route}}" pattern="/:category" data="{{routeData}}" tail="{{subroute}}"></app-route>
         <template is="dom-if" if={{category}}>
             <everest-article view="list" category="[[category]]" route="{{subroute}}" is-admin="{{isAdmin}}"></everest-article>
         </template>
@@ -54,7 +50,6 @@
             ],
 
             _routePageChanged: function (category) {
-                console.log(category);
                 this.category = category || '';
                 this.subpage = this.category;
             },

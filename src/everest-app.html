@@ -346,7 +346,7 @@
           <!-- Home view -->
           <everest-home name="home" rights="[[rights]]"></everest-home>
           <!-- Category view -->
-          <everest-category name="category" rights="[[rights]]" route="{{subroute}}" subpage="{{subpage}}"></everest-category>
+          <everest-category name="category" rights="[[rights]]" route="{{subroute}}" subpage="{{subpage}}" user={{horizonUser}}></everest-category>
           <!-- Read view -->
           <everest-read name="read" rights="[[rights]]" route="{{subroute}}" subpage="{{subpage}}" user={{horizonUser}}></everest-read>
           <!-- Page view -->
@@ -674,7 +674,6 @@
         // If no page was found in the route data, page will be an empty string.
         // Deault to 'home' in that case.
         this.page = page || 'home';
-        console.log(this.page);
 
         // Close a non-persistent drawer when the page & route are changed.
         if (!this.$.drawer.persistent) {

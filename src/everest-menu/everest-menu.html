@@ -72,7 +72,7 @@
                     row-count$="{{nbRow}}" cell-width="{{cellWidth}}" cell-height="{{cellHeight}}" cell-margin="8">
 
                     <template is="dom-repeat" items=[[menus]] as=menu index-as=index>
-                        <menu-tile edit$="[[editMode]]" col$="[[menu.col]]" row$="[[menu.row]]" height$="[[menu.height]]" width$="[[menu.width]]"
+                        <menu-tile edit$="[[editMode]]" col="[[menu.col]]" col$="[[menu.col]]" row$="[[menu.row]]" height$="[[menu.height]]" width$="[[menu.width]]"
                             menu="{{menu}}" index="[[index]]" on-move="_handleMove" on-resize="_handleMove" on-delete-tile="deleteMenu">
                         </menu-tile>
                     </template>
@@ -231,12 +231,20 @@
              */
             _handleMove: function (event) {
                 let idx = event.detail.tile.index;
+                let ref = window.horizon("menus");
                 if (this.menus[idx]) {
-                    if (event.detail.tile.col)
+                    if (event.detail.tile.col) {
                         this.menus[idx].col = event.detail.tile.col;
+                        ref.upsert({
+                            id: this.menus[idx].id,
+                            col: event.detail.tile.getAttribute("col")
+                        });
+                        console.log(event.detail.tile.getAttribute("col"));
+                    }
 
-                    if (event.detail.tile.row)
+                    if (event.detail.tile.row) {
                         this.menus[idx].row = event.detail.tile.row;
+                    }
 
                     if (event.detail.tile.height)
                         this.menus[idx].height = event.detail.tile.height;

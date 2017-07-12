@@ -104,7 +104,7 @@
 
                 this.set('firebaseError', "");
 
-                var auth = this.$.auth.createUserWithEmailAndPassword(email, password);
+                var auth = this.$.auth.createUserWithEmailAndPassword(email, password, name);
 
                 auth.then(function (e) {
                     const newRef = window.horizon('alpinists');

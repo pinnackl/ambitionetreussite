@@ -102,8 +102,9 @@
                     var data = str.join("&");
 
                     var promise = new Promise(function (resolve, reject) {
+                        let url = 'http://' + window.authDomain + '/auth/login';
                         _this.ajax({
-                            url: 'http://localhost:8181/auth/login',
+                            url: url,
                             type: 'POST',
                             data: data,
                             headers: [{ 'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded' }]
@@ -116,7 +117,7 @@
                             });
                             console.log('connection 1');
                             var hz = new Horizon({
-                                host: 'localhost:8181',
+                                host: window.authDomain,
                                 authType: {
                                     storeLocally: false,
                                     token: token
@@ -148,7 +149,7 @@
                  * @param  {!String} password Password corresponding to the user account.
                  * @return {Promise} Promise that handles success and failure.
                  */
-                createUserWithEmailAndPassword: function (email, password) {
+                createUserWithEmailAndPassword: function (email, password, name) {
                     var _this = this;
                     var str = [];
                     str.push("username=" + email);
@@ -156,17 +157,18 @@
                     var data = str.join("&");
 
                     var promise = new Promise(function (resolve, reject) {
+                        let url = 'http://' + window.authDomain + '/auth/login';
                         _this.ajax({
-                            url: 'http://localhost:8181/auth/signup',
+                            url: url,
                             type: 'POST',
                             data: data,
                             headers: [{ 'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded' }]
-                        }).then(function (e) {
+                        }).then((e) => {
                             var token = JSON.parse(e.response).token;
                             window.horizon.disconnect();
                             console.log("connection 2")
                             var hz = new Horizon({
-                                host: 'localhost:8181',
+                                host: window.authDomain,
                                 authType: {
                                     storeLocally: false,
                                     token: token
@@ -184,6 +186,29 @@
                                     _this.set('user', null);
                                 }
                             });
+
+                            try {
+                                var strEmail = [];
+                                strEmail.push("recipient=" + email);
+                                strEmail.push("username=" + name);
+                                var dataEmail = strEmail.join("&");
+                                _this.ajax({
+                                    url: "http://localhost:9000/smtp/inscription",
+                                    type: "POST",
+                                    data: dataEmail,
+                                    headers: [{ 'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded' }]
+                                }).then(function (e) {
+                                    console.log("OK");
+                                    console.log(e);
+                                })
+                                    .catch(function (e) {
+                                        console.log("ERROR");
+                                        console.log(e);
+                                    });
+                            } catch (e) {
+                                console.log("Email not sent");
+                                console.log(e);
+                            }
                         }).catch(function (e) {
                             reject(e);
                         });
@@ -198,7 +223,7 @@
                         .objectStore("token")
                         .delete(1);
                     console.log("connection 8")
-                    var hz = new Horizon({ host: 'localhost:8181', authType: 'unauthenticated' });
+                    var hz = new Horizon({ host: window.authDomain, authType: 'unauthenticated' });
                     window.horizon = hz;
                     this.fire('dbconnection');
                     // request.onsuccess = function (event) {

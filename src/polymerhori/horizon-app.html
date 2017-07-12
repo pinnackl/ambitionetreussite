@@ -60,6 +60,8 @@
                 }
             },
             __computeApp: function (name, apiKey, authDomain, databaseUrl) {
+                console.log(authDomain);
+                window.authDomain = authDomain;
                 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 
                 window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
@@ -81,7 +83,7 @@
                         if (getToken.result && getToken.result.token) {
                             console.log("connection 3")
                             var hz = new Horizon({
-                                host: 'localhost:8181',
+                                host: authDomain,
                                 authType: {
                                     storeLocally: false,
                                     token: getToken.result.token
@@ -89,8 +91,9 @@
                             });
                         } else {
                             console.log("connection 4")
+                            console.log(authDomain);
                             var hz = new Horizon({
-                                host: 'localhost:8181',
+                                host: authDomain,
                                 authType: 'unauthenticated'
                             });
                         }
@@ -99,11 +102,11 @@
                         _this.fire('dbconnection');
 
                         window.horizon.status(function (status) {
-                            console.log(status)
+                            console.log(status);
                             if (status.type == "error") {
                                 _this.$.auth.signOut();
                                 console.log("connection 5")
-                                var hz = new Horizon({ host: 'localhost:8181', authType: 'unauthenticated' });
+                                var hz = new Horizon({ host: authDomain, authType: 'unauthenticated' });
                                 window.horizon = hz;
                                 _this.fire('dbconnection');
                             } else if (status.type == "ready" || status.type == "unconnected") {
@@ -119,7 +122,7 @@
                 request.onerror = function (event) {
                     console.log("connection 6")
                     var hz = new Horizon({
-                        host: 'localhost:8181',
+                        host: authDomain,
                         authType: 'unauthenticated'
                     });
                     window.horizon = hz;
@@ -133,7 +136,7 @@
                     objectStore.transaction.oncomplete = function (event) {
                         console.log("connection 7")
                         var hz = new Horizon({
-                            host: 'localhost:8181',
+                            host: authDomain,
                             authType: 'unauthenticated'
                         });
                         window.horizon = hz;
