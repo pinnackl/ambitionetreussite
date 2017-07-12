@@ -374,7 +374,8 @@
 
         <div class="post">
             <div class="cover">
-                <iron-image src="[[cover]]" preload style="background: #3eb7e9;" fade sizing="cover" position="{{position}}"></iron-image>
+                <iron-image src="[[targetUrl]]/{{imageName}}" placeholder="[[cover]]" preload style="background: #3eb7e9;" fade sizing="cover"
+                    position="{{position}}"></iron-image>
                 <div class="filter">
                     <h1 class="title">[[title]]</h1>
                     <div class="article-info">
@@ -516,6 +517,10 @@
                     type: String,
                 },
 
+                targetUrl: {
+                    type: String,
+                },
+
                 stateMessage: {
                     type: Object,
                     value: function () {
@@ -562,6 +567,8 @@
                     type: String
                 },
 
+                imageName: { type: String },
+
                 categories: {
                     type: Array,
                     observer: '_categoriesChanged'
@@ -575,7 +582,9 @@
             ready: function () {
                 this.origin = window.location.origin;
                 let url = "http://" + window.cdnUrl + '/cdn/upload';
+                let targetUrl = "http://" + window.cdnUrl + '/images';
                 this.set('target', url);
+                this.set('targetUrl', targetUrl);
             },
 
             create: function (e) {
@@ -626,6 +635,7 @@
             fileUploaded: function (e, detail) {
                 var parsedResponse = JSON.parse(detail.xhr.response);
                 this.cover = parsedResponse.imageBase64;
+                this.imageName = parsedResponse.imageName;
             },
 
             addTag: function (e) {
