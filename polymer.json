@@ -2,9 +2,9 @@
   "entrypoint": "index.html",
   "shell": "src/everest-app.html",
   "fragments": [
-    "src/everest-accueil/everest-accueil.html",
-    "src/everest-nimda/everest-nimda.html",
-    "src/ad-pages/ad-pages.html"
+    "src/everest-home/everest-home.html",
+    "src/everest-read/everest-read.html",
+    "src/everest-page/everest-page.html"
   ],
   "sourceGlobs": [
    "src/**/*",
@@ -14,5 +14,11 @@
   "includeDependencies": [
     "manifest.json",
     "bower_components/webcomponentsjs/webcomponents-lite.min.js"
-  ]
+  ],
+  "builds": [{
+    "bundle": true,
+    "js": {"compile": true, "minify": true},
+    "css": {"minify": true},
+    "html": {"minify": true}
+  }]
 }
