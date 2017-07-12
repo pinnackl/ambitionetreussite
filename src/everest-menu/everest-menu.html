@@ -56,7 +56,7 @@
         <div style="text-align: right;">
             <paper-button class="save-button" raised hidden$="[[!editMode]]" on-tap="addMenu">add</paper-button>
             <paper-button class="save-button" raised hidden$="[[!editMode]]">Save</paper-button>
-            <paper-icon-button icon="create" hidden$="[[editMode]]" on-tap="edit"></paper-icon-button>
+            <paper-icon-button icon="create" hidden$="[[!isAdmin]]" on-tap="edit"></paper-icon-button>
             <paper-icon-button icon="close" hidden$="[[!editMode]]" on-tap="close"></paper-icon-button>
         </div>
         <iron-pages selected="[[mode]]" attr-for-selected="name" fallback-selection="list">
@@ -101,11 +101,21 @@
                     type: String
                 },
 
+                rights: {
+                    type: Number,
+                    value: 0
+                },
+
                 editMode: {
                     type: Boolean,
                     value: false,
                     reflectToAttribute: true,
                     observer: '_computeCellWidth'
+                },
+
+                isAdmin: {
+                    type: Boolean,
+                    value: false
                 },
 
                 nbCol: {
@@ -164,11 +174,23 @@
                 },
             },
 
+            observers: [
+                '_rightsChanged(rights)',
+            ],
+
             ready: function () {
                 // Init the compute of the grid
                 this._computeCellWidth();
 
                 window.addEventListener('resize', this._computeCellWidth.bind(this));
+            },
+
+            _rightsChanged: function (rights) {
+                if (rights == 4) {
+                    this.isAdmin = true;
+                } else {
+                    this.isAdmin = false;
+                }
             },
 
             sortMenu: function (a, b) {
