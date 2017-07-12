@@ -331,7 +331,7 @@
                     <paper-icon-button class="add-btn" icon="create" slot="dropdown-trigger"></paper-icon-button>
                     <paper-listbox slot="dropdown-content">
                         <paper-item>
-                            <paper-input label="Name" value="{{titleMenu}}"></paper-input>
+                            <paper-input id="inputLabel" label="Name" value="{{titleMenu}}"></paper-input>
                             <paper-icon-button icon="check" on-tap="saveName"></paper-icon-button>
                         </paper-item>
                     </paper-listbox>
@@ -405,6 +405,10 @@
             titleMenu: {
                 type: String,
                 value: ""
+            },
+
+            ready: function () {
+                this.$.inputLabel.value = "";
             },
 
             saveTile: function (e) {
