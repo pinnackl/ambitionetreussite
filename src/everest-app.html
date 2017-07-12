@@ -171,6 +171,11 @@
         margin-left: 40%;
         /* The rest of Tabs size to go to 100% */
       }
+
+      everest-menu.menu-tab[edit-mode] {
+        width: 100% !important;
+        margin-left: 0!important;
+      }
       /* Profil button */
       
       .profileBtn {}
@@ -365,7 +370,7 @@
       </app-header-layout>
 
       <!-- Drawer Admin Content -->
-      <app-drawer id="drawerAdmin" align="end" swipe-open>
+      <app-drawer id="drawerAdmin" align="end">
         <div style="height:100%; overflow:auto;">
           <app-toolbar>
             <paper-tabs class="paper-tabs-admin" selected="{{selected}}">
