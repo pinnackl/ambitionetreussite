@@ -252,6 +252,9 @@
     <horizon-document path="/alpinists/[[horizonUser.id]]" data="{{user}}">
     </horizon-document>
 
+    <horizon-query path="/menus" data="{{menus}}">
+    </horizon-query>
+
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="[[rootPattern]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
 
@@ -260,11 +263,11 @@
     <app-drawer-layout fullbleed force-narrow>
       <!-- Drawer content -->
       <app-drawer id="drawer" slot="drawer" swipe-open="[[!largeScreen]]">
-        <app-toolbar>Menu [[largeScreen]]</app-toolbar>
+        <app-toolbar>Menu</app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="view1" href="view1">View One</a>
-          <a name="view2" href="view2">View Two</a>
-          <a name="view3" href="view3">View Three</a>
+          <template is="dom-repeat" items={{menus}} as=menu index-as=index>
+            <a name="{{menu.title}}" href={{menu.link}}>{{menu.title}}</a>
+          </template>
         </iron-selector>
       </app-drawer>
 
@@ -564,6 +567,7 @@
           rootPattern: String,
           routeData: Object,
           subroute: String,
+          menus: Array,
           rightLevel: {
             type: Number,
             value: null
