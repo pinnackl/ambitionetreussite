@@ -197,14 +197,13 @@
                 <a id="link" class="article" href="/read/[[_lowerCase(article.category)]]/[[article.slug]]" title="[[article.title]]" on-tap="_handleSelection">
                     <div class="filter">
                         <div class="avatar-ctn">
-                            <iron-image class="avatar" style="background-color: lightgray;" src="https://cdn.pinnackl.com/avatars/[[user.basicInfo.avatar]]"
-                                fade preload sizing="cover"></iron-image>
+                            <iron-image class="avatar" style="background-color: lightgray;" src="
+                            [[user.avatar]]" fade preload sizing="cover"></iron-image>
                         </div>
                         <div class="autor-name">By [[article.author]],</div>
                         <div class="published">[[date]]</div>
                     </div>
-                    <iron-image class="thumbnail" style="background: #3eb7e9;" src="https://cdn.pinnackl.com/images/[[article.cover]]" preload
-                        fade sizing="cover"></iron-image>
+                    <iron-image class="thumbnail" style="background: #3eb7e9;" src="[[article.cover]]" preload fade sizing="cover"></iron-image>
                     <div class="description">
                         <h1>[[article.title]]</h1>
                     </div>
