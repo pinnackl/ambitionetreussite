@@ -103,7 +103,9 @@
 
                 editMode: {
                     type: Boolean,
-                    value: false
+                    value: false,
+                    reflectToAttribute: true,
+                    observer: '_computeCellWidth'
                 },
 
                 nbCol: {
@@ -216,8 +218,10 @@
             },
 
             _computeCellWidth: function () {
-                this.cellHeight = (64 - this.cellMargin * (this.nbRow - 1)) / this.nbRow;
-                this.cellWidth = (window.innerWidth * 60 / 100 - this.cellMargin * (this.nbCol - 1)) / this.nbCol;
+                let width = window.innerWidth * 60 / 100;
+                if (this.editMode) { width = window.innerWidth; }
+                this.cellHeight = (400 - this.cellMargin * (this.nbRow - 1)) / this.nbRow;
+                this.cellWidth = (width - this.cellMargin * (this.nbCol - 1)) / this.nbCol;
             },
 
             /**

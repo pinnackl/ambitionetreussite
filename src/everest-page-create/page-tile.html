@@ -15,11 +15,20 @@
 
                 opacity: 0.9;
                 cursor: move;
-                border: solid 3px #03a9f4;
                 box-sizing: border-box;
             }
 
-            :host(:hover) .delete {
+            :host([edit]) {
+                border: solid 3px #03a9f4;
+            }
+
+            :host(:not([edit])) ::slotted([resize]),
+            :host(:not([edit])) .position,
+            :host(:not([edit])) paper-fab {
+                display: none;
+            }
+
+            :host([edit]:hover) .delete {
                 display: block;
             }
 
@@ -32,14 +41,6 @@
 
             iron-pages {
                 height: 100%;
-            }
-
-            simpla-article {
-                color: #191919;
-            }
-
-            simpla-article img {
-                max-width: 100%;
             }
 
             iron-image {
