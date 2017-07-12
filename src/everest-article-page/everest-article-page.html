@@ -353,14 +353,12 @@
         </horizon-document>
         <div class="post">
             <div class="cover">
-                <iron-image style="background: #3eb7e9;" src$="https://cdn.pinnackl.com/images/[[article.cover]]" position="{{article.position}}"
-                    preload fade sizing="cover"></iron-image>
+                <iron-image style="background: #3eb7e9;" src$="[[article.cover]]" position="{{article.position}}" preload fade sizing="cover"></iron-image>
                 <div id="filter" class="filter">
                     <h1 class="title">[[article.title]]</h1>
                     <div class="article-info">
                         <div class="avatar-ctn">
-                            <iron-image class="avatar" style="background-color: lightgray;" src="https://cdn.pinnackl.com/avatars/[[author.basicInfo.avatar]]"
-                                preload fade sizing="cover"></iron-image>
+                            <iron-image class="avatar" style="background-color: lightgray;" src="[[author.basicInfo.avatar]]" preload fade sizing="cover"></iron-image>
                         </div>
                         <div class="author-ctn">
                             <div class="autor-name">By <a href="/user/[[article.authorID]]" title="[[article.author]]">[[article.author]]</a>,</div>
@@ -426,7 +424,7 @@
                         </div>
                         <div class="section-header">
                             <!-- FIXME : Get the target from config -->
-                            <vaadin-upload accept="image/*" method="POST" form-data-name="cover" target="http://localhost:9000/cdn/upload" on-upload-success="fileUploaded">
+                            <vaadin-upload accept="image/*" method="POST" form-data-name="cover" target="{{target}}" on-upload-success="fileUploaded">
                                 Choose a cover
                             </vaadin-upload>
                             <paper-input label="Add a category" value="{{newCategory}}"></paper-input>
@@ -492,8 +490,7 @@
                             <div class="commentEditor">
                                 <div class="author">
                                     <div class="avatar-ctn">
-                                        <iron-image class="avatar" style="background-color: lightgray;" src="https://cdn.pinnackl.com/avatars/[[user.avatar]]" preload
-                                            fade sizing="cover"></iron-image>
+                                        <iron-image class="avatar" style="background-color: lightgray;" src="[[user.avatar]]" preload fade sizing="cover"></iron-image>
                                     </div>
                                     <paper-textarea label="Write a comment" value="{{commentContent}}"></paper-textarea>
                                 </div>
@@ -634,6 +631,8 @@
 
             ready: function () {
                 this.origin = window.location.origin;
+                let url = "http://" + window.cdnUrl + '/cdn/upload';
+                this.set('target', url);
             },
 
             checkRights: function (rights, levelNeeded) {
@@ -729,7 +728,7 @@
 
             fileUploaded: function (e, detail) {
                 var parsedResponse = JSON.parse(detail.xhr.response);
-                this.set("article.cover", parsedResponse.imageName);
+                this.set("article.cover", parsedResponse.imageBase64);
             },
 
             addTag: function (e) {

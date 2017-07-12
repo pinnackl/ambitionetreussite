@@ -41,6 +41,11 @@
                     value: ''
                 },
 
+                cdnUrl: {
+                    type: String,
+                    value: ''
+                },
+
                 /**
                 * The URL of your database.
                 */
@@ -56,12 +61,12 @@
                 app: {
                     type: Object,
                     notify: true,
-                    computed: '__computeApp(name, apiKey, authDomain, databaseUrl)'
+                    computed: '__computeApp(name, apiKey, authDomain, databaseUrl, cdnUrl)'
                 }
             },
-            __computeApp: function (name, apiKey, authDomain, databaseUrl) {
-                console.log(authDomain);
+            __computeApp: function (name, apiKey, authDomain, databaseUrl, cdnUrl) {
                 window.authDomain = authDomain;
+                window.cdnUrl = cdnUrl;
                 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 
                 window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;

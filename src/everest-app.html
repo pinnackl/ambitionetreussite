@@ -171,7 +171,7 @@
         margin-left: 40%;
         /* The rest of Tabs size to go to 100% */
       }
-
+      
       everest-menu.menu-tab[edit-mode] {
         width: 100% !important;
         margin-left: 0!important;
@@ -305,14 +305,14 @@
               <!-- User authenticated -->
               <template is="dom-if" if={{signedIn}}>
                 <!-- <template is="dom-if" if={{!user.avatar}}> -->
-                <paper-icon-button class="profileBtn" slot="dropdown-trigger" src="https://cdn.pinnackl.com/avatars/[[user.avatar]]">
+                <paper-icon-button class="profileBtn" slot="dropdown-trigger" src="[[user.avatar]]">
                 </paper-icon-button>
                 <!-- </template> -->
                 <div class="user-menu user-card" slot="dropdown-content">
                   <div>
                     <a href="/user/[[horizonUser.id]]" class="email user-menu user-card" title="Profile">
                       <!-- <template is="dom-if" if={{user.avatar}}> -->
-                      <span class="circle"><img src="https://cdn.pinnackl.com/avatars/[[user.avatar]]"></span>
+                      <span class="circle"><iron-image src="[[user.avatar]]"></iron-image></span>
                       <!-- </template> -->
                       <span>[[user.name]]</span>
                     </a>
