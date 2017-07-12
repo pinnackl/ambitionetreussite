@@ -80,15 +80,15 @@
              :host(:hover) .delete {
                 display: block;
             }
-
+            
             [icon="create"] {
                 color: #444444
             }
-
+            
             [icon="close"] {
                 color: #e83b3b;
             }
-
+            
             .section-header {
                 display: flex;
                 flex-wrap: wrap;
@@ -146,7 +146,8 @@
             .sub-item paper-item {
                 --paper-item: {
                     text-align: right;
-                };
+                }
+                ;
             }
             
             section {
@@ -277,11 +278,11 @@
                 transform: translateX(-50%) translateY(8px);
             }
             /* The grid */
-
+            
             the-grid>div[placeholder] {
                 background: #afafaf;
             }
-
+            
             .add-btn {
                 color: #179bd7;
             }
@@ -294,7 +295,7 @@
                 border: solid var(--app-primary-color) 2px;
                 border-radius: 3px;
             }
-
+            
             [icon="close"] {
                 position: absolute;
                 bottom: 8px;
@@ -326,12 +327,12 @@
                         </paper-item>
                     </paper-listbox>
                 </paper-menu-button>
-                <paper-menu-button ignore-select>
+                <paper-menu-button id="name" ignore-select>
                     <paper-icon-button class="add-btn" icon="create" slot="dropdown-trigger"></paper-icon-button>
                     <paper-listbox slot="dropdown-content">
                         <paper-item>
-                            <paper-input label="Name" value="{{name}}"></paper-input>
-                            <paper-icon-button icon="check"></paper-icon-button>
+                            <paper-input label="Name" value="{{titleMenu}}"></paper-input>
+                            <paper-icon-button icon="check" on-tap="saveName"></paper-icon-button>
                         </paper-item>
                     </paper-listbox>
                 </paper-menu-button>
@@ -340,7 +341,7 @@
         <paper-dialog id="dialog">
             <h2>Select an item</h2>
             <div>
-                <paper-input label="Search" value="{{searchText}}"></paper-input>
+                <paper-input label="Search" value="{{item.name}}"></paper-input>
             </div>
             <paper-dialog-scrollable>
                 <iron-pages selected="[[openType]]" attr-for-selected="name" fallback-selection="pages">
@@ -401,14 +402,28 @@
             height: String,
             path: String,
             id: String,
+            titleMenu: {
+                type: String,
+                value: ""
+            },
 
             saveTile: function (e) {
                 let ref = window.horizon("menus");
-                console.log(this.id);
                 ref.upsert({
                     id: this.id,
                     link: this.path
                 });
+            },
+
+            saveName: function () {
+                let ref = window.horizon("menus");
+                ref.upsert({
+                    id: this.menu.id,
+                    title: this.titleMenu,
+                    name: this.titleMenu
+                });
+                this.$.name.close();
+                this.titleMenu = "";
             },
 
             saveCurrentChoice: function (e) {
