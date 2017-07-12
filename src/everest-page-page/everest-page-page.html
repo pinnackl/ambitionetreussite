@@ -96,6 +96,10 @@
                     --app-grid-columns: 1;
                 }
             }
+
+            [hidden] {
+                display: none;
+            }
         </style>
 
         <horizon-document id="page" path="/pages/[[uid]]">
@@ -163,7 +167,7 @@
                 </section>
                 <section name="grid">
                     <template is="dom-if" if={{isAdmin}}>
-                        <div class="section-header">
+                        <div class="section-header" hidden$="[[!editMode]]">
                             <div>Column number : {{nbCol}} <paper-slider value="{{nbCol}}" min="5" max="12"></paper-slider></div>
                             <div>
                                 <paper-menu-button>
@@ -282,7 +286,6 @@
                     type: String,
                 },
 
-
                 nbCol: {
                     type: Number,
                     value: 12,
@@ -361,15 +364,14 @@
                 this.editMode = false;
             },
 
-
             addTextTile: function (e) {
-                if (this.pageTiles.length >= this.nbRow-2) {
+                if (this.page.content >= this.nbRow-2) {
                     ++this.nbRow;
                 }
-                this.push('pageTiles', {
+                this.push('_page.content', {
                     type: 'text',
                     col: 0,
-                    row: this.pageTiles.length,
+                    row: this.page.content.length,
                     height: 1,
                     width: this.nbCol,
                     content: {}
@@ -377,35 +379,51 @@
             },
 
             addImageTile: function (e) {
-                if (this.pageTiles.length >= this.nbRow-2) {
+                if (this.page.content >= this.nbRow-2) {
                     ++this.nbRow;
                 }
-                this.push('pageTiles', {
+                this.push('_page.content', {
                     type: 'image',
                     col: 0,
-                    row: this.pageTiles.length,
+                    row: this.page.content.length,
                     height: 1,
                     width: this.nbCol,
                     content: {}
                 });
             },
 
+            handleDeleteTile: function (e) {
+                this.arrayDelete('_page.content', e.detail.tile);
+            },
+
             updatePage: function () {
-                if (this._page.title && this.$.editor.getContent() != "") {
+                if (this._page.title && this._page.slug && (this.$.editor.getContent() != "" || this._page.content.length > 0)) {
                     var _this = this;
                     let ref = window.horizon("pages");
-                    ref.upsert({
-                        id: this.page.id,
-                        slug: getSlug(this.page.slug),
-                        title: this.page.title,
-                        content: this.$.editor.getContent() || "",
-                        created: this.page.created,
+
+                    const pageObject = {
+                        id: this._page.id,
+                        slug: getSlug(this._page.slug),
+                        title: this._page.title,
+                        created: this._page.created,
                         edited: Date.now(),
-                        author: this.page.author,
-                        authorID: this.page.authorID,
-                        published: this.page.published,
-                        trash: false
-                    }).subscribe((value) => {
+                        author: this._page.author,
+                        authorID: this._page.authorID,
+                        published: this._page.published,
+                        trash: this.trash,
+                        'published_trash': this._computeCombinedIndexPt(),
+                        'slug_published': this._computeCombinedIndexSp(),
+                    };
+
+                    if (this._page.mode == 'text') {
+                        pageObject['mode'] = 'text';
+                        pageObject['content'] = this.$.editor.getContent() || "";
+                    } else {
+                        pageObject['mode'] = 'grid';
+                        pageObject['content'] = this._page.content || [];
+                    }
+
+                    ref.upsert(pageObject).subscribe((value) => {
                         _this.stateMessageIcon = _this.stateMessage.success.icon;
                         _this.$.stateMessage.text = _this.stateMessage.success.text;
                         _this.$.stateMessage.open();
@@ -422,6 +440,10 @@
                 this._page = this.page;
                 if (this.page && this.page.mode == "text") {
                     this.$.content.innerHTML = content || '';
+                } else if (this.page) {
+                    this.page.content.forEach(el => {
+                        console.log(el);
+                    });
                 }
 
                 if (typeof content != 'undefined') {
@@ -473,9 +495,9 @@
 
 
             _computeCellWidth: function () {
-                let initWidth = window.innerWidth - (2*24 + 2* 16);
+                let initWidth = window.innerWidth - (2*24 + 3* 16);
                 this.cellHeight = (window.innerHeight - 12 * ( this.nbRow - 1)) / this.nbRow;
-                this.cellWidth = (initWidth - 12 * ( this.nbCol - 1)) / this.nbCol;
+                this.cellWidth = (initWidth - 0 * ( this.nbCol - 1)) / this.nbCol;
             },
 
             /**

@@ -243,7 +243,22 @@
         --paper-fab-speed-dial-action-background: #3eb7e9;
       }
     </style>
-    <app-theme id="appTheme"></app-theme>
+    <app-theme id="appTheme"
+      app-header-banner-base-64="{{themeHeaderBannerBase64}}"
+      app-logo="{{themeLogo}}"
+      app-logo-base-64="{{themeLogoBase64}}"
+      app-cdn="{{themeCDN}}"
+      app-condenses="{{themeCondenses}}"
+      app-fixed="{{themeFixed}}"
+      app-reveals="{{themeReveals}}"
+      app-shadow="{{themeShadow}}"
+      app-blend-background="{{themeBlendBackground}}"
+      app-fade-background="{{themeFadeBackground}}"
+      app-parallax-background="{{themeParallaxBackground}}"
+      app-resize-snapped-title="{{themeResizeSnappedTitle}}"
+      app-resize-title="{{themeResizeTitle}}"
+      app-waterfall="{{themeWaterfall}}"
+      ></app-theme>
     <everest-horizon></everest-horizon>
     <everest-data id="everestData" signed-in="{{signedIn}}" rights="{{rights}}" user="{{horizonUser}}" horizon-error="{{horizonError}}"
       horizon-success="{{horizonSuccess}}">
@@ -274,14 +289,14 @@
       <!-- Main content -->
       <app-header-layout>
 
-        <app-header condenses="[[appCondenses]]" fixed="[[appFixed]]" reveals="[[appReveals]]" shadow="[[appShadow]]" effects="[[_computeEffects(appBlendBackground, appFadeBackground, appParallaxBackground, appResizeSnappedTitle, appResizeTitle, appWaterfall)]]"
+        <app-header condenses="[[themeCondenses]]" fixed="[[themeFixed]]" reveals="[[themeReveals]]" shadow="[[themeShadow]]" effects="[[_computeEffects(themeBlendBackground, themeFadeBackground, themeParallaxBackground, themeResizeSnappedTitle, themeResizeTitle, themeWaterfall)]]"
           slot="header">
 
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div condensed-title mobile$=[[!largeScreen]]>
               <a title href="/">
-                <iron-image placeholder="[[appLogoBase64]]" src="[[appLogo]]"></iron-image>Everest</a>
+                <iron-image placeholder="[[themeLogoBase64]]" src="[[themeLogo]]" sizing="contain" style="width:50px; height:50px;"></iron-image>Everest</a>
             </div>
 
             <!-- Right menu button -->
@@ -335,7 +350,7 @@
             <app-toolbar>
               <div main-title>
                 <a title href="/">
-                  <iron-image placeholder="[[appLogoBase64]]" src="[[appLogo]]"></iron-image>Everest</a>
+                  <iron-image placeholder="[[themeLogoBase64]]" src="[[themeLogo]]" sizing="contain" style="width:100px; height:100px;"></iron-image>Everest</a>
               </div>
             </app-toolbar>
 
@@ -430,7 +445,7 @@
               <!-- Size Settings -->
               <div class="flexbox-container">
                 <span>Title Font Size</span>
-                <everest-swatch-picker mode="number" default="[[appTitleSizeDefault]]" size="{{appTitleSize}}"></everest-swatch-picker>
+                <everest-swatch-picker mode="number" default="[[themeTitleSizeDefault]]" size="{{appTitleSize}}"></everest-swatch-picker>
               </div>
               <div class="flexbox-container">
                 <span>Condensed Title Font Size</span>

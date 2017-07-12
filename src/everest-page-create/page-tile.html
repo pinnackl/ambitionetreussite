@@ -190,7 +190,10 @@
         </style>
         <iron-pages selected="{{type}}" attr-for-selected="name">
             <div name="text">
-                <everest-wysiwyg value="{{text}}" placeholder="Write some text ..."></everest-wysiwyg>
+                <template is="dom-if" if={{edit}}>
+                    <everest-wysiwyg value="{{content.text}}" placeholder="Write some text ..."></everest-wysiwyg>
+                </template>
+                <div id="content" hidden="[[edit]]"></div>
             </div>
             <div name="image">
                 <iron-image id="img" src$="[[content.image]]" placeholder="[[content.image]]" preload sizing="[[_ctnCover(content.cover)]]" position="[[content.position]]"></iron-image>
@@ -218,19 +221,24 @@
             is: 'page-tile',
 
             properties: {
+                edit: {
+                    type: Boolean,
+                    value: false
+                },
+
                 type: {
                     type: String
                 },
 
                 tile: {
                     type: Object,
-                    notify: true
+                    notify: true,
+                    observer: '_tileChanged'
                 },
 
                 text: {
                     type: String,
                     value: "",
-                    observer: '_textChanged'
                 },
 
                 col: {
@@ -265,6 +273,12 @@
             ready: function () {
             },
 
+            _tileChanged: function (e) {
+                if (this.type == "text") {
+                    this.$.content.innerHTML = this.content.text;
+                }
+            },
+
             deleteTile: function (e) {
                 this.fire('delete-tile', {tile: this.tile});
             },
@@ -286,7 +300,7 @@
             },
 
             _textChanged: function (text) {
-                this.set('content.text', text);
+                // this.set('content.text', text);
             },
 
             _ctnCover: function (cover) {
