@@ -3,6 +3,11 @@
   EverestBehavior.liveThemingBehavior = {
     properties: {
 
+      override: {
+        type: Boolean,
+        value: false
+      },
+
       /* CSS Custom Properties */
 
       appPrimaryColor: {
@@ -320,29 +325,30 @@
 
     // Live updates
     __updateCustomProperty: function (name, value) {
-
       this.themeBuffer = this.themeBuffer || {};
       var property = {};
       property[name] = value;
       this.themeBuffer[name] = value;
 
-      // console.warn("[FIXME][CRITICAL] Defer the __updateCustomProperty execution till the page fully loaded, HUGE PERFORMANCE FLOW");
-      // [FIXME][CRITICAL] : Defer this execution till the page fully loaded
-      // HUGE PERFORMANCE FLOW !!!
+      if (this.override) {
+        // console.warn("[FIXME][CRITICAL] Defer the __updateCustomProperty execution till the page fully loaded, HUGE PERFORMANCE FLOW");
+        // [FIXME][CRITICAL] : Defer this execution till the page fully loaded
+        // HUGE PERFORMANCE FLOW !!!
 
-      const customStyle = this._customStyle || document.createElement('custom-style');
-      const style = customStyle && customStyle.querySelector('style') || document.createElement('style');
-      let styleRules = "";
-      for (key in this.themeBuffer) {
-        styleRules += `${key}:${this.themeBuffer[key]};`;
+        const customStyle = this._customStyle || document.createElement('custom-style');
+        const style = customStyle && customStyle.querySelector('style') || document.createElement('style');
+        let styleRules = "";
+        for (key in this.themeBuffer) {
+          styleRules += `${key}:${this.themeBuffer[key]};`;
+        }
+
+        style.textContent = `:host > * {${styleRules}}`;
+
+        this._customStyle = customStyle;
+
+        customStyle.appendChild(style);
+        this.root.appendChild(customStyle);
       }
-
-      style.textContent = `:host > * {${styleRules}}`;
-
-      this._customStyle = customStyle;
-
-      customStyle.appendChild(style);
-      this.root.appendChild(customStyle);
 
       this.updateStyles(property);
       this.__setTheme(name, value);

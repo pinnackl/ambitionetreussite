@@ -271,7 +271,12 @@
       <!-- Main content -->
       <app-header-layout>
 
-        <app-header condenses="[[appCondenses]]" fixed="[[appFixed]]" reveals="[[appReveals]]" shadow="[[appShadow]]" effects="[[_computeEffects(appBlendBackground, appFadeBackground, appParallaxBackground, appResizeSnappedTitle, appResizeTitle, appWaterfall)]]"
+        <app-header
+          condenses="[[appCondenses]]"
+          fixed="[[appFixed]]"
+          reveals="[[appReveals]]"
+          shadow="[[appShadow]]"
+          effects="[[_computeEffects(appBlendBackground, appFadeBackground, appParallaxBackground, appResizeSnappedTitle, appResizeTitle, appWaterfall)]]"
           slot="header">
 
           <app-toolbar>
