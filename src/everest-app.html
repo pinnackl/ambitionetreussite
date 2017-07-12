@@ -110,6 +110,8 @@
       /* Logo display */
       
       [condensed-title] [title] {
+        color: var(--app-logo-title-color);
+        text-decoration: none;
         position: relative;
         top: 228%;
         left: var(--app-condensed-logo-position);
@@ -128,6 +130,8 @@
       }
       
       [main-title] [title] {
+        color: var(--app-logo-title-color);
+        text-decoration: none;
         position: relative;
         top: -80%;
         /* Title position (-25%, -50%, -80%) */
@@ -242,11 +246,28 @@
       paper-fab-speed-dial-action {
         --paper-fab-speed-dial-action-background: #3eb7e9;
       }
+
+      @media (max-width: 799px) {
+        #drawerAdmin {
+          --app-drawer-width: 90%;
+        }
+      }
     </style>
-    <app-theme id="appTheme" app-header-banner-base-64="{{themeHeaderBannerBase64}}" app-logo="{{themeLogo}}" app-logo-base-64="{{themeLogoBase64}}"
-      app-cdn="{{themeCDN}}" app-condenses="{{themeCondenses}}" app-fixed="{{themeFixed}}" app-reveals="{{themeReveals}}" app-shadow="{{themeShadow}}"
-      app-blend-background="{{themeBlendBackground}}" app-fade-background="{{themeFadeBackground}}" app-parallax-background="{{themeParallaxBackground}}"
-      app-resize-snapped-title="{{themeResizeSnappedTitle}}" app-resize-title="{{themeResizeTitle}}" app-waterfall="{{themeWaterfall}}"></app-theme>
+    <app-theme id="appTheme"
+      app-header-banner-base-64="{{themeHeaderBannerBase64}}"
+      app-logo="{{themeLogo}}"
+      app-logo-base-64="{{themeLogoBase64}}"
+      app-cdn="{{themeCDN}}"
+      app-condenses="{{themeCondenses}}"
+      app-fixed="{{themeFixed}}"
+      app-reveals="{{themeReveals}}"
+      app-shadow="{{themeShadow}}"
+      app-blend-background="{{themeBlendBackground}}"
+      app-fade-background="{{themeFadeBackground}}"
+      app-parallax-background="{{themeParallaxBackground}}"
+      app-resize-snapped-title="{{themeResizeSnappedTitle}}"
+      app-resize-title="{{themeResizeTitle}}"
+      app-waterfall="{{themeWaterfall}}"></app-theme>
     <everest-horizon></everest-horizon>
     <everest-data id="everestData" signed-in="{{signedIn}}" rights="{{rights}}" user="{{horizonUser}}" horizon-error="{{horizonError}}"
       horizon-success="{{horizonSuccess}}">
@@ -277,19 +298,27 @@
       <!-- Main content -->
       <app-header-layout>
 
-        <app-header
-          condenses="[[appCondenses]]"
-          fixed="[[appFixed]]"
-          reveals="[[appReveals]]"
-          shadow="[[appShadow]]"
+        <!-- <app-header
+          condenses="[[_fallbackOnLtb(themeCondenses, appCondenses)]]"
+          fixed="[[_fallbackOnLtb(themeFixed, appFixed)]]"
+          reveals="[[_fallbackOnLtb(themeReveals, appReveals)]]"
+          shadow="[[_fallbackOnLtb(themeShadow, appShadow)]]"
           effects="[[_computeEffects(appBlendBackground, appFadeBackground, appParallaxBackground, appResizeSnappedTitle, appResizeTitle, appWaterfall)]]"
+          slot="header"> -->
+        <app-header
+          condenses
+          reveals
+          fixed="[[largeScreen]]"
+          effects="resize-title"
           slot="header">
 
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div condensed-title mobile$=[[!largeScreen]]>
               <a title href="/">
-                <iron-image placeholder="[[themeLogoBase64]]" src="[[themeLogo]]" sizing="contain" style="width:50px; height:50px;"></iron-image>Everest</a>
+                <iron-image
+                  placeholder="[[_fallbackOnLtb(themeLogoBase64, appLogoBase64)]]"
+                  src="[[_fallbackOnLtb(themeLogo, appLogo)]]" sizing="contain" style="width:50px; height:50px;"></iron-image>Everest</a>
             </div>
 
             <!-- Right menu button -->
@@ -343,7 +372,9 @@
             <app-toolbar>
               <div main-title>
                 <a title href="/">
-                  <iron-image placeholder="[[themeLogoBase64]]" src="[[themeLogo]]" sizing="contain" style="width:100px; height:100px;"></iron-image>Everest</a>
+                  <iron-image
+                    placeholder="[[_fallbackOnLtb(themeLogoBase64, appLogoBase64)]]"
+                    src="[[_fallbackOnLtb(themeLogo, appLogo)]]" sizing="contain" style="width:100px; height:100px;"></iron-image>Everest</a>
               </div>
             </app-toolbar>
 
