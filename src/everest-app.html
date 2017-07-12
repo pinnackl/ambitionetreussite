@@ -243,7 +243,22 @@
         --paper-fab-speed-dial-action-background: #3eb7e9;
       }
     </style>
-    <app-theme id="appTheme"></app-theme>
+    <app-theme id="appTheme"
+      app-header-banner-base-64="{{themeHeaderBannerBase64}}"
+      app-logo="{{themeLogo}}"
+      app-logo-base-64="{{themeLogoBase64}}"
+      app-cdn="{{themeCDN}}"
+      app-condenses="{{themeCondenses}}"
+      app-fixed="{{themeFixed}}"
+      app-reveals="{{themeReveals}}"
+      app-shadow="{{themeShadow}}"
+      app-blend-background="{{themeBlendBackground}}"
+      app-fade-background="{{themeFadeBackground}}"
+      app-parallax-background="{{themeParallaxBackground}}"
+      app-resize-snapped-title="{{themeResizeSnappedTitle}}"
+      app-resize-title="{{themeResizeTitle}}"
+      app-waterfall="{{themeWaterfall}}"
+      ></app-theme>
     <everest-horizon></everest-horizon>
     <everest-data id="everestData" signed-in="{{signedIn}}" rights="{{rights}}" user="{{horizonUser}}" horizon-error="{{horizonError}}"
       horizon-success="{{horizonSuccess}}">
