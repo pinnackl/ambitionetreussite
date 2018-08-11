@@ -1,191 +1,405 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
+<!DOCTYPE html>
+<html lang="fr">
 
-<!doctype html>
-<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-  <title>A&R</title>
-  <meta name="description" content="My App description">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-  <link rel="icon" href="/images/favicon.ico">
+    <title>AMBITION & REUSSITE</title>
 
-  <!-- See https://goo.gl/OOhYW5 -->
-  <link rel="manifest" href="/manifest.json">
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- See https://goo.gl/qRE0vM -->
-  <meta name="theme-color" content="#3eb7e9">
+    <!-- Custom Fonts -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
 
-  <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="application-name" content="A&R">
+    <!-- Theme CSS -->
+    <link href="css/aetr.css" rel="stylesheet">
 
-  <!-- Add to homescreen for Safari on iOS -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="A&R">
-
-  <!-- Homescreen icons -->
-  <link rel="apple-touch-icon" href="/images/manifest/icon-48x48.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="96x96" href="/images/manifest/icon-96x96.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/icon-144x144.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
-
-  <!-- Tile icon for Windows 8 (144x144 + tile color) -->
-  <meta name="msapplication-TileImage" content="/images/manifest/icon-144x144.png">
-  <meta name="msapplication-TileColor" content="#3eb7e9">
-  <meta name="msapplication-tap-highlight" content="no">
-
-  <script>
-    // Setup Polymer options
-    window.Polymer = {
-      dom: 'shady',
-      lazyRegister: true
-    };
-
-    // Load webcomponentsjs polyfill if browser does not support native Web Components
-    (function() {
-      'use strict';
-
-      var onload = function() {
-        // For native Imports, manually fire WebComponentsReady so user code
-        // can use the same code path for native and polyfill'd imports.
-        if (!window.HTMLImports) {
-          document.dispatchEvent(
-            new CustomEvent('WebComponentsReady', {bubbles: true})
-          );
-        }
-      };
-
-      var webComponentsSupported = (
-        'registerElement' in document
-        && 'import' in document.createElement('link')
-        && 'content' in document.createElement('template')
-      );
-
-      if (!webComponentsSupported) {
-        var script = document.createElement('script');
-        script.async = true;
-        script.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
-        script.onload = onload;
-        document.head.appendChild(script);
-      } else {
-        onload();
-      }
-    })();
-
-    // Load pre-caching Service Worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/service-worker.js');
-      });
-    }
-  </script>
-
-  <link rel="import" href="/src/ar-app.html">
-
-  <style>
-
-    body {
-      margin: 0;
-      font-family: 'Roboto', 'Noto', sans-serif;
-      line-height: 1.5;
-      min-height: 100vh;
-      background-color: #eee;
-    }
-
-    .delete-dialog {
-      width: 50%;
-    }
-
-    .btn {
-      color: #757575;
-    }
-
-    .btn.delete-btn {
-      color: #ffffff;
-      background: #ff5252;
-    }
-
-    .section-header {
-      display: flex;
-      flex-wrap: nowrap;
-      justify-content: space-between;
-      margin-bottom: 1em;
-      align-items: center;
-    }
-
-    .important-message {
-      color: #d50000;
-      background: #fbe9e7;
-      padding: 1em 2em;
-    }
-  </style>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js" integrity="sha384-0s5Pv64cNZJieYFkXYOTId2HMA2Lfb6q2nAcx2n0RTLUnCAoTTsS0nKEO27XyKcY" crossorigin="anonymous"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js" integrity="sha384-ZoaMbDF+4LeFxg6WdScQ9nnR1QC2MIRxA1O9KWEXQwns1G8UNyIEZIQidzb0T1fo" crossorigin="anonymous"></script>
+    <![endif]-->
 
 </head>
-<body>
 
-  <template is="dom-bind" id="app">
-    <iron-pages id="pager" selected="[[mode]]" attr-for-selected="name" fallback-selection="app">
-      <!-- Conditionnal access to ar-nimmda, the admin section -->
-      <!-- <ar-nimda name="nimda" fire-user="{{fireUser}}" mode="{{mode}}"></ar-nimda> -->
-      <!-- Display or not the main app -->
-        <ar-app name="app" fire-user="{{fireUser}}" mode="{{mode}}"></ar-app>
-    </iron-pages>
-    <!-- Admin delete dialog -->
-    <paper-dialog class="delete-dialog" modal>
-      <div class="section-header">
-        <h2>Supprimer des données</h2>
-        <paper-icon-button icon="close" dialog-dismiss></paper-icon-button>
-      </div>
-      <div class="content">
-        <div class="important-message">
-          <iron-icon icon="report-problem"></iron-icon>Toutes les données supprimées seront  toujours accessible via la corbeil.</div>
-      </div>
-      <div class="buttons">
-        <paper-button class="btn" dialog-dismiss>ANNULER</paper-button>
-        <paper-button class="btn delete-btn" dialog-confirm autofocus raised>SUPPRIMER</paper-button>
-      </div>
-    </paper-dialog>
-  </template>
-  <script>
-    (function (document) {
+<body id="page-top" class="index">
 
-      const app = document.querySelector('#app');
+    <!-- Navigation -->
+    <nav id="mainNav" class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+            </div>
+            <div class="navbar-header page-scroll">
+                <a class="navbar-brand page-scroll" href="#page-top" >
+                    <img id="logo" src="img/logo-transparent-seul.png" height="80px" width="auto">
+                </a>
+                <a class="navbar-brand page-scroll" href="#page-top"> AMBITION & REUSSITE</a>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+                </button>
+            </div>
 
-      var   section;
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#project">Notre projet</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#portfolio">Nos actions</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#partners">Nos partenaires</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#team">L'équipe</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#contact">Nous rejoindre</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
 
-      app.addEventListener('dom-change', function() {
-        console.info('App ready');
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="intro-text">
+                <div class="intro-lead-in">Le collectif pour ceux qui ont la Réussite pour Ambition !</div>
+                <div class="intro-heading"></div>
+                <a href="#project" class="page-scroll btn btn-xl">En savoir plus</a>
+            </div>
+        </div>
+    </header>
 
-        const deleteDialog = document.querySelector('.delete-dialog');
-        // Open modal
-        document.addEventListener('trigger-delete-modal', function (e) {
-          // Set the section name
-          section = e.detail.section;
-          deleteDialog.open();
-        });
-        // close modal
-        deleteDialog.addEventListener('iron-overlay-closed', function (e) {
-          // If the modal is confirmed trigger the confirm event
-          if (e.detail.confirmed) {
-            var event = new Event('modal-' + section);
-            document.dispatchEvent(event);
-          }
-        });
-      });
-      
-    })(document);
-  </script>
+    <!-- Services Section -->
+    <section id="project">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Notre projet</h2>
+                    <p class="text-muted">Chez les jeunes, le chômage représente 36 % dans les quartiers prioritaires contre 17,4 % dans le reste des agglomérations. Le manque de réseau, de formation et d’ambition sont parmi les freins à la réussite et l’épanouissement professionnel de cette jeunesse.</p>
+                    <p class="text-muted">Fondé en 2016, Ambition & Réussite c’est un réseau structuré de 2000 étudiants et professionnels qui partagent le même principe : « Ensemble on ira plus loin »</p>
+                    <h5>Nous agissons sur 3 axes</h5>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <span class="fa-stack fa-4x">
+                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                        <i class="fa fa-briefcase fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <h4 class="service-heading">Savoir-Être</h4>
+                    <p class="text-muted">Développer son expression et sa confiance en soi, et apprendre les codes qui permettent la réussite en société.</p>
+                </div>
+                <div class="col-md-4">
+                    <span class="fa-stack fa-4x">
+                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                        <i class="fa fa-cogs fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <h4 class="service-heading">Savoir-Faire</h4>
+                    <p class="text-muted">Développer de nouvelles compétences professionnelles grâce aux mentors A&R.</p>
+                </div>
+                <div class="col-md-4">
+                    <span class="fa-stack fa-4x">
+                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                        <i class="fa fa-commenting fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <h4 class="service-heading">Faire-Savoir</h4>
+                    <p class="text-muted">Faire connaitre de nouveaux exemples de réussite et inspirer la jeunesse. Découvrir de nouvelles opportunités professionnelles ou de formation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Grid Section -->
+    <section id="portfolio" class="bg-light-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Nos actions</h2>
+                    <h3 class="section-subheading text-muted">Les actions que nous mettons en place depuis notre création.</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-sm-6 portfolio-item">
+                    <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
+                        <div class="portfolio-hover">
+                            <div class="portfolio-hover-content">
+                                <i class="fa fa-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img src="img/portfolio/Talents(2).jpg" class="img-responsive" alt="">
+                    </a>
+                    <div class="portfolio-caption">
+                        <h4>RDV des Talents</h4>
+                        <p class="text-muted">Soirée de mise en avant des jeunes qui ont fait leurs preuves</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 portfolio-item">
+                    <a href="#portfolioModal2" class="portfolio-link" data-toggle="modal">
+                        <div class="portfolio-hover">
+                            <div class="portfolio-hover-content">
+                                <i class="fa fa-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img src="img/portfolio/classes-prepa.jpg" class="img-responsive" alt="">
+                    </a>
+                    <div class="portfolio-caption">
+                        <h4>La Classe Préparatoire Ambition & Réussite</h4>
+                        <p class="text-muted">Incubateur individuel à l'excellence</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 portfolio-item">
+                    <a href="#portfolioModal3" class="portfolio-link" data-toggle="modal">
+                        <div class="portfolio-hover">
+                            <div class="portfolio-hover-content">
+                                <i class="fa fa-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img src="img/portfolio/cafe-debat1.jpg" class="img-responsive" alt="">
+                    </a>
+                    <div class="portfolio-caption">
+                        <h4>Le Café-Débat</h4>
+                        <p class="text-muted">Rencontre informelle d'un professionnel</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+
+    <!-- Partners Section -->
+    <section id="partners">
+        <aside class="partners">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 text-center">
+                        <h2 class="section-heading">Nos partenaires</h2>
+                    </div>
+                </div>
+                <div class="row d-flex align-items-center">
+                    <div class="col-md-3 col-sm-6 col-xs-8 img">
+                        <a href="https://live-for-good.org">
+                            <img src="img/logos/live-for-good.png" class="img-responsive img-centered" alt="">
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-sm-6 col-xs-8 img">
+                        <a href="https://www.moovjee.fr">
+                            <img src="img/logos/moovjee.png" class="img-responsive img-centered" alt="">
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-sm-6 col-xs-8 img">
+                        <a href="http://www.lesdetermines.fr">
+                            <img src="img/logos/déterminés(1).jpg" class="img-responsive img-centered" alt="">
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-sm-6 col-xs-8 img">
+                        <a href="https://bondyblog.fr">
+                            <img src="img/logos/bondy-blog(1).jpg" class="img-responsive img-centered" alt="">
+                        </a>
+                    </div>
+                </div>
+                <div class="row d-flex align-items-center">
+                    <div class="col-md-4 col-sm-6 col-xs-8 img">
+                        <a href="http://lacravatesolidaire.org">
+                            <img src="img/logos/cravate-solidaire.png" class="img-responsive img-centered" alt="">
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-6 col-xs-8 img">
+                        <a href="https://startupbanlieue.com">
+                            <img src="img/logos/StartupBanlieue.png" class="img-responsive img-centered" alt="">
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-6 col-xs-8 img">
+                        <a href="http://www.nqt.fr">
+                            <img src="img/logos/nqt.png" class="img-responsive img-centered" alt="">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </section>
+
+    <!-- Team Aside -->
+    <section id="team" class="bg-light-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">L'équipe</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-subheading text-muted">Cadres, entrepreneurs, ingénieurs, étudiants de Grandes Ecoles : l’équipe d’Ambition & Réussite est composé d’hommes et de femmes aux parcours riches et variés mais animé par les mêmes valeurs d’Ambition et de Réussite.</h2>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center">
+                    <h3 class="section-heading">Des questions ? Des suggestions ?</h3>
+                    <a class="typeform-share button" href="https://hichemadd.typeform.com/to/PahILC" data-mode="drawer_left" style="display:inline-block;text-decoration:none;background-color:#FBC009;color:white;cursor:pointer;font-size:24px;line-height:80px;text-align:center;margin:0;height:80px;padding:0px 53px;border-radius:3px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:bold;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;" target="_blank">CONTACTEZ-NOUS ! </a> <script> (function() { var qs,js,q,s,d=document, gi=d.getElementById, ce=d.createElement, gt=d.getElementsByTagName, id="typef_orm_share", b="https://embed.typeform.com/"; if(!gi.call(d,id)){ js=ce.call(d,"script"); js.id=id; js.src=b+"embed.js"; q=gt.call(d,"script")[0]; q.parentNode.insertBefore(js,q) } })() </script>
+                </div>
+                <div class="col-md-6 text-center">
+                    <h3 class="section-heading">Envie d'intégrer le réseau A&R ?</h3>
+                    <a class="typeform-share button" href="https://hichemadd.typeform.com/to/mV5rg4" data-mode="drawer_right" style="display:inline-block;text-decoration:none;background-color:#4DC6F3;color:white;cursor:pointer;font-size:24px;line-height:80px;text-align:center;margin:0;height:80px;padding:0px 53px;border-radius:3px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:bold;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;" target="_blank">REJOIGNEZ-NOUS ! </a> <script> (function() { var qs,js,q,s,d=document, gi=d.getElementById, ce=d.createElement, gt=d.getElementsByTagName, id="typef_orm_share", b="https://embed.typeform.com/"; if(!gi.call(d,id)){ js=ce.call(d,"script"); js.id=id; js.src=b+"embed.js"; q=gt.call(d,"script")[0]; q.parentNode.insertBefore(js,q) } })() </script>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <span class="copyright">Ambition & Réussite &copy; 2018 - Tous droits réservés</span>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline social-buttons">
+                        <li><a href="https://facebook.com/ambitionetreussite"><i class="fa fa-facebook"></i></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline quicklinks">
+                        <li><a href="mentions-legales.pdf" class="footer-nav__link">Mentions légales</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Portfolio Modals -->
+    <!-- Use the modals below to showcase details about your portfolio projects! -->
+
+    <!-- Portfolio Modal 1 -->
+    <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="close-modal" data-dismiss="modal">
+                    <div class="lr">
+                        <div class="rl">
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 col-lg-offset-2">
+                            <div class="modal-body">
+                                <h2>RDV des Talents</h2>
+                                <p class="item-intro text-muted">Soirée de mise en avant des jeunes qui ont fait leurs preuves</p>
+                                <img class="img-responsive img-centered" src="img/portfolio/Talents.jpg" alt="">
+                                <p>Grande soirée d'inspiration et de networking où nous mettons à l'honneur les success-stories et les héros du quotidien de notre territoire.</p>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Fermer l'action</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Modal 2 -->
+    <div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="close-modal" data-dismiss="modal">
+                    <div class="lr">
+                        <div class="rl">
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 col-lg-offset-2">
+                            <div class="modal-body">
+                                <!-- Project Details Go Here -->
+                                <h2>La Classe Préparatoire Ambition & Réussite </h2>
+                                <p class="item-intro text-muted">Incubateur individuel à l'excellence</p>
+                                <img class="img-responsive img-centered" src="img/portfolio/classes-prepa2.jpg" alt="">
+                                <p>La classe préparatoire Ambition & Réussite  vise à  développer le potentiel de jeunes talents issus de Seine-Saint-Denis, dans des segments décisifs pour leur réussite professionnelle.
+                                Cette classe préparatoire vient en complément de leur formation initiale, en apportant les codes, le réseau et l’état d’esprit qui leur permettra de réussir dans leur domaine.</p>
+                                <p>Durant 4 mois,  des intervenants de haut niveau, et les membres de l’association viendront partager leur expérience aux jeunes, leurs savoir-faire, et leur savoir-être aux jeunes.
+                                Des sorties en groupe, et des rencontres exceptionnelles  seront aussi prévues pour faire découvrir d’autres perspectives, aux élèves.</p>
+                                <!--<p>Pour s'inscrire, cliquez sur ce lien <a href="http://freebiesxpress.com/gallery/treehouse-free-psd-web-template/">La Classe Préparatoire Ambition & Réussite</a>.</p>-->
+                                <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close Project</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Modal 3 -->
+    <div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="close-modal" data-dismiss="modal">
+                    <div class="lr">
+                        <div class="rl">
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 col-lg-offset-2">
+                            <div class="modal-body">
+                                <!-- Project Details Go Here -->
+                                <h2>Le Café-Débat</h2></h4>
+                                <p class="item-intro text-muted">Rencontre informelle d'un professionnel</p>
+                                <img class="img-responsive img-centered" src="img/portfolio/cafe-debat.jpg" alt="">
+                                <p>Rencontre en comité restreint avec un professionnel VIP pour échanger sur son métier / son secteur et afin d'obtenir les meilleurs conseils.</p>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Fermer l'action</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js" integrity="sha384-mE6eXfrb8jxl0rzJDBRanYqgBxtJ6Unn4/1F7q4xRRyIw7Vdg9jP4ycT7x1iVsgb" crossorigin="anonymous"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="js/jqBootstrapValidation.js"></script>
+    <script src="js/contact_me.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="js/aetr.js"></script>
+
 </body>
+
 </html>
