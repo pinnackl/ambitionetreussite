@@ -800,3 +800,12 @@ body {
     font-size: 17px;
   }
 }
+
+@media (max-width: 768px) {
+  #menu-resp {
+    display: none;
+  }
+  .container>.navbar-header {
+    margin-bottom: 5px;
+  }
+}
